@@ -1,9 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const { Router } = require("express")
+const router = Router()
+const loginController = require('../controllers/login')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/auth/github/callback', loginController.createToken)
 
 module.exports = router;

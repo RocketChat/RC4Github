@@ -1,0 +1,10 @@
+const jwtSecret = process.env.JWT_SECRET || 'Your JWT SECRET'
+const algorithm = process.env.RC_PASS_CIPHER_ALGO || 'YOUR ALGO' // For example, 'aes256'
+const key = process.env.RC_PASS_CIPHER_KEY || 'YOUR KEY'
+const iv = process.env.RC_PASS_CIPHER_IV || 'YOUR IV'
+const githubClientSecret = process.env.GITHUB_CLIENT_SECRET || 'GH CLIENT SECRET'
+const githubClientID = process.env.GITHUB_CLIENT_ID || 'GH CLIENT ID'
+const githubAuthURL = "https://github.com/login/oauth/access_token"
+const githubAPIDomain = "https://api.github.com"
+const rocketChatAPIURL = process.env.RC_API_URL || "http://localhost:3000/api/v1"
+module.exports = {jwtSecret, algorithm, key, iv, githubClientSecret, githubClientID, githubAuthURL, githubAPIDomain, rocketChatAPIURL}

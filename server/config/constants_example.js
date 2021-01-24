@@ -7,4 +7,5 @@ const githubClientID = process.env.GITHUB_CLIENT_ID || 'GH CLIENT ID'
 const githubAuthURL = "https://github.com/login/oauth/access_token"
 const githubAPIDomain = "https://api.github.com"
 const rocketChatAPIURL = process.env.RC_API_URL || "http://localhost:3000/api/v1"
-module.exports = {jwtSecret, algorithm, key, iv, githubClientSecret, githubClientID, githubAuthURL, githubAPIDomain, rocketChatAPIURL}
+const mongodbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/rc4git'
+module.exports = {jwtSecret, algorithm, key, iv, githubClientSecret, githubClientID, githubAuthURL, githubAPIDomain, rocketChatAPIURL, mongodbURI}

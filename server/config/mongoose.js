@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const mongoDB = process.env.MONGODB_URI || 'mongodb://127.0.0.1/rc4git'
+const mongoDB = require('./constants').mongodbURI
 
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true})
 

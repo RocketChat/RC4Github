@@ -23,7 +23,8 @@ module.exports.createToken = async function(req, res){
         const scope = ghTokenResponse.data.scope.split(",")
         if (!scope.includes('read:org') || !scope.includes('user:email')){
             return res.status(401).json({
-                message: 'More permissions are required'
+                success: false,
+                error: 'More permissions are required'
             })
         }
 
@@ -54,7 +55,7 @@ module.exports.createToken = async function(req, res){
                 }  
             })
             newUser['name'] = ghUserResponse.data.name || ghUserResponse.data.login
-            newUser['username'] = ghUserResponse.data.login
+            newUser['username'] = `${ghUserResponse.data.login}_github`
             newUser['avatarUrl'] = ghUserResponse.data.avatar_url
 
             /*
@@ -67,11 +68,15 @@ module.exports.createToken = async function(req, res){
             
             if(rcPassword){
                 //If the user already exists on RC
+                newUser['rcPassword'] = rcPassword
                 delete inconsistentUsers[newUser.email]
                 jsonfile.writeFileSync(inconsistentUsersPath, inconsistentUsers)
             } else {
                 //Generate RC password and create user on RC
                 rcPassword = Math.random().toString(36).slice(2) +  Math.random().toString(36).toUpperCase().slice(2)
+                //Encrypt RC password
+                const cipher = crypto.createCipheriv(constants.algorithm, constants.key, constants.iv.toString('hex').slice(0, 16))
+                encryptedRCPassword = cipher.update(rcPassword, 'utf8', 'hex') + cipher.final('hex')
                 await axios({
                     method: 'post',
                     url: `${constants.rocketChatAPIURL}/users.register`,
@@ -85,12 +90,8 @@ module.exports.createToken = async function(req, res){
                         "username": "${newUser.username}_rc4git"
                     }`
                 })
-                //Encrypt RC password
-                const cipher = crypto.createCipheriv(constants.algorithm, constants.key, constants.iv.toString('hex').slice(0, 16))
-                rcPassword = cipher.update(rcPassword, 'utf8', 'hex') + cipher.final('hex')
+                newUser['rcPassword'] = encryptedRCPassword
             }
-            
-            newUser['rcPassword'] = rcPassword
             
             try{
                 //Store user in our db
@@ -121,11 +122,12 @@ module.exports.createToken = async function(req, res){
         res.cookie('rc4git_token', jwt.sign(user.toJSON(), 'rc4git'))
 
         return res.status(200).json({
-            message: "Success"
+            success: true
         })
     } catch(err) {
         return res.status(500).json({
-            message: 'Internal Server Error'
+            success: false,
+            error: `Internal Server Error ---> ${err}`
         })
     }
 }

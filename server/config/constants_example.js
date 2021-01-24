@@ -1,6 +1,6 @@
 const jwtSecret = process.env.JWT_SECRET || 'Your JWT SECRET'
 const algorithm = process.env.RC_PASS_CIPHER_ALGO || 'YOUR ALGO' // For example, 'aes256'
-const key = process.env.RC_PASS_CIPHER_KEY || 'YOUR KEY'
+const key = process.env.RC_PASS_CIPHER_KEY || 'YOUR KEY' //AES supports keys and iv of either 128, 192, or 256 bytes (16, 24, or 32 bytes respectively)
 const iv = process.env.RC_PASS_CIPHER_IV || 'YOUR IV'
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET || 'GH CLIENT SECRET'
 const githubClientID = process.env.GITHUB_CLIENT_ID || 'GH CLIENT ID'

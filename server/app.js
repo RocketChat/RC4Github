@@ -21,6 +21,7 @@ app.use(cors(corsOptionsDelegate));
 
 app.use(bodyParser.json())
 app.use(passport.initialize())
+app.use(cors());
 
 app.use('/', require('./routes'))
 

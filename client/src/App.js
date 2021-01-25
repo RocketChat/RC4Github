@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
-import StepLabel from '@matesrial-ui/core/StepLabel';
+import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
@@ -74,7 +74,7 @@ class App extends Component {
     if(activeStep === 1)
     { 
 
-      axios.get('http://localhost:9000/getRepositories', {
+      axios.get('http://localhost:3030/getRepositories', {
         params: {
           username: username
         }
@@ -92,7 +92,7 @@ class App extends Component {
     {
       axios({
         method: 'post',
-        url: 'http://localhost:9000/createChannel',
+        url: 'http://localhost:3030/createChannel',
         params:{channel: channel}
       })
       .then((response) => {

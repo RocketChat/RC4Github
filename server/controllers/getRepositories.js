@@ -1,8 +1,6 @@
-var express = require('express');
-var axios = require('axios')
-var router = express.Router();
+const axios = require('axios')
 
-router.get('/', function(req, res, next) {
+module.exports = async function (req, res) {
     var username = req.query.username
     axios.get(`https://api.github.com/users/${username}/repos`)
        .then(response => 
@@ -10,6 +8,4 @@ router.get('/', function(req, res, next) {
             repository.name
      )))
        .catch(err => res.send(err));
-});
-
-module.exports = router;
+}

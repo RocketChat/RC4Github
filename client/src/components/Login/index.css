@@ -1,0 +1,96 @@
+.login-screen {
+    background-color: #2f343d;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    min-height: -webkit-fill-available;
+    min-width: -webkit-fill-available;
+}
+
+.login-header {
+    max-width: 450px;
+    padding: 0px 10px;
+    margin: 45px auto 20px;
+}
+
+.login-logo {
+    max-width: 100%;
+    max-height: 150px;
+}
+
+.login-card {
+    max-width: 450px;
+    width: -webkit-fill-available;
+    background-color: white;
+    padding: 20px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    border-radius: 0.3em;
+    margin: 10px auto;
+}
+
+.login-button {
+    display: flex;
+    margin: 0px auto 10px;
+    width: inherit;
+    padding: 0.8em 2.5em;
+    color: white;
+    text-decoration: none;
+    border-radius: .5em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'Source Sans Pro', source-sans-pro, pt sans, calibri, sans-serif;
+    font-size: 0.9em;
+    line-height: 1.7rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.login-button-github {
+    background-color: black;
+}
+
+.login-button svg {
+    margin-right: 15px;
+    height: 1.4em !important;
+    width: 1.4em !important;
+}
+
+.login-button-gitlab {
+    background-color: #fc6d26;
+}
+
+.login-button-twitter {
+    background-color: #55acee;
+}
+
+.login-terms {
+    max-width: 100%;
+    padding: 10px;
+    font-size: smaller;
+    color: rgb(255 255 255 / 0.6);
+    text-align: center;
+}
+
+.login-terms a {
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.6);
+}
+
+.login-terms a:hover {
+    color: white;
+}
+
+.powered-by {
+    margin-top: 1em;
+}
+
+.cursor-disabled{
+    cursor: not-allowed;
+}

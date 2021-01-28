@@ -4,9 +4,11 @@ const passport = require('passport')
 const jwtStrategy = require('./config/passport-jwt-strategy')
 const db = require('./config/mongoose')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const port = process.env.PORT || 3030
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(passport.initialize())
 

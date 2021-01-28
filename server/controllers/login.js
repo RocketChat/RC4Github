@@ -11,7 +11,7 @@ const inconsistentUsersPath = __dirname + '/inconsistentUsers.json'
 module.exports.createToken = async function(req, res){
     try{
         //Fetch access_token from github
-        const requestToken = req.query.code
+        const requestToken = req.body.code
         const ghTokenResponse = await axios({
             method: 'post',
             url: `${constants.githubAuthURL}?client_id=${constants.githubClientID}&client_secret=${constants.githubClientSecret}&code=${requestToken}`,
@@ -116,14 +116,14 @@ module.exports.createToken = async function(req, res){
             }`
         })
         
-        //Set cookies with rc_token, rc_uid and rc4git_jwt_token
-        res.cookie('rc_token', rcLoginUserResponse.data.data.authToken)
-        res.cookie('rc_uid', rcLoginUserResponse.data.data.userId)
-        res.cookie('rc4git_token', jwt.sign(user.toJSON(), 'rc4git'))
-
         return res.status(200).json({
-            success: true
-        })
+          success: true,
+          data: {
+            rc_token: rcLoginUserResponse.data.data.authToken,
+            rc_uid: rcLoginUserResponse.data.data.userId,
+            rc4git_token: jwt.sign(user.toJSON(), 'rc4git')
+          },
+        });
     } catch(err) {
         return res.status(500).json({
             success: false,

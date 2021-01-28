@@ -1,0 +1,5 @@
+.left-sidebar-wrapper {
+    width: 20%;
+    background-color: #2f343d;
+    min-height: -webkit-fill-available;
+}

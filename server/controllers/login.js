@@ -131,3 +131,37 @@ module.exports.createToken = async function(req, res){
         })
     }
 }
+
+
+module.exports.upgradeAccess = async (req, res) => {
+    try{
+        //Fetch access_token from github
+        const requestToken = req.body.code
+        const ghTokenResponse = await axios({
+            method: 'post',
+            url: `${constants.githubAuthURL}?client_id=${constants.githubPrivateRepoAccessClientID}&client_secret=${constants.githubPrivateRepoAccessClientSecret}&code=${requestToken}`,
+            headers: {
+                accept: 'application/json'
+            }  
+        })
+        //Check for permission scopes
+        const scope = ghTokenResponse.data.scope.split(",")
+        if (!scope.includes('repo')){
+            return res.status(401).json({
+                success: false,
+                error: 'Private Repo Access permissions are required'
+            })
+        }
+        return res.status(200).json({
+          success: true,
+          data: {
+            gh_private_repo_token: ghTokenResponse.data.access_token,
+          },
+        });
+    } catch(error) {
+        return res.status(500).json({
+            success: false,
+            error: `Internal Server Error ---> ${err}`
+        })
+    }
+}

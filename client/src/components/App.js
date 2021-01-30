@@ -8,7 +8,7 @@ import {
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { Home, Login, LeftSidebar } from "./";
+import { Home, Login, SignedChatScreen, AnonymousModeChatScreen, LoginRedirect } from "./";
 
 function PrivateRoute(privateRouteProps) {
   const { path, authState, component: Component } = privateRouteProps;
@@ -23,7 +23,23 @@ function PrivateRoute(privateRouteProps) {
           <Redirect to="/login" />
         );
       }}
-    ></Route>
+    />
+  );
+}
+
+function RestrictedRoute(restrictedRouteProps) {
+  const { path, authState } = restrictedRouteProps;
+  return (
+    <Route
+      path={path}
+      render={(props) => {
+        return authState.isLoggedIn ? (
+          <SignedChatScreen {...props} user={authState.user} />
+        ) : (
+          <AnonymousModeChatScreen {...props} />
+        );
+      }}
+    />
   );
 }
 
@@ -63,8 +79,13 @@ export default class App extends React.Component {
   render() {
     return (
       <Router>
-        {this.state.auth.isLoggedIn ? <LeftSidebar></LeftSidebar> : null}
         <Switch>
+          <RestrictedRoute path={"/channel"} authState={this.state.auth} />
+          <PrivateRoute
+            path={"/home"}
+            component={Home}
+            authState={this.state.auth}
+          />
           <Route
             path="/login"
             render={() => (
@@ -73,12 +94,20 @@ export default class App extends React.Component {
                 setAuthState={this.setAuthState}
               ></Login>
             )}
-          ></Route>
+          />
+          <Route
+            path="/redirect/login"
+            render={() => (
+              <LoginRedirect
+                authState={this.state.auth}
+              ></LoginRedirect>
+            )}
+          />
           <PrivateRoute
             path={"/"}
             component={Home}
             authState={this.state.auth}
-          ></PrivateRoute>
+          />
         </Switch>
       </Router>
     );

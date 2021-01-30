@@ -65,7 +65,7 @@ export default function Login(props) {
           <img className="login-logo" src="/logo.svg" alt="RC-logo"></img>
         </Link>
       </header>
-      <div className={!authState.inProgress ? "login-card cursor-disabled" : "login-card"}>
+      <div className={authState.inProgress ? "login-card cursor-disabled" : "login-card"}>
         {authState.inProgress ? (
           <div className="login-button login-button-github">
             <FaGithub />

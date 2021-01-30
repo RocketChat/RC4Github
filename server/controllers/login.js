@@ -158,7 +158,7 @@ module.exports.upgradeAccess = async (req, res) => {
             gh_private_repo_token: ghTokenResponse.data.access_token,
           },
         });
-    } catch(error) {
+    } catch(err) {
         return res.status(500).json({
             success: false,
             error: `Internal Server Error ---> ${err}`
@@ -174,7 +174,7 @@ module.exports.sso = (req, res) => {
           });
         }
         return res.status(401);
-    } catch(error){
+    } catch(err){
         return res.status(500).json({
           success: false,
           error: `Internal Server Error ---> ${err}`,

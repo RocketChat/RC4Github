@@ -165,3 +165,19 @@ module.exports.upgradeAccess = async (req, res) => {
         })
     }
 }
+
+module.exports.sso = (req, res) => {
+    try{
+        if (req.headers.cookie.split(";")[0].split("=")[1]) {
+          return res.status(200).json({
+            loginToken: req.headers.cookie.split(";")[0].split("=")[1],
+          });
+        }
+        return res.status(401);
+    } catch(error){
+        return res.status(500).json({
+          success: false,
+          error: `Internal Server Error ---> ${err}`,
+        });
+    }
+}

@@ -8,7 +8,7 @@ import {
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { Home, Login, LeftSidebar } from "./";
+import { Home, Login, LeftSidebar, CreateCommunity } from "./";
 
 function PrivateRoute(privateRouteProps) {
   const { path, authState, component: Component } = privateRouteProps;
@@ -74,6 +74,11 @@ export default class App extends React.Component {
               ></Login>
             )}
           ></Route>
+          <PrivateRoute
+            path="/create"
+            component={CreateCommunity}
+            authState={this.state.auth}
+            ></PrivateRoute>
           <PrivateRoute
             path={"/"}
             component={Home}

@@ -1,11 +1,11 @@
-import React, {createContext,} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 
 ReactDOM.render(
-  <Router >
-      <Route exact path = "/" component = {App} />
-   </Router>,
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById('root')
 );

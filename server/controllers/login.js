@@ -121,7 +121,8 @@ module.exports.createToken = async function(req, res){
           data: {
             rc_token: rcLoginUserResponse.data.data.authToken,
             rc_uid: rcLoginUserResponse.data.data.userId,
-            rc4git_token: jwt.sign(user.toJSON(), 'rc4git')
+            rc4git_token: jwt.sign(user.toJSON(), 'rc4git'),
+            gh_login_token: ghTokenResponse.data.access_token
           },
         });
     } catch(err) {
@@ -158,7 +159,8 @@ module.exports.upgradeAccess = async (req, res) => {
             gh_private_repo_token: ghTokenResponse.data.access_token,
           },
         });
-    } catch(error) {
+    } catch(err) {
+        console.log(err)
         return res.status(500).json({
             success: false,
             error: `Internal Server Error ---> ${err}`

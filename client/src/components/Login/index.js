@@ -40,6 +40,7 @@ export default function Login(props) {
           Cookies.set("rc_token", data.data.rc_token);
           Cookies.set("rc_uid", data.data.rc_uid);
           Cookies.set("rc4git_token", data.data.rc4git_token);
+          Cookies.set("gh_login_token", data.data.gh_login_token);
           setAuthState({
             user: jwt_decode(data.data.rc4git_token),
             isLoggedIn: true,
@@ -74,7 +75,7 @@ export default function Login(props) {
         ) : (
           <a
             className="login-button login-button-github"
-            href="https://github.com/login/oauth/authorize?scope=user:email read:org&client_id=849e80a4b88e5cfde511"
+            href="https://github.com/login/oauth/authorize?scope=user:email read:org&client_id=c37468a543a69c4220a2"
           >
             <FaGithub />
             Login with github

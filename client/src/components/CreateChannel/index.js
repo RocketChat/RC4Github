@@ -11,7 +11,6 @@ import RCSwitch from '../RCSwitch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Cookies from 'js-cookie'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import jwt_decode from "jwt-decode";
 
@@ -33,58 +32,24 @@ export default class CreateChannel extends Component {
       repositories: [],
       publicRepositories: [],
       privateRepositories: [],
-      organizations: [],
-      openChannelDialog: false,
       username: jwt_decode(Cookies.get('rc4git_token')).username.slice(0, -7),
       community: null,
       includePrivateRepositories: false,
       publicChannel: true,
       loading: false,
       communities: [],
-      organizations: [],
       channel: null,
-      snackbarOpen: false,
-      snackbarText: ""
     }
   }
 
   componentDidMount() {
-      this.fetchOrganizations()
-  }
-
-  fetchOrganizations = async () => {
-    try
-    {
-        const authToken = Cookies.get('gh_login_token')
-        const headers = {
-            accept: 'application/vnd.github.v3+json',
-            Authorization: `token ${authToken}`
-        }  
-
-        const ghOrgResponse = await axios({
-            method: 'get',
-            url: `https://api.github.com/user/orgs`,
-            headers: headers
-        })
-
-        const organizations = ghOrgResponse.data.map(organization => {
-            return {group: "Organization", value: organization.login}
-        }
-            )
-        this.setState({organizations: organizations})
-    }
-    catch (error)
-    {
-        console.log(error)
-    }
-    
+    this.handleClickChannelDialog()
   }
 
   handleClickChannelDialog = async () => {
-    const {publicRepositories, privateRepositories, organizations, username} = this.state
+    const {publicRepositories, privateRepositories, username} = this.state
+    const {organizations} = this.props
     let communityChannels = [], communityMember = []
-
-    this.setState({openChannelDialog: true})
 
     //Gets community channels user is part of
     const rcUserInfoResponse = await axios({
@@ -123,7 +88,6 @@ export default class CreateChannel extends Component {
         publicRepositories.push(repository.full_name)
       )
 
-      //TODO: Also add for whenever state is open from props
     if(Cookies.get('gh_private_repo_token'))
     {
         const privateRepoResponse = await axios({
@@ -142,10 +106,6 @@ export default class CreateChannel extends Component {
           )
     }
     this.setState({repositories: publicRepositories})
-  };
-
-  handleCloseChannelDialog = () => {
-    this.setState({openChannelDialog: false})
   };
   
   handleAllRepositories = async (event) => {
@@ -168,6 +128,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const {channel, community, publicChannel} = this.state
+    const {handleCloseChannelDialog, setSnackbar} = this.props
     const authToken = Cookies.get('gh_private_repo_token')?Cookies.get('gh_private_repo_token'):Cookies.get('gh_login_token')
     let collaborators = [], description = ""
     this.setState({loading: true})
@@ -215,62 +176,48 @@ export default class CreateChannel extends Component {
         })
         if(rcCreateChannelResponse.data.data.success)
         {
-            this.setState({loading: false,
-                 openChannelDialog: false,
-                  snackbarOpen: true,
-                   snackbarSeverity: "success",
-                    snackbarText: "Channel created successfully!"})
+            this.setState({loading: false})
+            handleCloseChannelDialog()
+            setSnackbar(true, "success", "Channel created successfully!")
+
         }
         else
         {
-            this.setState({loading:false,
-                 snackbarOpen: true,
-                  snackbarSeverity: "error",
-                   snackbarText: "Error Creating Channel!"})
+            setSnackbar(true, "error", "Error Creating Channel!")
         }
     } 
     catch(error)
     {
         console.log(error)
-        this.setState({loading:false,
-            snackbarOpen: true,
-            snackbarSeverity: "error",
-             snackbarText: "Error Creating Channel!"})
+        this.setState({loading:false})
+        setSnackbar(true, "error", "Error Creating Channel!")
+
+             
     }
     
   }
 
-  handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-        return;
-      }
-  
-      this.setState({snackbarOpen: false})
-  }
-
   render() {
-    const {openChannelDialog, repositories, publicChannel, includePrivateRepositories,
-         community, communities, channel, loading, snackbarOpen, snackbarSeverity, snackbarText } = this.state
-    
+    const {repositories, publicChannel, includePrivateRepositories,
+         community, communities, channel, loading } = this.state
+    const {handleCloseChannelDialog} = this.props
+
   return (
     <div style={{justifyContent:"center", display:"flex"}}>
-      <Button style={{margin:"50px"}} variant="outlined" color="primary" onClick={this.handleClickChannelDialog}>
-        Create Channel
-      </Button>
       <a
             id="scope-upgrade-link"
             href="https://github.com/login/oauth/authorize?scope=repo&client_id=1daf5ba8a06418180a31"
           />
 
     <Dialog
-        open={openChannelDialog}
+        open={true}
         keepMounted
-        onClose={this.handleCloseChannelDialog}
+        onClose={handleCloseChannelDialog}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         TransitionComponent={Transition}
         maxWidth="sm"
-        fullWidth = "true"
+        fullWidth = {true}
       >
         <DialogTitle>
           Create a New Channel
@@ -335,15 +282,6 @@ export default class CreateChannel extends Component {
     </div>
     </DialogContent>
     </Dialog>
-    <Snackbar 
-    open={snackbarOpen} 
-    autoHideDuration={3000} 
-    onClose={this.handleSnackbarClose}
-    anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-        <Alert onClose={this.handleSnackbarClose} severity={snackbarSeverity}>
-          {snackbarText}
-        </Alert>
-    </Snackbar>
 
       </div>
   );

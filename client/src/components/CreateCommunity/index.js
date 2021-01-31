@@ -9,7 +9,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { DialogTitle } from '@material-ui/core';
 import Cookies from 'js-cookie'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import CreateChannel from '../CreateChannel/'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import jwt_decode from "jwt-decode";
@@ -30,8 +29,6 @@ export default class CreateCommunity extends Component {
     super(props)
     this.state = {
       repositories: [],
-      organizations: [],
-      openCommunityDialog: false,
       username: {group: "User", value: jwt_decode(Cookies.get('rc4git_token')).username.slice(0, -7)},
       community: null,
       loading: false,
@@ -40,39 +37,9 @@ export default class CreateCommunity extends Component {
     }
   }
 
-  fetchOrganizations = () => {
-    const authToken = Cookies.get('gh_login_token')
-    const headers = {
-        accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${authToken}`
-    }  
-    axios.get('https://api.github.com/user/orgs', {
-        headers: headers
-      })
-      .then((response) => {
-        // handle success
-        this.setState({organizations: response.data.map(organization => {
-          return {group: "Organization", value: organization.login}
-        }
-          )})
-      })
-      .catch((error) => {
-        // handle error
-        console.log("Error = ", error);
-      })
-  }
-
-  handleClickCommunityDialog = () => {
-    this.setState({openCommunityDialog: true})
-    this.fetchOrganizations()
-  };
-
-  handleCloseCommunityDialog = () => {
-    this.setState({openCommunityDialog: false})
-  };
-
   handleCreateCommunity = async () => {
     const {community} = this.state
+    const {handleCloseCommunityDialog} = this.props
     const authToken = Cookies.get('gh_login_token')
     let communityMembers = [], description = ""
     this.setState({loading: true})
@@ -137,10 +104,10 @@ export default class CreateCommunity extends Component {
         if(rcCreateChannelResponse.data.data.success)
         {
             this.setState({loading: false,
-                 openCommunityDialog: false,
                  snackbarOpen: true,
                   snackbarSeverity: "success",
                    snackbarText: "Community created successfully!"})
+            handleCloseCommunityDialog()
         }
         else
         {
@@ -162,29 +129,22 @@ export default class CreateCommunity extends Component {
   }
 
   render() {
-    const {openCommunityDialog ,organizations, username, community, loading,
+    const {username, community, loading,
          snackbarOpen, snackbarText, snackbarSeverity } = this.state
+    const {handleCloseCommunityDialog, organizations} = this.props
 
     return (
     <div style={{justifyContent:"center", display:"flex"}}>
-      <Button 
-      style={{margin:"50px"}} 
-      variant="outlined" 
-      color="primary" 
-      onClick={this.handleClickCommunityDialog}>
-        Create Community
-      </Button>
-      <CreateChannel ></CreateChannel>
 
       <Dialog
-        open={openCommunityDialog}
+        open={true}
         TransitionComponent={Transition}
         keepMounted
-        onClose={this.handleCloseCommunityDialog}
+        onClose={handleCloseCommunityDialog}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         maxWidth="sm"
-        fullWidth = "true"
+        fullWidth={true}
       >
         <DialogTitle>
           <p style={{fontSize:"20px"}}>Create a New Community</p>

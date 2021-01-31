@@ -8,7 +8,7 @@ import {
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { Home, Login, SignedChatScreen, AnonymousModeChatScreen, LoginRedirect, LeftSidebar, CreateCommunity } from "./";
+import { Home, Login, SignedChatScreen, AnonymousModeChatScreen, LoginRedirect } from "./";
 
 function PrivateRoute(privateRouteProps) {
   const { path, authState, component: Component } = privateRouteProps;
@@ -103,11 +103,6 @@ export default class App extends React.Component {
               ></LoginRedirect>
             )}
           />
-          <PrivateRoute
-            path="/create"
-            component={CreateCommunity}
-            authState={this.state.auth}
-            ></PrivateRoute>
           <PrivateRoute
             path={"/"}
             component={Home}

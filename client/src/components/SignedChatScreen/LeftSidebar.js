@@ -49,7 +49,7 @@ export default function LeftSidebar() {
           return;
         }
     
-        this.setState({snackbarOpen: false})
+        setSnackbarOpen(false)
     }
 
     const setSnackbar = (snackbarOpen, snackbarSeverity, snackbarText) => {

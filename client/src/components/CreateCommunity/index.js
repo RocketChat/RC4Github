@@ -9,18 +9,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { DialogTitle } from '@material-ui/core';
 import Cookies from 'js-cookie'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import jwt_decode from "jwt-decode";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
 
 export default class CreateCommunity extends Component {
 
@@ -32,14 +26,12 @@ export default class CreateCommunity extends Component {
       username: {group: "User", value: jwt_decode(Cookies.get('rc4git_token')).username.slice(0, -7)},
       community: null,
       loading: false,
-      snackbarOpen: false,
-      snackbarText: ""
     }
   }
 
   handleCreateCommunity = async () => {
     const {community} = this.state
-    const {handleCloseCommunityDialog} = this.props
+    const {handleCloseCommunityDialog, setSnackbar} = this.props
     const authToken = Cookies.get('gh_login_token')
     let communityMembers = [], description = ""
     this.setState({loading: true})
@@ -103,34 +95,27 @@ export default class CreateCommunity extends Component {
         })
         if(rcCreateChannelResponse.data.data.success)
         {
-            this.setState({loading: false,
-                 snackbarOpen: true,
-                  snackbarSeverity: "success",
-                   snackbarText: "Community created successfully!"})
+            this.setState({loading: false})
             handleCloseCommunityDialog()
+            setSnackbar(true, "success", "Community created successfully!")
         }
         else
         {
-            this.setState({loading:false,
-                snackbarOpen: true,
-                snackbarSeverity: "error",
-                 snackbarText: "Error Creating Community!"})
+            this.setState({loading:false})
+            setSnackbar(true, "error", "Error Creating Community!")
         }
     } 
     catch(error)
     {
         console.log(error)
-        this.setState({loading:false,
-            snackbarOpen: true,
-            snackbarSeverity: "error",
-             snackbarText: "Error Creating Community!"})
+        this.setState({loading:false})
+        setSnackbar(true, "error", "Error Creating Community!")
     }
     
   }
 
   render() {
-    const {username, community, loading,
-         snackbarOpen, snackbarText, snackbarSeverity } = this.state
+    const {username, community, loading} = this.state
     const {handleCloseCommunityDialog, organizations} = this.props
 
     return (
@@ -185,15 +170,6 @@ export default class CreateCommunity extends Component {
     </div>
     </DialogContent>
     </Dialog>
-    <Snackbar 
-    open={snackbarOpen} 
-    autoHideDuration={3000} 
-    onClose={this.handleSnackbarClose}
-    anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-        <Alert onClose={this.handleSnackbarClose} severity={snackbarSeverity}>
-          {snackbarText}
-        </Alert>
-    </Snackbar>
 
       </div>
   );

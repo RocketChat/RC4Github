@@ -11,17 +11,12 @@ import RCSwitch from '../RCSwitch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Cookies from 'js-cookie'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import MuiAlert from '@material-ui/lab/Alert';
 import jwt_decode from "jwt-decode";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
-
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
 
 export default class CreateChannel extends Component {
 
@@ -135,7 +130,10 @@ export default class CreateChannel extends Component {
     //Populate collaborators for the repo
     try
     {
-        const ghCollaboratorsResponse = await axios({
+      // Fetching collaborators requires repo scope
+      if(Cookies.get('gh_private_repo_token'))
+      {
+          const ghCollaboratorsResponse = await axios({
             method: 'get',
             url: `https://api.github.com/repos/${community}/${channel}/collaborators`,
             headers: {
@@ -149,6 +147,7 @@ export default class CreateChannel extends Component {
         ghCollaboratorsResponse.data.map((member) => {
             collaborators.push(member.login.concat("_github_rc4git"))
         })
+      }
 
         const ghRepoResponse = await axios({
             method: 'get',

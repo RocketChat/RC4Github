@@ -2,12 +2,13 @@ import React from 'react';
 import { RiHome4Line, RiSearchLine } from "react-icons/ri";
 import {AiOutlineGlobal} from "react-icons/ai";
 import {IoCreateOutline} from "react-icons/io5";
+import {CgHashtag, CgCommunity} from "react-icons/cg"
 import {HiSortDescending} from "react-icons/hi";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useEffect } from "react";
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Cookies from "js-cookie";
 import CreateCommunity from "../CreateCommunity/"
 import CreateChannel from "../CreateChannel/"
@@ -107,6 +108,14 @@ export default function LeftSidebar() {
             keepMounted
             open={Boolean(anchorEl)}
             onClose={handleCreateClose}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
           >
             <MenuItem 
               onClick={() => {
@@ -114,13 +123,15 @@ export default function LeftSidebar() {
               setopenCommunityDialog(true)
               handleCreateClose()
               }}>
-                Create Community
+                <CgCommunity color="#000" className="create-menu-icons"/>
+                Community
             </MenuItem>
             <MenuItem onClick={() => {
               fetchOrganizations()
               setopenChannelDialog(true)
               handleCreateClose()}}>
-                Create Channel
+                <CgHashtag color="#000" className="create-menu-icons"/>
+                Channel
             </MenuItem>
           </Menu>
         </div>

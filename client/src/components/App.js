@@ -18,7 +18,9 @@ function PrivateRoute(privateRouteProps) {
       path={path}
       render={(props) => {
         return authState.isLoggedIn ? (
-          <Component {...props} />
+          <>
+            <Component {...props} user={authState.user} />
+          </>
         ) : (
           <Redirect to="/login" />
         );
@@ -80,7 +82,7 @@ export default class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <RestrictedRoute path={"/channel"} authState={this.state.auth} />
+          <RestrictedRoute path={["/channel", "/group", "/direct"]} authState={this.state.auth} />
           <PrivateRoute
             path={"/home"}
             component={Home}

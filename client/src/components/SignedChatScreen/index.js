@@ -37,10 +37,17 @@ export default function SignedChatScreen(props) {
         .catch(error => console.log(error));
   }
 })
-
+  // if(location == '/' || location == '/home'){
+  //   return (
+  //     <>
+  //       <LeftSidebar {...props}></LeftSidebar>
+  //       <Home></Home>
+  //     </>
+  //   );
+  // }
   return (
     <>
-      <LeftSidebar></LeftSidebar>
+      <LeftSidebar {...props}></LeftSidebar>
       <ChatWindow {...props}></ChatWindow>
     </>
   );

@@ -1,0 +1,31 @@
+.room-wrapper{
+    display: flex;
+    width: 100%;
+    padding: 6px 1rem;
+    flex-direction: row;
+    color: #9ea2a8;
+    align-items: center;
+    text-decoration: none;
+}
+
+.room-wrapper:hover {
+    cursor: pointer;
+    background-color: #1f2329;
+}
+
+.room-item-icon {
+    width: 1.75em;
+    margin-right: 4px;
+}
+
+.room-item-type-icon {
+    margin: 2px 4px 0px 0px;
+}
+
+.room-name {
+    font-size: 0.9em;
+}
+
+.active-room {
+    background-color: #41464f;
+}

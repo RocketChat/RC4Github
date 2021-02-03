@@ -1,7 +1,13 @@
-import Home from './Home/';
-import Login from './Login/';
-import AnonymousModeChatScreen from "./AnonymousModeChatScreen/";
-import SignedChatScreen from './SignedChatScreen/';
-import LoginRedirect from './AnonymousModeChatScreen/loginRedirect';
+import Login from './Login';
+import AnonymousModeLeftSidebar from "./AnonymousModeLeftSidebar";
+import SignedLeftSidebar from './SignedLeftSidebar';
+import LoginRedirect from './LoginRedirect';
+import MainLayout from './MainLayout';
 
-export { Home, Login, AnonymousModeChatScreen, SignedChatScreen, LoginRedirect };
+export {
+  Login,
+  AnonymousModeLeftSidebar,
+  SignedLeftSidebar,
+  LoginRedirect,
+  MainLayout,
+};

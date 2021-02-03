@@ -3,6 +3,7 @@ import {BsFillLockFill} from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
 import "./index.css";
+import { rcApiDomain } from "../../utils/constants";
 export default function RoomItem({room}) {
     return (
       <NavLink
@@ -12,7 +13,7 @@ export default function RoomItem({room}) {
       >
         <img
           alt={"room-icon"}
-          src={`http://localhost:3000/avatar/room/${room.rid}`}
+          src={`${rcApiDomain}/avatar/room/${room.rid}`}
           className="room-item-icon"
         ></img>
         {room["t"] === "c" ? (

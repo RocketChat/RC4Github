@@ -25,3 +25,4 @@ client/.eslintcache
 
 #Environment variables and secret Keys
 /server/config/constants.js
+/client/src/utils/constants.js

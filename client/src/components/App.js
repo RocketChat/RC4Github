@@ -1,47 +1,31 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Redirect,
   Route,
   Switch,
 } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { Home, Login, SignedChatScreen, AnonymousModeChatScreen, LoginRedirect } from "./";
-
-function PrivateRoute(privateRouteProps) {
-  const { path, authState, component: Component } = privateRouteProps;
-  return (
-    <Route
-      exact
-      path={path}
-      render={(props) => {
-        return authState.isLoggedIn ? (
-          <>
-            <Component {...props} user={authState.user} />
-          </>
-        ) : (
-          <Redirect to="/login" />
-        );
-      }}
-    />
-  );
-}
+import {
+  Login,
+  SignedLeftSidebar,
+  AnonymousModeLeftSidebar,
+  LoginRedirect,
+  MainLayout,
+} from "./";
 
 function RestrictedRoute(restrictedRouteProps) {
-  const { path, authState } = restrictedRouteProps;
+  const { authState } = restrictedRouteProps;
   return (
-    <Route
-      path={path}
-      render={(props) => {
-        return authState.isLoggedIn ? (
-          <SignedChatScreen {...props} user={authState.user} />
-        ) : (
-          <AnonymousModeChatScreen {...props} />
-        );
-      }}
-    />
+    <>
+      {authState.isLoggedIn ? (
+        <SignedLeftSidebar user={authState.user}/>
+      ) : (
+        <AnonymousModeLeftSidebar />
+      )}
+      <MainLayout {...restrictedRouteProps} />
+    </>
   );
 }
 
@@ -82,12 +66,6 @@ export default class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <RestrictedRoute path={["/channel", "/group", "/direct"]} authState={this.state.auth} />
-          <PrivateRoute
-            path={"/home"}
-            component={Home}
-            authState={this.state.auth}
-          />
           <Route
             path="/login"
             render={() => (
@@ -99,15 +77,10 @@ export default class App extends React.Component {
           />
           <Route
             path="/redirect/login"
-            render={() => (
-              <LoginRedirect
-                authState={this.state.auth}
-              ></LoginRedirect>
-            )}
+            component={LoginRedirect}
           />
-          <PrivateRoute
+          <RestrictedRoute
             path={"/"}
-            component={Home}
             authState={this.state.auth}
           />
         </Switch>

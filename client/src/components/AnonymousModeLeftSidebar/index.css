@@ -41,19 +41,3 @@
     font-size: 0.87em;
     text-transform: uppercase;
 }
-
-.login-redirect-screen {
-    width: 100%;
-    height: 80%;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-redirect-button {
-    padding: 10px;
-    background-color: #1d74f5;
-    color: white;
-    cursor: pointer;
-}

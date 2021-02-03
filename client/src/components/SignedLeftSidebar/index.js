@@ -2,23 +2,26 @@ import { useEffect, useState } from "react";
 import { RiHome4Line, RiSearchLine } from "react-icons/ri";
 import { IoCreateOutline } from "react-icons/io5";
 import { HiSortDescending } from "react-icons/hi";
-import {CgCommunity, CgHashtag} from "react-icons/cg";
+import { CgCommunity, CgHashtag } from "react-icons/cg";
 import { Link } from "react-router-dom";
-import CommunityListItem from "../CommunityListItem/";
+import CommunityListItem from "../CommunityListItem";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Cookies from "js-cookie";
-import CreateCommunity from "../CreateCommunity/";
-import CreateChannel from "../CreateChannel/";
+import CreateCommunity from "../CreateCommunity";
+import CreateChannel from "../CreateChannel";
 import axios from "axios";
+import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
+
+import "./index.css";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function LeftSidebar(props) {
+export default function SignedLeftSidebar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openCommunityDialog, setopenCommunityDialog] = useState(false);
   const [openChannelDialog, setopenChannelDialog] = useState(false);
@@ -31,7 +34,7 @@ export default function LeftSidebar(props) {
   const [directMessages, setDirectMessages] = useState([]);
 
   const fetchRooms = () => {
-    const url = `http://localhost:3000/api/v1/users.info?userId=${Cookies.get(
+    const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
       "rc_uid"
     )}&fields={"userRooms": 1}`;
     fetch(url, {
@@ -68,15 +71,16 @@ export default function LeftSidebar(props) {
   const addRoom = (room) => {
     setRooms([...rooms, room]);
     if (room["t"] === "c" || room["t"] === "p") {
-      let newCommnunities = {...communities};
+      let newCommnunities = { ...communities };
       let community_name = room.name.split(/_(.+)/)[0];
-      if (!newCommnunities[community_name]) newCommnunities[community_name] = [];
+      if (!newCommnunities[community_name])
+        newCommnunities[community_name] = [];
       newCommnunities[community_name].push(room);
       setCommunities(newCommnunities);
     } else {
       setDirectMessages([...directMessages, room]);
     }
-  }
+  };
 
   useEffect(() => {
     fetchRooms();
@@ -122,7 +126,7 @@ export default function LeftSidebar(props) {
 
       const ghOrgResponse = await axios({
         method: "get",
-        url: `https://api.github.com/user/orgs`,
+        url: `${githubApiDomain}/user/orgs`,
         headers: headers,
       });
 

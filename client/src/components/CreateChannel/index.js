@@ -12,6 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Cookies from 'js-cookie'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import jwt_decode from "jwt-decode";
+import { githubPrivateRepoAccessClientID } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -208,7 +209,7 @@ export default class CreateChannel extends Component {
     <div style={{ justifyContent: "center", display: "flex" }}>
       <a
         id="scope-upgrade-link"
-        href="https://github.com/login/oauth/authorize?scope=repo&client_id=5cacb1e81388648c7a39"
+        href={`https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`}
       />
 
       <Dialog

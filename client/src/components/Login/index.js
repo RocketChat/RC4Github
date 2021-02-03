@@ -4,6 +4,7 @@ import { FaGithub, FaGitlab, FaTwitter } from "react-icons/fa";
 import { VscLoading } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
+import {githubClientID, rc4gitApiDomain} from "./../../utils/constants";
 
 import "./index.css";
 
@@ -25,7 +26,7 @@ export default function Login(props) {
         code: newUrl[1],
       };
 
-      const proxy_url = "http://localhost:3030/login";
+      const proxy_url = `${rc4gitApiDomain}/login`;
 
       // Use code parameter and other parameters to make POST request to proxy_server
       fetch(proxy_url, {
@@ -79,7 +80,7 @@ export default function Login(props) {
         ) : (
           <a
             className="login-button login-button-github"
-            href="https://github.com/login/oauth/authorize?scope=user:email read:org&client_id=849e80a4b88e5cfde511"
+            href={`https://github.com/login/oauth/authorize?scope=user:email read:org&client_id=${githubClientID}`}
           >
             <FaGithub />
             Login with github

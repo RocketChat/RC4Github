@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import Slide from '@material-ui/core/Slide';
-import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { DialogTitle } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import {Dialog, DialogTitle, DialogContent, Slide, Button, TextField, FormControlLabel, CircularProgress} from '@material-ui/core';
 import RCSwitch from '../RCSwitch'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Cookies from 'js-cookie'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import jwt_decode from "jwt-decode";
 import { githubPrivateRepoAccessClientID } from '../../utils/constants';
 
@@ -124,7 +117,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const {channel, community, publicChannel} = this.state
-    const {handleCloseChannelDialog, setSnackbar, addRoom} = this.props
+    const {handleCloseChannelDialog, setSnackbar, addRoom, setEmbedDialog} = this.props
     const authToken = Cookies.get('gh_private_repo_token')?Cookies.get('gh_private_repo_token'):Cookies.get('gh_login_token')
     let collaborators = [], description = ""
     this.setState({loading: true})
@@ -182,7 +175,7 @@ export default class CreateChannel extends Component {
             this.setState({loading: false})
             handleCloseChannelDialog()
             setSnackbar(true, "success", "Channel created successfully!")
-
+            setEmbedDialog(true, `http://localhost:3002/channel/${room.name}`, "channel")
         }
         else
         {

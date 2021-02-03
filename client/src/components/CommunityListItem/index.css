@@ -1,0 +1,12 @@
+.community-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-bottom: 15px;
+}
+
+.community-title{
+    color: #9ea2a8;
+    font-size: 0.9em;
+    padding: 0.6rem 0.75rem;
+}

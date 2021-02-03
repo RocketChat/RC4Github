@@ -31,7 +31,7 @@ export default class CreateCommunity extends Component {
 
   handleCreateCommunity = async () => {
     const {community} = this.state
-    const {handleCloseCommunityDialog, setSnackbar} = this.props
+    const {handleCloseCommunityDialog, setSnackbar, addRoom} = this.props
     const authToken = Cookies.get('gh_login_token')
     let communityMembers = [], description = ""
     this.setState({loading: true})
@@ -51,9 +51,9 @@ export default class CreateCommunity extends Component {
                     per_page: 100
                 }  
             })
-            ghMembersResponse.data.map((member) => {
+            ghMembersResponse.data.map((member) => (
                 communityMembers.push(member.login.concat("_github_rc4git"))
-            })
+            ))
 
             const ghOrgResponse = await axios({
                 method: 'get',
@@ -95,6 +95,9 @@ export default class CreateCommunity extends Component {
         })
         if(rcCreateChannelResponse.data.data.success)
         {
+            let room = rcCreateChannelResponse.data.data.channel;
+            room["rid"] = room["_id"];
+            addRoom(room);
             this.setState({loading: false})
             handleCloseCommunityDialog()
             setSnackbar(true, "success", "Community created successfully!")

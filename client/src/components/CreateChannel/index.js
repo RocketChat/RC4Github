@@ -123,7 +123,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const {channel, community, publicChannel} = this.state
-    const {handleCloseChannelDialog, setSnackbar} = this.props
+    const {handleCloseChannelDialog, setSnackbar, addRoom} = this.props
     const authToken = Cookies.get('gh_private_repo_token')?Cookies.get('gh_private_repo_token'):Cookies.get('gh_login_token')
     let collaborators = [], description = ""
     this.setState({loading: true})
@@ -144,9 +144,9 @@ export default class CreateChannel extends Component {
                 per_page: 100
             }  
         })
-        ghCollaboratorsResponse.data.map((member) => {
+        ghCollaboratorsResponse.data.map((member) => (
             collaborators.push(member.login.concat("_github_rc4git"))
-        })
+        ))
       }
 
         const ghRepoResponse = await axios({
@@ -174,7 +174,10 @@ export default class CreateChannel extends Component {
             }
         })
         if(rcCreateChannelResponse.data.data.success)
-        {
+        { 
+            let room = rcCreateChannelResponse.data.data.channel;
+            room["rid"] = room["_id"];
+            addRoom(room);
             this.setState({loading: false})
             handleCloseChannelDialog()
             setSnackbar(true, "success", "Channel created successfully!")
@@ -202,13 +205,13 @@ export default class CreateChannel extends Component {
     const {handleCloseChannelDialog} = this.props
 
   return (
-    <div style={{justifyContent:"center", display:"flex"}}>
+    <div style={{ justifyContent: "center", display: "flex" }}>
       <a
-            id="scope-upgrade-link"
-            href="https://github.com/login/oauth/authorize?scope=repo&client_id=1daf5ba8a06418180a31"
-          />
+        id="scope-upgrade-link"
+        href="https://github.com/login/oauth/authorize?scope=repo&client_id=5cacb1e81388648c7a39"
+      />
 
-    <Dialog
+      <Dialog
         open={true}
         keepMounted
         onClose={handleCloseChannelDialog}
@@ -216,73 +219,118 @@ export default class CreateChannel extends Component {
         aria-describedby="alert-dialog-slide-description"
         TransitionComponent={Transition}
         maxWidth="sm"
-        fullWidth = {true}
+        fullWidth={true}
       >
-        <DialogTitle>
-          Create a New Channel
-        </DialogTitle>
+        <DialogTitle>Create a New Channel</DialogTitle>
         <DialogContent>
-          <p style={{color:"#c0c2c6"}}>Channels are where your teams communicate.</p>
-    <div>
-    <br/>
-    <p>Select a community</p>
-      <Autocomplete
-            id="combo-box-repo"
-            options={communities}
-            style={{ width: 300 }}
-            onChange={(event, value) => {this.setState({community: value})
-          }}
-            renderInput={(params) => <TextField {...params} label="Community" variant="outlined" />}
-        />
-        <br/>
-        <br/>
-        <FormControlLabel
-        control={<RCSwitch checked={publicChannel} onChange={() => this.setState({publicChannel: !publicChannel})} name="publicChannel" />}
-        label="Public Channel"
-      />
-      <p style={{color:"#c0c2c6"}}>{publicChannel?"Everyone can access this channel.":"Just invited people can access this channel."}</p>
-          <br/>
-        <FormControlLabel
-        control={<RCSwitch checked={this.state.includePrivateRepositories} onChange={this.handleAllRepositories} name="includePrivateRepositories" />}
-        label="Show All Repositories"
-      />
-      <p style={{color:"#c0c2c6"}}>Show public {includePrivateRepositories? "and private ":""}repositories.</p>
-      <br/>
-        <p>Select a repository</p>
-      <Autocomplete
-            id="combo-box-repo"
-            options={community? 
-                repositories.filter(repository => repository.startsWith(community.concat("/")))
-                .map(repository => repository.slice(community.length + 1, repository.length))
-                .sort(): []}
-            style={{ width: 300 }}
-            onChange={(event, value) => {this.setState({channel: value})
-          }}
-            renderInput={(params) => <TextField {...params} label="Repositories" variant="outlined" />}
-          />
-          <br/>
-          {channel && 
-        (
-          <>
-        <p style={{color:"#8e9299"}}>Your channel would be created as <strong>{community.concat(`_${channel}`)}</strong></p>
-        </>
-        )}
-        <br/>
-      <Button 
-      disabled={!channel || loading}  
-      onClick={this.handleCreateChannel} 
-      style={{marginBottom: "10px"}}
-      variant="contained" 
-      color="primary"
-      startIcon={loading &&
-        <CircularProgress size={14} color="secondary"/>}>
-        {loading? 'Creating': 'Create'}
-      </Button>
+          <p style={{ color: "#c0c2c6" }}>
+            Channels are where your teams communicate.
+          </p>
+          <div>
+            <br />
+            <p>Select a community</p>
+            <Autocomplete
+              id="combo-box-repo"
+              options={communities}
+              style={{ width: 300 }}
+              onChange={(event, value) => {
+                this.setState({ community: value });
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Community" variant="outlined" />
+              )}
+            />
+            <br />
+            <br />
+            <FormControlLabel
+              control={
+                <RCSwitch
+                  checked={publicChannel}
+                  onChange={() =>
+                    this.setState({ publicChannel: !publicChannel })
+                  }
+                  name="publicChannel"
+                />
+              }
+              label="Public Channel"
+            />
+            <p style={{ color: "#c0c2c6" }}>
+              {publicChannel
+                ? "Everyone can access this channel."
+                : "Just invited people can access this channel."}
+            </p>
+            <br />
+            <FormControlLabel
+              control={
+                <RCSwitch
+                  checked={this.state.includePrivateRepositories}
+                  onChange={this.handleAllRepositories}
+                  name="includePrivateRepositories"
+                />
+              }
+              label="Show All Repositories"
+            />
+            <p style={{ color: "#c0c2c6" }}>
+              Show public {includePrivateRepositories ? "and private " : ""}
+              repositories.
+            </p>
+            <br />
+            <p>Select a repository</p>
+            <Autocomplete
+              id="combo-box-repo"
+              options={
+                community
+                  ? repositories
+                      .filter((repository) =>
+                        repository.startsWith(community.concat("/"))
+                      )
+                      .map((repository) =>
+                        repository.slice(
+                          community.length + 1,
+                          repository.length
+                        )
+                      )
+                      .sort()
+                  : []
+              }
+              style={{ width: 300 }}
+              onChange={(event, value) => {
+                this.setState({ channel: value });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Repositories"
+                  variant="outlined"
+                />
+              )}
+            />
+            <br />
+            {channel && (
+              <>
+                <p style={{ color: "#8e9299" }}>
+                  Your channel would be created as{" "}
+                  <strong>{community.concat(`_${channel}`)}</strong>
+                </p>
+              </>
+            )}
+            <br />
+            <Button
+              disabled={!channel || loading}
+              onClick={this.handleCreateChannel}
+              style={{ marginBottom: "10px" }}
+              variant="contained"
+              color="primary"
+              startIcon={
+                loading && <CircularProgress size={14} color="secondary" />
+              }
+            >
+              {loading ? "Creating" : "Create"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
-    </DialogContent>
-    </Dialog>
-
-      </div>
   );
         }
 

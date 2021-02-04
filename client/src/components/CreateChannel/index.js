@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import Slide from '@material-ui/core/Slide';
-import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { DialogTitle } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import {Dialog, DialogTitle, DialogContent, Slide, Button, TextField, FormControlLabel, CircularProgress} from '@material-ui/core';
 import RCSwitch from '../RCSwitch'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Cookies from 'js-cookie'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import jwt_decode from "jwt-decode";
-import { githubPrivateRepoAccessClientID } from '../../utils/constants';
+import { githubPrivateRepoAccessClientID, rcApiDomain } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -124,7 +117,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const {channel, community, publicChannel} = this.state
-    const {handleCloseChannelDialog, setSnackbar, addRoom} = this.props
+    const {handleCloseChannelDialog, setSnackbar, addRoom, setEmbedDialog} = this.props
     const authToken = Cookies.get('gh_private_repo_token')?Cookies.get('gh_private_repo_token'):Cookies.get('gh_login_token')
     let collaborators = [], description = ""
     this.setState({loading: true})
@@ -169,7 +162,6 @@ export default class CreateChannel extends Component {
                 rc_uid: Cookies.get('rc_uid'),
                 channel: `${community}_${channel}`,
                 members: collaborators,
-                description: description,
                 topic: `GitHub: https://github.com/${community}/${channel}`,
                 type: publicChannel ? "c": "p"
             }
@@ -177,12 +169,33 @@ export default class CreateChannel extends Component {
         if(rcCreateChannelResponse.data.data.success)
         { 
             let room = rcCreateChannelResponse.data.data.channel;
-            room["rid"] = room["_id"];
+            room.rid = room._id;
+            //Add embeddable code for channel to description
+            description = description
+            .concat(`
+
+-----
+Embed this channel
+<pre><code>\&lt;a\&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}\&quot;\&gt;
+\&lt;img\&nbsp;src=\&quot;${rcApiDomain}/images/join-chat.svg\&quot;/\&gt;
+\&lt;/a\&gt;</code></pre>
+`)
+            await axios({
+              method: 'post',
+              url: `http://localhost:3030/setChannelDescription`,
+              data: {
+                  rc_token: Cookies.get('rc_token'),
+                  rc_uid: Cookies.get('rc_uid'),
+                  roomId: room.rid,
+                  description: description
+              }
+          })
+          
             addRoom(room);
             this.setState({loading: false})
             handleCloseChannelDialog()
             setSnackbar(true, "success", "Channel created successfully!")
-
+            setEmbedDialog(true, `http://localhost:3002/channel/${room.name}`, "channel")
         }
         else
         {

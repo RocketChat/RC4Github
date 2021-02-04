@@ -12,7 +12,6 @@ module.exports = async function (req, res) {
     
         const channel = req.body.channel
         const members = req.body.members
-        const description = req.body.description
         const topic = req.body.topic
         const type = req.body.type
     
@@ -23,16 +22,6 @@ module.exports = async function (req, res) {
             data: { 
                 'name': channel,
                 'members': members 
-            },
-        })
-
-        const rcSetChannelDescription = await axios({
-            method: 'post',
-            url: 'http://localhost:3000/api/v1/channels.setDescription',
-            headers: headers,
-            data: { 
-                'roomId': rcCreateChannelResponse.data.channel._id,
-                'description': description 
             },
         })
 
@@ -60,7 +49,6 @@ module.exports = async function (req, res) {
             rcCreateChannelResponse.data.channel['type'] = rcSetChannelType.data.channel.t
         }
     
-        rcCreateChannelResponse.data.channel['description'] = rcSetChannelDescription.data.description
         rcCreateChannelResponse.data.channel['topic'] = rcSetChannelTopic.data.topic
 
         return res.status(200).json({

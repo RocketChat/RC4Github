@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import Slide from '@material-ui/core/Slide';
-import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { DialogTitle } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import { Button, Dialog, DialogTitle, DialogContent, Slide, TextField, CircularProgress } from '@material-ui/core';
 import Cookies from 'js-cookie'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import jwt_decode from "jwt-decode";
+import { rcApiDomain } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -31,7 +26,7 @@ export default class CreateCommunity extends Component {
 
   handleCreateCommunity = async () => {
     const {community} = this.state
-    const {handleCloseCommunityDialog, setSnackbar, addRoom} = this.props
+    const {handleCloseCommunityDialog, setSnackbar, addRoom, setEmbedDialog} = this.props
     const authToken = Cookies.get('gh_login_token')
     let communityMembers = [], description = ""
     this.setState({loading: true})
@@ -96,11 +91,32 @@ export default class CreateCommunity extends Component {
         if(rcCreateChannelResponse.data.data.success)
         {
             let room = rcCreateChannelResponse.data.data.channel;
-            room["rid"] = room["_id"];
+            room.rid = room._id;
+            //Add embeddable code for channel to description
+            description = description
+            .concat(`
+
+-----
+Embed this community
+<pre><code>\&lt;a\&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}\&quot;\&gt;
+\&lt;img\&nbsp;src=\&quot;${rcApiDomain}/images/join-chat.svg\&quot;/\&gt;
+\&lt;/a\&gt;</code></pre>
+`)
+            await axios({
+              method: 'post',
+              url: `http://localhost:3030/setChannelDescription`,
+              data: {
+                  rc_token: Cookies.get('rc_token'),
+                  rc_uid: Cookies.get('rc_uid'),
+                  roomId: room.rid,
+                  description: description
+              }
+            })
             addRoom(room);
             this.setState({loading: false})
             handleCloseCommunityDialog()
             setSnackbar(true, "success", "Community created successfully!")
+            setEmbedDialog(true, `http://localhost:3002/channel/${room.name}`, "community")
         }
         else
         {

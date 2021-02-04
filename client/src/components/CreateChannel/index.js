@@ -5,7 +5,7 @@ import {Dialog, DialogTitle, DialogContent, Slide, Button, TextField, FormContro
 import RCSwitch from '../RCSwitch'
 import Cookies from 'js-cookie'
 import jwt_decode from "jwt-decode";
-import { githubPrivateRepoAccessClientID } from '../../utils/constants';
+import { githubPrivateRepoAccessClientID, rcApiDomain } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -162,7 +162,6 @@ export default class CreateChannel extends Component {
                 rc_uid: Cookies.get('rc_uid'),
                 channel: `${community}_${channel}`,
                 members: collaborators,
-                description: description,
                 topic: `GitHub: https://github.com/${community}/${channel}`,
                 type: publicChannel ? "c": "p"
             }
@@ -170,7 +169,28 @@ export default class CreateChannel extends Component {
         if(rcCreateChannelResponse.data.data.success)
         { 
             let room = rcCreateChannelResponse.data.data.channel;
-            room["rid"] = room["_id"];
+            room.rid = room._id;
+            //Add embeddable code for channel to description
+            description = description
+            .concat(`
+
+-----
+Embed this channel
+<pre><code>\&lt;a\&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}\&quot;\&gt;
+\&lt;img\&nbsp;src=\&quot;${rcApiDomain}/images/join-chat.svg\&quot;/\&gt;
+\&lt;/a\&gt;</code></pre>
+`)
+            await axios({
+              method: 'post',
+              url: `http://localhost:3030/setChannelDescription`,
+              data: {
+                  rc_token: Cookies.get('rc_token'),
+                  rc_uid: Cookies.get('rc_uid'),
+                  roomId: room.rid,
+                  description: description
+              }
+          })
+          
             addRoom(room);
             this.setState({loading: false})
             handleCloseChannelDialog()

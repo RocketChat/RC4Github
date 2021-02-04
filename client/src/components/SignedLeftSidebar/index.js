@@ -252,7 +252,7 @@ export default function SignedLeftSidebar(props) {
       {openEmbedDialog && <Dialog
       open={true}
       keepMounted
-      onClose={handleCloseChannelDialog}
+      onClose={()=> setOpenEmbedDialog(false)}
       aria-labelledby="alert-dialog-slide-title"
       aria-describedby="alert-dialog-slide-description"
       TransitionComponent={Transition}

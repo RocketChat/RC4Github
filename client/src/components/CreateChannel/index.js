@@ -152,7 +152,7 @@ export default class CreateChannel extends Component {
                 }
         })
 
-        description = ghRepoResponse.data.description
+        description = ghRepoResponse.data.description ? ghRepoResponse.data.description: ""
 
         const rcCreateChannelResponse = await axios({
             method: 'post',

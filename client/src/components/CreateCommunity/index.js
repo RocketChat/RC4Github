@@ -59,7 +59,7 @@ export default class CreateCommunity extends Component {
                     }
             })
 
-            description = ghOrgResponse.data.description
+            description = ghOrgResponse.data.description ? ghOrgResponse.data.description: ""
 
         }
         else
@@ -73,7 +73,7 @@ export default class CreateCommunity extends Component {
                     }
             })
 
-            description = ghUserResponse.data.bio
+            description = ghUserResponse.data.bio ? ghUserResponse.data.bio: ""
         }
         const rcCreateChannelResponse = await axios({
             method: 'post',

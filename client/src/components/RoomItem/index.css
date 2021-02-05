@@ -1,6 +1,6 @@
 .room-wrapper{
     display: flex;
-    width: 100%;
+    width: -webkit-fill-available;
     padding: 6px 1rem;
     flex-direction: row;
     color: #9ea2a8;
@@ -20,6 +20,7 @@
 
 .room-item-type-icon {
     margin: 2px 4px 0px 0px;
+    flex-shrink: 0;
 }
 
 .room-name {

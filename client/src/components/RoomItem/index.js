@@ -1,5 +1,5 @@
 import { CgHashtag } from "react-icons/cg";
-import {BsFillLockFill} from "react-icons/bs";
+import { FiUser, FiLock } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 
 import "./index.css";
@@ -7,24 +7,31 @@ import { rcApiDomain } from "../../utils/constants";
 export default function RoomItem({room}) {
     return (
       <NavLink
-        to={`/${room["t"] === 'c' ? "channel" : room["t"] === 'p' ? "group" : "direct"}/${room.name}`}
+        to={`/${
+          room["t"] === "c" ? "channel" : room["t"] === "p" ? "group" : "direct"
+        }/${room.username || room.name}`}
         className="room-wrapper"
         activeClassName="active-room"
       >
         <img
           alt={"room-icon"}
-          src={`${rcApiDomain}/avatar/room/${room.rid}`}
+          src={`${rcApiDomain}/avatar/${
+            room["username"] || `room/${room.rid || room._id}`
+          }`}
           className="room-item-icon"
         ></img>
         {room["t"] === "c" ? (
           <CgHashtag className="room-item-type-icon"></CgHashtag>
         ) : room["t"] === "p" ? (
-          <BsFillLockFill className="room-item-type-icon"></BsFillLockFill>
-        ) : null}
+          <FiLock className="room-item-type-icon"></FiLock>
+        ) : (
+          <FiUser className="room-item-type-icon"></FiUser>
+        )}
         <span className="room-name">
-          {room.name.split(/_(.+)/)[1]
+          {room.name.split(/_(.+)/)[1] && room["t"] !== 'd'
             ? room.name.split(/_(.+)/)[1]
-            : room.name.split(/_(.+)/)[0]}
+            : room.name}
+            {room.username ? ` (${room.username})` : null}
         </span>
       </NavLink>
     );

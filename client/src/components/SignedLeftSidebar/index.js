@@ -15,6 +15,8 @@ import axios from "axios";
 import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import SidebarSearch from "../SidebarSearch";
+
 import "./index.css";
 
 
@@ -41,6 +43,7 @@ export default function SignedLeftSidebar(props) {
   const [channelURL, setChannelURL] = useState("");
   const [createdType, setCreatedType] = useState("channel");
   const [embedCodeString, setEmbedCodeString] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
 
   const fetchRooms = () => {
     const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
@@ -57,6 +60,7 @@ export default function SignedLeftSidebar(props) {
       .then((response) => response.json())
       .then((data) => {
         let rooms = data.user.rooms;
+        console.log(rooms);
         let communities = {};
         let directMessages = [];
         for (let room of rooms) {
@@ -157,6 +161,10 @@ export default function SignedLeftSidebar(props) {
     }
   };
 
+  const toggleShowSearch = () => {
+    setShowSearch(!showSearch);
+  };
+
   return (
     <div className="signed-left-sidebar-wrapper">
       <div className="signed-left-sidebar-header">
@@ -171,9 +179,12 @@ export default function SignedLeftSidebar(props) {
               <RiHome4Line />
             </div>
           </Link>
-          <div className="left-sidebar-control-icons">
+          <div className="left-sidebar-control-icons" onClick={toggleShowSearch}>
             <RiSearchLine />
           </div>
+          {showSearch ? (
+            <SidebarSearch handleSearchClose={toggleShowSearch}></SidebarSearch>
+          ) : null}
           <div className="left-sidebar-control-icons">
             <HiSortDescending />
           </div>

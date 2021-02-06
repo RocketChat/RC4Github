@@ -26,6 +26,7 @@ import axios from "axios";
 import { rcApiDomain, githubApiDomain, rc4gitApiDomain } from "./../../utils/constants";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import CopyToClipboard from "react-copy-to-clipboard";
+import SidebarSearch from "../SidebarSearch";
 
 import "./index.css";
 
@@ -53,6 +54,7 @@ export default function SignedLeftSidebar(props) {
   const [channelURL, setChannelURL] = useState("");
   const [createdType, setCreatedType] = useState("channel");
   const [embedCodeString, setEmbedCodeString] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
 
   const fetchRooms = () => {
     const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
@@ -69,6 +71,7 @@ export default function SignedLeftSidebar(props) {
       .then((response) => response.json())
       .then((data) => {
         let rooms = data.user.rooms;
+        console.log(rooms);
         let communities = {};
         let directMessages = [];
         for (let room of rooms) {
@@ -177,6 +180,10 @@ export default function SignedLeftSidebar(props) {
     }
   };
 
+  const toggleShowSearch = () => {
+    setShowSearch(!showSearch);
+  };
+
   const logout = () => {
     const loadingIcon = document.getElementById("logout-loading-icon");
     const logoutButton = document.getElementById("logout-menu-item");
@@ -187,20 +194,23 @@ export default function SignedLeftSidebar(props) {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      method: "GET"
-    }).then(response => response.json()).then(data => { 
-      Cookies.remove("rc4git_token");
-      Cookies.remove("rc_uid");
-      Cookies.remove("rc_token");
-      Cookies.remove('gh_login_token');
-      Cookies.remove("gh_private_repo_token");
-      window.location = "/login";
-    }).catch(err => {
-      console.log("Error logging out --->", err);
-      loadingIcon.classList.add("hide-logout-loading");
-      logoutButton.classList.remove("disable-click");
-      return;
+      method: "GET",
     })
+      .then((response) => response.json())
+      .then((data) => {
+        Cookies.remove("rc4git_token");
+        Cookies.remove("rc_uid");
+        Cookies.remove("rc_token");
+        Cookies.remove("gh_login_token");
+        Cookies.remove("gh_private_repo_token");
+        window.location = "/login";
+      })
+      .catch((err) => {
+        console.log("Error logging out --->", err);
+        loadingIcon.classList.add("hide-logout-loading");
+        logoutButton.classList.remove("disable-click");
+        return;
+      });
   };
 
   return (
@@ -255,9 +265,15 @@ export default function SignedLeftSidebar(props) {
               <RiHome4Line />
             </div>
           </Link>
-          <div className="left-sidebar-control-icons">
+          <div
+            className="left-sidebar-control-icons"
+            onClick={toggleShowSearch}
+          >
             <RiSearchLine />
           </div>
+          {showSearch ? (
+            <SidebarSearch handleSearchClose={toggleShowSearch}></SidebarSearch>
+          ) : null}
           <div className="left-sidebar-control-icons">
             <HiSortDescending />
           </div>

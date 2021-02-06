@@ -5,7 +5,7 @@ import {Dialog, DialogTitle, DialogContent, Slide, Button, TextField, FormContro
 import RCSwitch from '../RCSwitch'
 import Cookies from 'js-cookie'
 import jwt_decode from "jwt-decode";
-import { githubPrivateRepoAccessClientID, rcApiDomain } from '../../utils/constants';
+import { githubPrivateRepoAccessClientID, rcApiDomain, rc4gitApiDomain } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -146,7 +146,7 @@ export default class CreateChannel extends Component {
 
         const rcCreateChannelResponse = await axios({
             method: 'post',
-            url: `http://localhost:3030/createChannel`,
+            url: `${rc4gitApiDomain}/createChannel`,
             data: {
                 rc_token: Cookies.get('rc_token'),
                 rc_uid: Cookies.get('rc_uid'),
@@ -171,14 +171,17 @@ Embed this channel
 `)
             await axios({
               method: 'post',
-              url: `http://localhost:3030/setChannelDescription`,
-              data: {
-                  rc_token: Cookies.get('rc_token'),
-                  rc_uid: Cookies.get('rc_uid'),
-                  roomId: room._id,
-                  description: description
-              }
-          })
+              url: `${rcApiDomain}/api/v1/channels.setDescription`,
+              headers: {
+                'X-Auth-Token': Cookies.get('rc_token'),
+                'X-User-Id': Cookies.get('rc_uid'),
+                'Content-type': 'application/json'
+            },
+              data: { 
+                  'roomId': room._id,
+                  'description': description 
+              },
+            })
           
             addRoom(room);
             this.setState({loading: false})

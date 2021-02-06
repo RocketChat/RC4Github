@@ -4,7 +4,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { Button, Dialog, DialogTitle, DialogContent, Slide, TextField, CircularProgress } from '@material-ui/core';
 import Cookies from 'js-cookie'
 import jwt_decode from "jwt-decode";
-import { rcApiDomain } from '../../utils/constants';
+import { rcApiDomain, rc4gitApiDomain } from '../../utils/constants';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -77,7 +77,7 @@ export default class CreateCommunity extends Component {
         }
         const rcCreateChannelResponse = await axios({
             method: 'post',
-            url: `http://localhost:3030/createChannel`,
+            url: `${rc4gitApiDomain}/createChannel`,
             data: {
                 rc_token: Cookies.get('rc_token'),
                 rc_uid: Cookies.get('rc_uid'),
@@ -91,7 +91,6 @@ export default class CreateCommunity extends Component {
         if(rcCreateChannelResponse.data.data.success)
         {
             let room = rcCreateChannelResponse.data.data.channel;
-            room.rid = room._id;
             //Add embeddable code for channel to description
             description = description
             .concat(`
@@ -104,13 +103,16 @@ Embed this community
 `)
             await axios({
               method: 'post',
-              url: `http://localhost:3030/setChannelDescription`,
-              data: {
-                  rc_token: Cookies.get('rc_token'),
-                  rc_uid: Cookies.get('rc_uid'),
-                  roomId: room.rid,
-                  description: description
-              }
+              url: `${rcApiDomain}/api/v1/channels.setDescription`,
+              headers: {
+                'X-Auth-Token': Cookies.get('rc_token'),
+                'X-User-Id': Cookies.get('rc_uid'),
+                'Content-type': 'application/json'
+            },
+              data: { 
+                  'roomId': room._id,
+                  'description': description 
+              },
             })
             addRoom(room);
             this.setState({loading: false})

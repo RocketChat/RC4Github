@@ -152,7 +152,7 @@ export default function SignedLeftSidebar(props) {
     setChannelURL(channelURL);
     setCreatedType(createdType);
     setEmbedCodeString(`<a href="${channelURL}">
-  <img src="http://localhost:3000/images/join-chat.svg" />
+  <img src="${rcApiDomain}/images/join-chat.svg" />
 </a>`);
   };
 
@@ -366,7 +366,7 @@ export default function SignedLeftSidebar(props) {
           <DialogTitle>Add a Rocket Chat Badge </DialogTitle>
           <DialogContent>
             <a href={channelURL}>
-              <img src="http://localhost:3000/images/join-chat.svg" />
+              <img src={`${rcApiDomain}/images/join-chat.svg`} />
             </a>
             <br />
             <br />

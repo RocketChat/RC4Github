@@ -71,7 +71,6 @@ export default function SignedLeftSidebar(props) {
       .then((response) => response.json())
       .then((data) => {
         let rooms = data.user.rooms;
-        console.log(rooms);
         let communities = {};
         let directMessages = [];
         for (let room of rooms) {
@@ -232,10 +231,12 @@ export default function SignedLeftSidebar(props) {
             vertical: "center",
             horizontal: "right",
           }}
+          getContentAnchorEl={null}
           transformOrigin={{
             vertical: "bottom",
             horizontal: "left",
           }}
+          
         >
           <div className="profile-wrapper">
             <div className="profile-left-container">
@@ -294,6 +295,7 @@ export default function SignedLeftSidebar(props) {
             vertical: "center",
             horizontal: "right",
           }}
+          getContentAnchorEl={null}
           transformOrigin={{
             vertical: "bottom",
             horizontal: "left",
@@ -337,6 +339,7 @@ export default function SignedLeftSidebar(props) {
           setSnackbar={setSnackbar}
           addRoom={addRoom}
           setEmbedDialog={setEmbedDialog}
+          rooms={rooms}
         />
       )}
       <Snackbar

@@ -37,20 +37,10 @@ export default class CreateChannel extends Component {
 
   handleClickChannelDialog = async () => {
     const {publicRepositories, privateRepositories, username} = this.state
-    const {organizations} = this.props
+    const {organizations, rooms} = this.props
     let communityChannels = [], communityMember = []
 
-    //Gets community channels user is part of
-    const rcUserInfoResponse = await axios({
-        method: 'get',
-        url: `http://localhost:3030/userInfo`,
-        params: {
-            rc_token: Cookies.get('rc_token'),
-            rc_uid: Cookies.get('rc_uid')
-        }
-    })
-
-    communityChannels = rcUserInfoResponse.data.data.user.rooms.filter((room) => {
+    communityChannels = rooms.filter((room) => {
         return room.name.endsWith("_community")
     }).map((communityRoom) => communityRoom.name.slice(0, communityRoom.name.length - 10))
 
@@ -169,16 +159,15 @@ export default class CreateChannel extends Component {
         if(rcCreateChannelResponse.data.data.success)
         { 
             let room = rcCreateChannelResponse.data.data.channel;
-            room.rid = room._id;
             //Add embeddable code for channel to description
             description = description
             .concat(`
 
 -----
 Embed this channel
-<pre><code>\&lt;a\&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}\&quot;\&gt;
-\&lt;img\&nbsp;src=\&quot;${rcApiDomain}/images/join-chat.svg\&quot;/\&gt;
-\&lt;/a\&gt;</code></pre>
+<pre><code>&lt;a&nbsp;href=&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
+&lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
+&lt;/a&gt;</code></pre>
 `)
             await axios({
               method: 'post',
@@ -186,7 +175,7 @@ Embed this channel
               data: {
                   rc_token: Cookies.get('rc_token'),
                   rc_uid: Cookies.get('rc_uid'),
-                  roomId: room.rid,
+                  roomId: room._id,
                   description: description
               }
           })

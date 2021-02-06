@@ -6,6 +6,7 @@ import RCSwitch from '../RCSwitch'
 import Cookies from 'js-cookie'
 import jwt_decode from "jwt-decode";
 import { githubPrivateRepoAccessClientID, rcApiDomain, rc4gitApiDomain } from '../../utils/constants';
+import EmbedBadgeDialog from '../EmbedBadgeDialog'
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -28,6 +29,9 @@ export default class CreateChannel extends Component {
       loading: false,
       communities: [],
       channel: null,
+      showEmbedBadgeDialog: false,
+      room: null,
+      openCreateChannelDialog: true
     }
   }
 
@@ -107,7 +111,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const {channel, community, publicChannel} = this.state
-    const {handleCloseChannelDialog, setSnackbar, addRoom, setEmbedDialog} = this.props
+    const {setSnackbar, addRoom} = this.props
     const authToken = Cookies.get('gh_private_repo_token')?Cookies.get('gh_private_repo_token'):Cookies.get('gh_login_token')
     let collaborators = [], description = ""
     this.setState({loading: true})
@@ -184,13 +188,12 @@ Embed this channel
             })
           
             addRoom(room);
-            this.setState({loading: false})
-            handleCloseChannelDialog()
             setSnackbar(true, "success", "Channel created successfully!")
-            setEmbedDialog(true, `http://localhost:3002/channel/${room.name}`, "channel")
+            this.setState({loading: false, room: room, openCreateChannelDialog: false, showEmbedBadgeDialog: true})
         }
         else
         {
+            this.setState({loading:false})
             setSnackbar(true, "error", "Error Creating Channel!")
         }
     } 
@@ -207,8 +210,8 @@ Embed this channel
 
   render() {
     const {repositories, publicChannel, includePrivateRepositories,
-         community, communities, channel, loading } = this.state
-    const {handleCloseChannelDialog} = this.props
+         community, communities, channel, loading, room, openCreateChannelDialog, showEmbedBadgeDialog } = this.state
+    const {setSnackbar, handleEndCreateChannel} = this.props
 
   return (
     <div style={{ justifyContent: "center", display: "flex" }}>
@@ -218,9 +221,9 @@ Embed this channel
       />
 
       <Dialog
-        open={true}
+        open={openCreateChannelDialog}
         keepMounted
-        onClose={handleCloseChannelDialog}
+        onClose={handleEndCreateChannel}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         TransitionComponent={Transition}
@@ -336,6 +339,13 @@ Embed this channel
           </div>
         </DialogContent>
       </Dialog>
+      {showEmbedBadgeDialog && 
+      <EmbedBadgeDialog
+        channelURL={`http://localhost:3002/channel/${room.name}`}
+        createType="channel"
+        setSnackbar={setSnackbar}
+        endCreate={handleEndCreateChannel}
+      />}
     </div>
   );
         }

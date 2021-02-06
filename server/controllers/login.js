@@ -170,9 +170,9 @@ module.exports.upgradeAccess = async (req, res) => {
 
 module.exports.sso = (req, res) => {
     try{
-        if (req.headers.cookie.split(";")[0].split("=")[1]) {
+        if (req.cookies['rc4git_token'] && req.cookies['rc_token']) {
           return res.status(200).json({
-            loginToken: req.headers.cookie.split(";")[0].split("=")[1],
+            loginToken: req.cookies['rc_token'],
           });
         }
         return res.status(401);
@@ -183,3 +183,26 @@ module.exports.sso = (req, res) => {
         });
     }
 }
+
+module.exports.logout = async (req, res) => {
+    try {
+        const logoutResponse = await axios({
+                    method: 'post',
+                    url: `${constants.rocketChatAPIURL}/logout`,
+                    headers: {
+                        'Content-type': 'application/json',
+                        "X-Auth-Token": req.cookies['rc_token'],
+                        "X-User-Id": req.cookies['rc_uid']
+                    }
+                })
+        req.logout();
+        return res.status(200).json({
+            success: true
+          });
+    } catch(err) {
+        return res.status(500).json({
+          success: false,
+          error: `Internal Server Error ---> ${err}`,
+        });
+    }
+};

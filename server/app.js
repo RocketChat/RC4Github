@@ -5,6 +5,7 @@ const jwtStrategy = require('./config/passport-jwt-strategy')
 const db = require('./config/mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const cookieParser = require("cookie-parser")
 
 const port = process.env.PORT || 3030
 const whitelist = ["http://localhost:3000", "http://localhost:3002"];
@@ -28,6 +29,8 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
   next();
 });
+
+app.use(cookieParser())
 
 app.use('/', require('./routes'))
 

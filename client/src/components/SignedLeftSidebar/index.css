@@ -136,3 +136,32 @@
 .disable-click {
   pointer-events: none;
 }
+
+.menu-section-wrapper {
+  outline: none;
+  padding: 10px 10px 0 10px;
+}
+
+.menu-section-title {
+  font-size: 0.7em;
+  color: #9a9ea4;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.menu-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.pointer-cursor {
+  cursor: pointer;
+}
+
+.menu-section-divider {
+    margin-inline: 15px;
+    margin-block: 0;
+    border: .0425rem solid #eeeff1;
+}

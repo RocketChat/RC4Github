@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import {rcApiDomain} from "./../../utils/constants";
 import Cookies from "js-cookie";
@@ -40,6 +40,10 @@ export default function SidebarSearch(props) {
           console.log("Error searching rooms --->", err);
         })
     }
+
+    useEffect(() => {
+      labelRef.current.children[0].focus();
+    }, [])
 
     return (
       <div className="sidebar-search-wrapper">

@@ -4,7 +4,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { Button, Dialog, DialogTitle, DialogContent, Slide, TextField, CircularProgress } from '@material-ui/core';
 import Cookies from 'js-cookie'
 import jwt_decode from "jwt-decode";
-import { rcApiDomain } from '../../utils/constants';
+import { rcApiDomain, rc4gitApiDomain } from '../../utils/constants';
+import EmbedBadgeDialog from '../EmbedBadgeDialog'
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -21,12 +22,15 @@ export default class CreateCommunity extends Component {
       username: {group: "User", value: jwt_decode(Cookies.get('rc4git_token')).username.slice(0, -7)},
       community: null,
       loading: false,
+      showEmbedBadgeDialog: false,
+      room: null,
+      openCreateCommunityDialog: true
     }
   }
 
   handleCreateCommunity = async () => {
     const {community} = this.state
-    const {handleCloseCommunityDialog, setSnackbar, addRoom, setEmbedDialog} = this.props
+    const {setSnackbar, addRoom} = this.props
     const authToken = Cookies.get('gh_login_token')
     let communityMembers = [], description = ""
     this.setState({loading: true})
@@ -77,7 +81,7 @@ export default class CreateCommunity extends Component {
         }
         const rcCreateChannelResponse = await axios({
             method: 'post',
-            url: `http://localhost:3030/createChannel`,
+            url: `${rc4gitApiDomain}/createChannel`,
             data: {
                 rc_token: Cookies.get('rc_token'),
                 rc_uid: Cookies.get('rc_uid'),
@@ -91,32 +95,32 @@ export default class CreateCommunity extends Component {
         if(rcCreateChannelResponse.data.data.success)
         {
             let room = rcCreateChannelResponse.data.data.channel;
-            room.rid = room._id;
             //Add embeddable code for channel to description
             description = description
             .concat(`
 
 -----
 Embed this community
-<pre><code>\&lt;a\&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}\&quot;\&gt;
-\&lt;img\&nbsp;src=\&quot;${rcApiDomain}/images/join-chat.svg\&quot;/\&gt;
-\&lt;/a\&gt;</code></pre>
+<pre><code>&lt;a&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
+&lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
+&lt;/a&gt;</code></pre>
 `)
             await axios({
               method: 'post',
-              url: `http://localhost:3030/setChannelDescription`,
-              data: {
-                  rc_token: Cookies.get('rc_token'),
-                  rc_uid: Cookies.get('rc_uid'),
-                  roomId: room.rid,
-                  description: description
-              }
+              url: `${rcApiDomain}/api/v1/channels.setDescription`,
+              headers: {
+                'X-Auth-Token': Cookies.get('rc_token'),
+                'X-User-Id': Cookies.get('rc_uid'),
+                'Content-type': 'application/json'
+            },
+              data: { 
+                  'roomId': room._id,
+                  'description': description 
+              },
             })
             addRoom(room);
-            this.setState({loading: false})
-            handleCloseCommunityDialog()
             setSnackbar(true, "success", "Community created successfully!")
-            setEmbedDialog(true, `http://localhost:3002/channel/${room.name}`, "community")
+            this.setState({loading: false, room: room, openCreateCommunityDialog: false, showEmbedBadgeDialog: true})
         }
         else
         {
@@ -134,17 +138,17 @@ Embed this community
   }
 
   render() {
-    const {username, community, loading} = this.state
-    const {handleCloseCommunityDialog, organizations} = this.props
+    const {username, community, loading, openCreateCommunityDialog, showEmbedBadgeDialog, room} = this.state
+    const {setSnackbar, organizations, handleEndCreateCommunity} = this.props
 
     return (
     <div style={{justifyContent:"center", display:"flex"}}>
 
       <Dialog
-        open={true}
+        open={openCreateCommunityDialog}
         TransitionComponent={Transition}
         keepMounted
-        onClose={handleCloseCommunityDialog}
+        onClose={handleEndCreateCommunity}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
         maxWidth="sm"
@@ -189,7 +193,13 @@ Embed this community
     </div>
     </DialogContent>
     </Dialog>
-
+    {showEmbedBadgeDialog && 
+      <EmbedBadgeDialog
+        channelURL={`http://localhost:3002/channel/${room.name}`}
+        createType="community"
+        setSnackbar={setSnackbar}
+        endCreate={handleEndCreateCommunity}
+      />}
       </div>
   );
         }

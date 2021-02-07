@@ -1,4 +1,5 @@
 const axios = require('axios')
+const constants = require('./../config/constants')
 
 module.exports = async function (req, res) {
 
@@ -17,7 +18,7 @@ module.exports = async function (req, res) {
     
         const rcCreateChannelResponse = await axios({
             method: 'post',
-            url: 'http://localhost:3000/api/v1/channels.create',
+            url: `${constants.rocketChatAPIURL}/channels.create`,
             headers: headers,
             data: { 
                 'name': channel,
@@ -27,7 +28,7 @@ module.exports = async function (req, res) {
 
         const rcSetChannelTopic = await axios({
             method: 'post',
-            url: 'http://localhost:3000/api/v1/channels.setTopic',
+            url: `${constants.rocketChatAPIURL}/channels.setTopic`,
             headers: headers,
             data: { 
                 'roomId': rcCreateChannelResponse.data.channel._id,
@@ -39,7 +40,7 @@ module.exports = async function (req, res) {
         {
             const rcSetChannelType = await axios({
                 method: 'post',
-                url: 'http://localhost:3000/api/v1/channels.setType',
+                url: `${constants.rocketChatAPIURL}/channels.setType`,
                 headers: headers,
                 data: { 
                     'roomId': rcCreateChannelResponse.data.channel._id,

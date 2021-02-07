@@ -41,9 +41,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function SignedLeftSidebar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
-  const [openCommunityDialog, setOpenCommunityDialog] = useState(false);
-  const [openChannelDialog, setOpenChannelDialog] = useState(false);
-  const [openEmbedDialog, setOpenEmbedDialog] = useState(false);
+  const [startCreateCommunity, setStartCreateCommunity] = useState(false);
+  const [startCreateChannel, setStartCreateChannel] = useState(false);
   const [organizations, setOrganizations] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -51,9 +50,6 @@ export default function SignedLeftSidebar(props) {
   const [rooms, setRooms] = useState([]);
   const [communities, setCommunities] = useState({});
   const [directMessages, setDirectMessages] = useState([]);
-  const [channelURL, setChannelURL] = useState("");
-  const [createdType, setCreatedType] = useState("channel");
-  const [embedCodeString, setEmbedCodeString] = useState("");
   const [showSearch, setShowSearch] = useState(false);
 
   const fetchRooms = () => {
@@ -71,7 +67,6 @@ export default function SignedLeftSidebar(props) {
       .then((response) => response.json())
       .then((data) => {
         let rooms = data.user.rooms;
-        console.log(rooms);
         let communities = {};
         let directMessages = [];
         for (let room of rooms) {
@@ -110,12 +105,12 @@ export default function SignedLeftSidebar(props) {
     fetchRooms();
   }, []);
 
-  const handleCloseCommunityDialog = () => {
-    setOpenCommunityDialog(false);
+  const handleEndCreateCommunity = () => {
+    setStartCreateCommunity(false);
   };
 
-  const handleCloseChannelDialog = () => {
-    setOpenChannelDialog(false);
+  const handleEndCreateChannel = () => {
+    setStartCreateChannel(false);
   };
 
   const handleCreateClick = (event) => {
@@ -146,15 +141,6 @@ export default function SignedLeftSidebar(props) {
     setSnackbarOpen(snackbarOpen);
     setSnackbarSeverity(snackbarSeverity);
     setSnackbarText(snackbarText);
-  };
-
-  const setEmbedDialog = (openEmbedDialog, channelURL, createdType) => {
-    setOpenEmbedDialog(openEmbedDialog);
-    setChannelURL(channelURL);
-    setCreatedType(createdType);
-    setEmbedCodeString(`<a href="${channelURL}">
-  <img src="http://localhost:3000/images/join-chat.svg" />
-</a>`);
   };
 
   const fetchOrganizations = async () => {
@@ -232,10 +218,12 @@ export default function SignedLeftSidebar(props) {
             vertical: "center",
             horizontal: "right",
           }}
+          getContentAnchorEl={null}
           transformOrigin={{
             vertical: "bottom",
             horizontal: "left",
           }}
+          
         >
           <div className="profile-wrapper">
             <div className="profile-left-container">
@@ -294,6 +282,7 @@ export default function SignedLeftSidebar(props) {
             vertical: "center",
             horizontal: "right",
           }}
+          getContentAnchorEl={null}
           transformOrigin={{
             vertical: "bottom",
             horizontal: "left",
@@ -302,7 +291,7 @@ export default function SignedLeftSidebar(props) {
           <MenuItem
             onClick={() => {
               fetchOrganizations();
-              setOpenCommunityDialog(true);
+              setStartCreateCommunity(true);
               handleCreateClose();
             }}
           >
@@ -312,7 +301,7 @@ export default function SignedLeftSidebar(props) {
           <MenuItem
             onClick={() => {
               fetchOrganizations();
-              setOpenChannelDialog(true);
+              setStartCreateChannel(true);
               handleCreateClose();
             }}
           >
@@ -321,22 +310,21 @@ export default function SignedLeftSidebar(props) {
           </MenuItem>
         </Menu>
       </div>
-      {openCommunityDialog && (
+      {startCreateCommunity && (
         <CreateCommunity
-          handleCloseCommunityDialog={handleCloseCommunityDialog}
+          handleEndCreateCommunity={handleEndCreateCommunity}
           organizations={organizations}
           setSnackbar={setSnackbar}
           addRoom={addRoom}
-          setEmbedDialog={setEmbedDialog}
         />
       )}
-      {openChannelDialog && (
+      {startCreateChannel && (
         <CreateChannel
-          handleCloseChannelDialog={handleCloseChannelDialog}
+          handleEndCreateChannel={handleEndCreateChannel}
           organizations={organizations}
           setSnackbar={setSnackbar}
           addRoom={addRoom}
-          setEmbedDialog={setEmbedDialog}
+          rooms={rooms}
         />
       )}
       <Snackbar
@@ -349,54 +337,6 @@ export default function SignedLeftSidebar(props) {
           {snackbarText}
         </Alert>
       </Snackbar>
-      {openEmbedDialog && (
-        <Dialog
-          open={true}
-          keepMounted
-          onClose={() => setOpenEmbedDialog(false)}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"
-          TransitionComponent={Transition}
-          maxWidth="sm"
-          fullWidth={true}
-        >
-          <DialogTitle>Add a Rocket Chat Badge </DialogTitle>
-          <DialogContent>
-            <a href={channelURL}>
-              <img src="http://localhost:3000/images/join-chat.svg" />
-            </a>
-            <br />
-            <br />
-            <p>
-              Embed a Rocket Chat badge and launch your {createdType} right from
-              your repositories 🚀{" "}
-            </p>
-            <div className="code-copy-icon-div">
-              <CopyToClipboard text={embedCodeString}>
-                <MdContentCopy
-                  title="Copy to Clipboard"
-                  className="code-copy-icon"
-                  onClick={() => {
-                    setSnackbar(true, "success", "Copied to Clipboard!");
-                  }}
-                />
-              </CopyToClipboard>
-            </div>
-            <SyntaxHighlighter language="html" id="syntax-highlight">
-              {embedCodeString}
-            </SyntaxHighlighter>
-            <br />
-            <Button
-              onClick={() => setOpenEmbedDialog(false)}
-              style={{ marginBottom: "10px" }}
-              variant="contained"
-              color="primary"
-            >
-              Done
-            </Button>
-          </DialogContent>
-        </Dialog>
-      )}
       <hr className="left-sidebar-divider"></hr>
       <div className="signed-left-sidebar-body">
         {Object.keys(communities).map((community_name) => {

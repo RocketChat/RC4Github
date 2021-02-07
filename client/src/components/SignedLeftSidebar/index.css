@@ -94,6 +94,7 @@
 
 .code-copy-icon:hover {
   color: #9a9ea4;
+  cursor: pointer;
 }
 
 .profile-wrapper {

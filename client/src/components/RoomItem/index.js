@@ -16,7 +16,9 @@ export default function RoomItem({room}) {
         <img
           alt={"room-icon"}
           src={`${rcApiDomain}/avatar/${
-            room["username"] || `room/${room.rid || room._id}`
+            room["username"] ||
+            (room["t"] === "d" && room["name"]) ||
+            `room/${room.rid || room._id}`
           }`}
           className="room-item-icon"
         ></img>
@@ -28,10 +30,10 @@ export default function RoomItem({room}) {
           <FiUser className="room-item-type-icon"></FiUser>
         )}
         <span className="room-name">
-          {room.name.split(/_(.+)/)[1] && room["t"] !== 'd'
+          {room.name.split(/_(.+)/)[1] && room["t"] !== "d"
             ? room.name.split(/_(.+)/)[1]
             : room.name}
-            {room.username ? ` (${room.username})` : null}
+          {room.username ? ` (${room.username})` : null}
         </span>
       </NavLink>
     );

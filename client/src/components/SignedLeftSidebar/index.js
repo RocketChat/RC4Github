@@ -54,7 +54,7 @@ export default function SignedLeftSidebar(props) {
   const [directMessages, setDirectMessages] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
-  const [groupBy, setGroupBy] = useState(false);
+  const [groupBy, setGroupBy] = useState(true);
 
   const sortRoomsAlphabetically = () => {
     let chatRooms = rooms;
@@ -334,6 +334,7 @@ export default function SignedLeftSidebar(props) {
                   Communities
                 </label>
                 <Checkbox
+                  defaultChecked
                   color="primary"
                   id="group-communities"
                   onChange={() => {
@@ -417,14 +418,14 @@ export default function SignedLeftSidebar(props) {
       </Snackbar>
       <hr className="left-sidebar-divider"></hr>
       <div className="signed-left-sidebar-body">
-        {groupBy && (
+        {!groupBy && (
           <CommunityListItem
             community={rooms}
             key={"Conversations"}
             community_name={"Conversations"}
           ></CommunityListItem>
         )}
-        {!groupBy &&
+        {groupBy &&
           Object.keys(communities).map((community_name) => {
             return (
               <CommunityListItem
@@ -434,7 +435,7 @@ export default function SignedLeftSidebar(props) {
               ></CommunityListItem>
             );
           })}
-        {!groupBy && directMessages.length > 0 ? (
+        {groupBy && directMessages.length > 0 ? (
           <CommunityListItem
             community={directMessages}
             key={"Direct Messages"}

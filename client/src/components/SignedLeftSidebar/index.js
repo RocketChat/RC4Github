@@ -3,7 +3,6 @@ import { RiHome4Line, RiSearchLine } from "react-icons/ri";
 import { IoCreateOutline } from "react-icons/io5";
 import { HiSortDescending } from "react-icons/hi";
 import { CgCommunity, CgHashtag } from "react-icons/cg";
-import { MdContentCopy } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { VscLoading } from "react-icons/vsc";
 import { Link } from "react-router-dom";
@@ -12,11 +11,6 @@ import {
   Menu,
   MenuItem,
   Snackbar,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Slide,
-  Button,
   Checkbox,
   Radio
 } from "@material-ui/core";
@@ -26,8 +20,6 @@ import CreateCommunity from "../CreateCommunity";
 import CreateChannel from "../CreateChannel";
 import axios from "axios";
 import { rcApiDomain, githubApiDomain, rc4gitApiDomain } from "./../../utils/constants";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import CopyToClipboard from "react-copy-to-clipboard";
 import SidebarSearch from "../SidebarSearch";
 
 import "./index.css";
@@ -35,10 +27,6 @@ import "./index.css";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function SignedLeftSidebar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -54,7 +42,7 @@ export default function SignedLeftSidebar(props) {
   const [directMessages, setDirectMessages] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
-  const [groupBy, setGroupBy] = useState(true);
+  const [groupByCommunity, setGroupByCommunity] = useState(true);
 
   const sortRoomsAlphabetically = () => {
     let chatRooms = rooms;
@@ -77,7 +65,7 @@ export default function SignedLeftSidebar(props) {
   const setChatRooms = (rooms) => {
     let communities = {};
     let directMessages = [];
-    for (let room of rooms) {
+    rooms.forEach( room => {
       if (room["t"] === "c" || room["t"] === "p") {
         let community_name = room.name.split(/_(.+)/)[0];
         if (!communities[community_name]) communities[community_name] = [];
@@ -85,7 +73,7 @@ export default function SignedLeftSidebar(props) {
       } else {
         directMessages.push(room);
       }
-    }
+    })
     setRooms(rooms);
     setCommunities(communities);
     setDirectMessages(directMessages);
@@ -308,6 +296,7 @@ export default function SignedLeftSidebar(props) {
               vertical: "center",
               horizontal: "right",
             }}
+            getContentAnchorEl={null}
             transformOrigin={{
               vertical: "bottom",
               horizontal: "left",
@@ -338,7 +327,7 @@ export default function SignedLeftSidebar(props) {
                   color="primary"
                   id="group-communities"
                   onChange={() => {
-                    setGroupBy(!groupBy);
+                    setGroupByCommunity(!groupByCommunity);
                   }}
                 />
               </div>
@@ -418,14 +407,14 @@ export default function SignedLeftSidebar(props) {
       </Snackbar>
       <hr className="left-sidebar-divider"></hr>
       <div className="signed-left-sidebar-body">
-        {!groupBy && (
+        {!groupByCommunity && (
           <CommunityListItem
             community={rooms}
             key={"Conversations"}
             community_name={"Conversations"}
           ></CommunityListItem>
         )}
-        {groupBy &&
+        {groupByCommunity &&
           Object.keys(communities).map((community_name) => {
             return (
               <CommunityListItem
@@ -435,7 +424,7 @@ export default function SignedLeftSidebar(props) {
               ></CommunityListItem>
             );
           })}
-        {groupBy && directMessages.length > 0 ? (
+        {groupByCommunity && directMessages.length > 0 ? (
           <CommunityListItem
             community={directMessages}
             key={"Direct Messages"}

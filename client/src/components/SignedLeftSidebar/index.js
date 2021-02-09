@@ -3,7 +3,6 @@ import { RiHome4Line, RiSearchLine } from "react-icons/ri";
 import { IoCreateOutline } from "react-icons/io5";
 import { HiSortDescending } from "react-icons/hi";
 import { CgCommunity, CgHashtag } from "react-icons/cg";
-import { MdContentCopy } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { VscLoading } from "react-icons/vsc";
 import { Link } from "react-router-dom";
@@ -12,11 +11,8 @@ import {
   Menu,
   MenuItem,
   Snackbar,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Slide,
-  Button,
+  Checkbox,
+  Radio
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import Cookies from "js-cookie";
@@ -24,8 +20,6 @@ import CreateCommunity from "../CreateCommunity";
 import CreateChannel from "../CreateChannel";
 import axios from "axios";
 import { rcApiDomain, githubApiDomain, rc4gitApiDomain } from "./../../utils/constants";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import CopyToClipboard from "react-copy-to-clipboard";
 import SidebarSearch from "../SidebarSearch";
 
 import "./index.css";
@@ -33,10 +27,6 @@ import "./index.css";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function SignedLeftSidebar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,6 +41,43 @@ export default function SignedLeftSidebar(props) {
   const [communities, setCommunities] = useState({});
   const [directMessages, setDirectMessages] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [sortAnchorEl, setSortAnchorEl] = useState(null);
+  const [groupByCommunity, setGroupByCommunity] = useState(true);
+
+  const sortRoomsAlphabetically = () => {
+    let chatRooms = rooms;
+    chatRooms.sort((a, b) => {
+      let roomAname = a.name.split(/_(.+)/)[1] || a.name;
+      let roomBname = b.name.split(/_(.+)/)[1] || b.name;
+      roomAname = roomAname.toUpperCase();
+      roomBname = roomBname.toUpperCase();
+      if (roomAname < roomBname) {
+        return -1;
+      }
+      if (roomAname > roomBname) {
+        return 1;
+      }
+      return 0;
+    });
+    setChatRooms(chatRooms);
+  }
+
+  const setChatRooms = (rooms) => {
+    let communities = {};
+    let directMessages = [];
+    rooms.forEach( room => {
+      if (room["t"] === "c" || room["t"] === "p") {
+        let community_name = room.name.split(/_(.+)/)[0];
+        if (!communities[community_name]) communities[community_name] = [];
+        communities[community_name].push(room);
+      } else {
+        directMessages.push(room);
+      }
+    })
+    setRooms(rooms);
+    setCommunities(communities);
+    setDirectMessages(directMessages);
+  }
 
   const fetchRooms = () => {
     const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
@@ -66,21 +93,7 @@ export default function SignedLeftSidebar(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        let rooms = data.user.rooms;
-        let communities = {};
-        let directMessages = [];
-        for (let room of rooms) {
-          if (room["t"] === "c" || room["t"] === "p") {
-            let community_name = room.name.split(/_(.+)/)[0];
-            if (!communities[community_name]) communities[community_name] = [];
-            communities[community_name].push(room);
-          } else {
-            directMessages.push(room);
-          }
-        }
-        setRooms(rooms);
-        setCommunities(communities);
-        setDirectMessages(directMessages);
+        setChatRooms(data.user.rooms);
       })
       .catch((err) => {
         console.log("Error Fetching Rooms from server --->", err);
@@ -199,6 +212,14 @@ export default function SignedLeftSidebar(props) {
       });
   };
 
+  const handleSortMenuClose = () => {
+      setSortAnchorEl(null);
+  };
+
+  const openSortMenu = (event) => {
+    setSortAnchorEl(event.currentTarget)
+  };
+
   return (
     <div className="signed-left-sidebar-wrapper">
       <div className="signed-left-sidebar-header">
@@ -263,8 +284,55 @@ export default function SignedLeftSidebar(props) {
             <SidebarSearch handleSearchClose={toggleShowSearch}></SidebarSearch>
           ) : null}
           <div className="left-sidebar-control-icons">
-            <HiSortDescending />
+            <HiSortDescending onClick={openSortMenu} />
           </div>
+          <Menu
+            id="sort-menu"
+            anchorEl={sortAnchorEl}
+            keepMounted
+            open={Boolean(sortAnchorEl)}
+            onClose={handleSortMenuClose}
+            anchorOrigin={{
+              vertical: "center",
+              horizontal: "right",
+            }}
+            getContentAnchorEl={null}
+            transformOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+          >
+            <div className="menu-section-wrapper">
+              <div className="menu-section-title">SORT</div>
+              <div className="menu-option pointer-cursor">
+                <label for="alpha-sort" className="pointer-cursor">
+                  Alphabetical
+                </label>
+                <Radio
+                  color="primary"
+                  id="alpha-sort"
+                  onChange={sortRoomsAlphabetically}
+                />
+              </div>
+            </div>
+            <hr className="menu-section-divider"></hr>
+            <div className="menu-section-wrapper">
+              <div className="menu-section-title">Group by</div>
+              <div className="menu-option pointer-cursor">
+                <label for="group-communities" className="pointer-cursor">
+                  Communities
+                </label>
+                <Checkbox
+                  defaultChecked
+                  color="primary"
+                  id="group-communities"
+                  onChange={() => {
+                    setGroupByCommunity(!groupByCommunity);
+                  }}
+                />
+              </div>
+            </div>
+          </Menu>
           <div
             className="left-sidebar-control-icons"
             onClick={handleCreateClick}
@@ -339,16 +407,24 @@ export default function SignedLeftSidebar(props) {
       </Snackbar>
       <hr className="left-sidebar-divider"></hr>
       <div className="signed-left-sidebar-body">
-        {Object.keys(communities).map((community_name) => {
-          return (
-            <CommunityListItem
-              community={communities[community_name]}
-              key={community_name}
-              community_name={community_name}
-            ></CommunityListItem>
-          );
-        })}
-        {directMessages.length > 0 ? (
+        {!groupByCommunity && (
+          <CommunityListItem
+            community={rooms}
+            key={"Conversations"}
+            community_name={"Conversations"}
+          ></CommunityListItem>
+        )}
+        {groupByCommunity &&
+          Object.keys(communities).map((community_name) => {
+            return (
+              <CommunityListItem
+                community={communities[community_name]}
+                key={community_name}
+                community_name={community_name}
+              ></CommunityListItem>
+            );
+          })}
+        {groupByCommunity && directMessages.length > 0 ? (
           <CommunityListItem
             community={directMessages}
             key={"Direct Messages"}

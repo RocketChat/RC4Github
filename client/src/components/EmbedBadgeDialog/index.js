@@ -44,7 +44,7 @@ export default class EmbedBadgeDialog extends Component  {
       <DialogTitle>Add a Rocket Chat Badge </DialogTitle>
       <DialogContent>
         <a href={channelURL}>
-          <img src={`${rcApiDomain}/images/join-chat.svg`} />
+          <img alt="Embed Badge" src={`${rcApiDomain}/images/join-chat.svg`} />
         </a>
         <br />
         <br />

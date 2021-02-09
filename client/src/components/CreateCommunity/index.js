@@ -101,7 +101,7 @@ export default class CreateCommunity extends Component {
 
 -----
 Embed this community
-<pre><code>&lt;a&nbsp;href=\&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
+<pre><code>&lt;a&nbsp;href=&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
 &lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
 &lt;/a&gt;</code></pre>
 `)

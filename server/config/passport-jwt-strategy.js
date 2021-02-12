@@ -5,10 +5,18 @@ const jwtExtractor = require('passport-jwt').ExtractJwt
 const User = require('../models/user')
 const constants = require('./constants')
 
+const cookieExtractor = function (req) {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies["rc4git_token"];
+  }
+  return token;
+};
+
 const options = {
-    jwtFromRequest: jwtExtractor.fromAuthHeaderAsBearerToken(),
-    secretOrKey: constants.jwtSecret,
-}
+  jwtFromRequest: jwtExtractor.fromExtractors([jwtExtractor.fromAuthHeaderAsBearerToken(), cookieExtractor]),
+  secretOrKey: constants.jwtSecret,
+};
 
 passport.use(new passportJWTStrategy(options, function(jwtPayload, done){
     User.findById(jwtPayload._id, function(err, user){

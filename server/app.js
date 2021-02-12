@@ -6,6 +6,7 @@ const db = require('./config/mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require("cookie-parser")
+const {handleGithubWebhookVerificationError} = require("./middlewares/verifyWebhooks");
 
 const port = process.env.PORT || 3030
 const whitelist = ["http://localhost:3000", "http://localhost:3002"];
@@ -31,6 +32,8 @@ app.use(function(req, res, next) {
 });
 
 app.use(cookieParser())
+
+app.use(handleGithubWebhookVerificationError);
 
 app.use('/', require('./routes'))
 

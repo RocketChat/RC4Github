@@ -1,37 +1,39 @@
+const axios = require("axios");
 const githubWebhook = require("../models/githubWebhook");
+const constants = require("./../config/constants");
 
 let clients = {};
 
 module.exports.handleGithubWebhook = async (req, res) => {
-    try {
-        const event = {
-          action: req.body.action,
-          sender: {
-            username: req.body.sender.login,
-          },
-          resource: {
-            number: req.body.number || req.body.issue.number,
-            type:
-              (req.body.issue && "issue") ||
-              (req.body.pull_request && "pull_request"),
-          },
-          updated_at:
-            (req.body["issue"] && req.body["issue"]["updated_at"]) ||
-            req.body.pull_request.updated_at,
-        };
-        await githubWebhook.updateOne(
-          { hook_id: req.get("X-GitHub-Hook-ID") },
-          { $push: { events: event } }
-        );
-        if (clients[req.get("X-GitHub-Hook-ID")])
-          clients[req.get("X-GitHub-Hook-ID")].map((client) => {
-            client.res.write(`data: ${JSON.stringify(event)}\n\n`);
-          });
-        return res.status(200).json({ success: true });
-    } catch(err) {
-        console.log(req.body);
-        return res.status(500).json({success: false, error: err})
-    }
+  try {
+    const event = {
+      action: req.body.action,
+      sender: {
+        username: req.body.sender.login,
+      },
+      resource: {
+        number: req.body.number || req.body.issue.number,
+        type:
+          (req.body.issue && "issue") ||
+          (req.body.pull_request && "pull_request"),
+      },
+      updated_at:
+        (req.body["issue"] && req.body["issue"]["updated_at"]) ||
+        req.body.pull_request.updated_at,
+    };
+    await githubWebhook.updateOne(
+      { hook_id: req.get("X-GitHub-Hook-ID") },
+      { $push: { events: event } }
+    );
+    if (clients[req.get("X-GitHub-Hook-ID")])
+      clients[req.get("X-GitHub-Hook-ID")].map((client) => {
+        client.res.write(`data: ${JSON.stringify(event)}\n\n`);
+      });
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.log(req.body);
+    return res.status(500).json({ success: false, error: err });
+  }
 };
 
 module.exports.fetchGithubActivities = async (req, res) => {
@@ -39,7 +41,7 @@ module.exports.fetchGithubActivities = async (req, res) => {
     // TODO Check if the user is part of the room for which activity subscription is requested
     const hook = await githubWebhook.findOne({ hook_id: req.query.hook_id });
     if (!hook) {
-      res.status(404).write('error: Activity Not Found\n\n');
+      res.status(404).write("error: Activity Not Found\n\n");
       return res.end();
     }
     // Mandatory headers and http status to keep connection open
@@ -74,7 +76,6 @@ module.exports.fetchGithubActivities = async (req, res) => {
   }
 };
 
-
 module.exports.fetchWebhook = async (req, res) => {
   try{
     if (!req.query.room_name) {
@@ -97,5 +98,63 @@ module.exports.fetchWebhook = async (req, res) => {
   } catch(err){
     console.log("ERROR", err);
     return res.status(500).json({success: false, error: "Internal Server Error"});
+  }
+};
+
+module.exports.createGithubWebhook = async (req, res) => {
+  try {
+    if (req.cookies["gh_private_repo_token"]) {
+      const secret_token =
+        Math.random().toString(36).slice(2) +
+        Math.random().toString(36).toUpperCase().slice(2);
+      const headers = {
+        accept: "application/vnd.github.v3+json",
+        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+      };
+
+      const config = {
+        //Change this URL to the server's public payload URL
+        url: "http://8e46119e3447.ngrok.io/webhooks/github",
+        secret: secret_token,
+        content_type: "json",
+      };
+      const ghCreateWebhookResponse = await axios({
+        method: "post",
+        url: `${constants.githubAPIDomain}/repos/${req.body.repository}/hooks`,
+        headers: headers,
+        data: {
+          config: config,
+          events: req.body.events,
+        },
+      });
+
+      const newHook = {
+        hook_id: ghCreateWebhookResponse.data.id,
+        secret_token: secret_token,
+        events: [],
+        channel_name: req.body.channelName,
+        associated_repo: req.body.repository,
+        subscriptions: req.body.events,
+      };
+
+      //Store newly created webhook in our db
+      hook = await githubWebhook.create(newHook);
+
+      return res.status(200).json({
+        success: true,
+        data: hook.toJSON(),
+      });
+    } else {
+      console.log("No private token");
+      return res.status(401).json({
+        success: false,
+      });
+    }
+  } catch (err) {
+    console.log("ERROR", err);
+    return res.status(500).json({
+      success: false,
+      error: `Internal Server Error ---> ${err}`,
+    });
   }
 };

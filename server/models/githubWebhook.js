@@ -31,6 +31,18 @@ const githubWebhookSchema = mongoose.Schema(
         },
       },
     ],
+    channel_name: {
+      type: String,
+      required: true
+    },
+    associated_repo: {
+      type: String,
+      required: true
+    },
+    subscriptions: {
+      type: Array,
+      required: true
+    }
   },
   {
     timestamps: true,

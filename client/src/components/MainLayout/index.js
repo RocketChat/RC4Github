@@ -1,9 +1,12 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import ChatWindow from "../ChatWindow";
 import Home from "./../Home";
 import Cookies from "js-cookie";
-import {rc4gitApiDomain} from "./../../utils/constants";
+import { rc4gitApiDomain } from "./../../utils/constants";
+import RightSidebar from './../RightSidebar';
+
+import './index.css';
 
 export default function MainLayout(props) {
   useEffect(() => {
@@ -40,7 +43,12 @@ export default function MainLayout(props) {
       <Route
         path={["/channel", "/direct", "/group"]}
         render={(props) => {
-          return <ChatWindow {...props} />;
+          return (
+            <div className="mainLayout-wrapper">
+              <ChatWindow {...props} />
+              <RightSidebar {...props}/>
+            </div>
+          );
         }}
       />
       <Route exact path={["/home", "/"]} component={Home} />

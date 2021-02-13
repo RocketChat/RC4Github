@@ -73,3 +73,29 @@ module.exports.fetchGithubActivities = async (req, res) => {
     return res.status(500).write("error: true");
   }
 };
+
+
+module.exports.fetchWebhook = async (req, res) => {
+  try{
+    if (!req.query.room_name) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "Room name required as query parameter",
+        });
+    }
+    const webhook = await githubWebhook.findOne({
+      channel_name: req.query.room_name,
+    });
+    if(!webhook){
+      return res.status(200).json({success: true, data: {}})
+    }
+    return res.status(200).json({success: true, data: {
+      hook_id: webhook.hook_id
+    }})
+  } catch(err){
+    console.log("ERROR", err);
+    return res.status(500).json({success: false, error: "Internal Server Error"});
+  }
+};

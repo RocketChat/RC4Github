@@ -114,7 +114,7 @@ module.exports.createGithubWebhook = async (req, res) => {
 
       const config = {
         //Change this URL to the server's public payload URL
-        url: "http://8e46119e3447.ngrok.io/webhooks/github",
+        url: `${constants.rc4gitApiDomain}/webhooks/github`,
         secret: secret_token,
         content_type: "json",
       };
@@ -146,7 +146,7 @@ module.exports.createGithubWebhook = async (req, res) => {
       });
     } else {
       console.log("No private token");
-      return res.status(401).json({
+      return res.status(403).json({
         success: false,
       });
     }

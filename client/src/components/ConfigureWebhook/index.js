@@ -47,6 +47,9 @@ export default function ConfigureWebhook(props) {
       const ghCreateWebhookResponse = await axios({
         method: "post",
         url: `${rc4gitApiDomain}/webhooks/github/create`,
+        headers: {
+          "Content-Type": "application/json",
+        },
         data: {
           channelName: props.location.pathname.split("/")[2],
           repository: props.location.pathname.split("/")[2].replace("_", "/"),

@@ -94,7 +94,7 @@ export default function ActivityPane(props) {
               <ActivityItem
                 key={event._id}
                 event={event}
-                repo={props.location.pathname.split("/")[2]}
+                repo={props.location.pathname.split("/")[2].replace("_", "/")}
               />
             );
           })}

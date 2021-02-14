@@ -1,0 +1,17 @@
+.activity-pane-wrapper {
+    height: --webkit-fill-available;
+}
+
+.activity-pane-header {
+    padding: 20px 17px;
+    color: #9a9ea4;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+.activity-pane-body {
+    padding: 20px 10px 0 20px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}

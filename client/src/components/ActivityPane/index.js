@@ -7,6 +7,8 @@ import { Button, Snackbar } from "@material-ui/core";
 import ConfigureWebhook from "../ConfigureWebhook";
 import { githubPrivateRepoAccessClientID } from "../../utils/constants";
 
+import "./index.css";
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -82,37 +84,39 @@ export default function ActivityPane(props) {
   };
 
   return (
-    <div>
-      <div>
+    <div className="activity-pane-wrapper">
+      <div className="activity-pane-header">
         <span>Activity </span>
       </div>
       <hr className="left-sidebar-divider"></hr>
-      <div>
+      <div className="activity-pane-body">
         {webhookId &&
           events.map((event) => {
             return (
               <ActivityItem
                 key={event._id}
                 event={event}
-                repo={props.location.pathname.split("/")[2]}
+                repo={props.location.pathname.split("/")[2].replace("_", "/")}
               />
             );
           })}
+        {!webhookId && (
+          <Button
+            style={{
+              display: props.location.pathname.split("/")[2] ? "block" : "none",
+            }}
+            onClick={handleClickConfigureWebhooks}
+            variant="contained"
+            color="primary"
+          >
+            Configure Webhooks
+          </Button>
+        )}
       </div>
       <a
         id="webhook-scope-link"
         href={`https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`}
       />
-      <Button
-        style={{
-          display: props.location.pathname.split("/")[2] ? "block" : "none",
-        }}
-        onClick={handleClickConfigureWebhooks}
-        variant="contained"
-        color="primary"
-      >
-        Configure Webhooks
-      </Button>
       {openWebhookDialog && (
         <ConfigureWebhook
           setSnackbar={setSnackbar}

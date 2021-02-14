@@ -1,0 +1,37 @@
+.activity-item-wrapper {
+    color: #b1b2b3;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.activity-event-time {
+    color: #bbbbbbbd;
+}
+
+.activity-item-wrapper a {
+    background-color: #f0f8ff17;
+    padding: 1px 3px;
+    color: #208cf5;
+    text-decoration: none;
+}
+
+.activity-item-wrapper a:hover {
+    background-color: #fbfbfb2f;
+}
+
+.activity-event-info {
+    width: 80%;
+    overflow-wrap: anywhere;
+    display: flex;
+}
+
+.activity-item-vcs-badge {
+    width: 1.3em;
+    height: 1.3em;
+    margin-right: 2px;
+}

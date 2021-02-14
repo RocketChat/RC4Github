@@ -4,9 +4,9 @@ import ChatWindow from "../ChatWindow";
 import Home from "./../Home";
 import Cookies from "js-cookie";
 import { rc4gitApiDomain } from "./../../utils/constants";
-import RightSidebar from './../RightSidebar';
+import RightSidebar from "./../RightSidebar";
 
-import './index.css';
+import "./index.css";
 
 export default function MainLayout(props) {
   useEffect(() => {
@@ -41,12 +41,22 @@ export default function MainLayout(props) {
   return (
     <Switch>
       <Route
-        path={["/channel", "/direct", "/group"]}
+        path={["/channel", "/group"]}
         render={(props) => {
           return (
             <div className="mainLayout-wrapper">
               <ChatWindow {...props} />
-              <RightSidebar {...props}/>
+              <RightSidebar {...props} />
+            </div>
+          );
+        }}
+      />
+      <Route
+        path={["/direct"]}
+        render={(props) => {
+          return (
+            <div className="mainLayout-wrapper">
+              <ChatWindow {...props} />
             </div>
           );
         }}

@@ -22,5 +22,6 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   webhooksController.fetchWebhook
 );
+router.post('/webhooks/github/create', passport.authenticate('jwt', {session: false}), webhooksController.createGithubWebhook)
 
 module.exports = router;

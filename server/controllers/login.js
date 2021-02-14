@@ -121,7 +121,7 @@ module.exports.createToken = async function(req, res){
           data: {
             rc_token: rcLoginUserResponse.data.data.authToken,
             rc_uid: rcLoginUserResponse.data.data.userId,
-            rc4git_token: jwt.sign(user.toJSON(), 'rc4git'),
+            rc4git_token: jwt.sign(user.toJSON(), constants.jwtSecret),
             gh_login_token: ghTokenResponse.data.access_token
           },
         });

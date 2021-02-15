@@ -1,5 +1,5 @@
 .activity-pane-wrapper {
-    height: --webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 .activity-pane-header {

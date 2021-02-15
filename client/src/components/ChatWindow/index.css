@@ -1,4 +1,4 @@
 .chatWindow-container {
-    width: 77%;
+    width: -webkit-fill-available;;
     border: none;
 }

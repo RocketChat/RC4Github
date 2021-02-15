@@ -76,27 +76,27 @@ module.exports.fetchGithubActivities = async (req, res) => {
 };
 
 module.exports.fetchWebhook = async (req, res) => {
-  try{
+  try {
     if (!req.query.room_name) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Room name required as query parameter",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Room name required as query parameter",
+      });
     }
     const webhook = await githubWebhook.findOne({
       channel_name: req.query.room_name,
     });
-    if(!webhook){
-      return res.status(200).json({success: true, data: {}})
+    if (!webhook) {
+      return res.status(200).json({ success: true, data: {} });
     }
     return res.status(200).json({success: true, data: {
       webhook
     }})
   } catch(err){
     console.log("ERROR", err);
-    return res.status(500).json({success: false, error: "Internal Server Error"});
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 };
 
@@ -112,7 +112,7 @@ module.exports.createGithubWebhook = async (req, res) => {
       };
 
       const config = {
-        //Change this URL to the server's public payload URL
+        //This URL should be the server's public payload URL
         url: `${constants.rc4gitApiURL}/webhooks/github/events`,
         secret: secret_token,
         content_type: "json",
@@ -139,9 +139,97 @@ module.exports.createGithubWebhook = async (req, res) => {
       //Store newly created webhook in our db
       hook = await githubWebhook.create(newHook);
 
-      return res.status(200).json({
+      return res.status(201).json({
         success: true,
         data: hook.toJSON(),
+      });
+    } else {
+      console.log("No private token");
+      return res.status(403).json({
+        success: false,
+      });
+    }
+  } catch (err) {
+    console.log("ERROR", err);
+    return res.status(500).json({
+      success: false,
+      error: `Internal Server Error ---> ${err}`,
+    });
+  }
+};
+
+module.exports.updateGithubWebhook = async (req, res) => {
+  try {
+    if (req.cookies["gh_private_repo_token"]) {
+      const hook = await githubWebhook.findOne({ hook_id: req.body.hook_id });
+
+      const secret_token = hook.secret_token;
+      const headers = {
+        accept: "application/vnd.github.v3+json",
+        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+      };
+
+      const config = {
+        //This URL should be the server's public payload URL
+        url: `${constants.rc4gitApiDomain}/webhooks/github`,
+        secret: secret_token,
+        content_type: "json",
+      };
+      const ghUpdateWebhookResponse = await axios({
+        method: "patch",
+        url: `${constants.githubAPIDomain}/repos/${req.body.repository}/hooks/${req.body.hook_id}`,
+        headers: headers,
+        data: {
+          config: config,
+          events: req.body.events,
+        },
+      });
+
+      //Update stored webhook in our db
+      await githubWebhook.updateOne(
+        { hook_id: req.body.hook_id },
+        { $set: { subscriptions: req.body.events } }
+      );
+
+      return res.status(200).json({
+        success: true,
+      });
+    } else {
+      console.log("No private token");
+      return res.status(403).json({
+        success: false,
+      });
+    }
+  } catch (err) {
+    console.log("ERROR", err);
+    return res.status(500).json({
+      success: false,
+      error: `Internal Server Error ---> ${err}`,
+    });
+  }
+};
+
+module.exports.deleteGithubWebhook = async (req, res) => {
+  try {
+    if (req.cookies["gh_private_repo_token"]) {
+      const hook = await githubWebhook.findOne({ hook_id: req.body.hook_id });
+
+      const headers = {
+        accept: "application/vnd.github.v3+json",
+        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+      };
+
+      const ghDeleteWebhookResponse = await axios({
+        method: "delete",
+        url: `${constants.githubAPIDomain}/repos/${req.body.repository}/hooks/${req.body.hook_id}`,
+        headers: headers,
+      });
+
+      //Update stored webhook in our db
+      await githubWebhook.remove({ hook_id: req.body.hook_id });
+
+      return res.status(200).json({
+        success: true,
       });
     } else {
       console.log("No private token");

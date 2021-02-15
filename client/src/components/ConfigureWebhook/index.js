@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -13,6 +13,7 @@ import "./index.css";
 
 export default function ConfigureWebhook(props) {
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([
     "issues",
     "pull_request",
@@ -24,6 +25,12 @@ export default function ConfigureWebhook(props) {
     "Pull Request",
     "Pull Request Review Comment",
   ];
+
+  useEffect(() => {
+    if (props.webhookId) {
+      setSelectedEvents(props.webhookSubscriptions);
+    }
+  }, [props.webhookId]);
 
   const handleCreateWebhook = async () => {
     try {
@@ -47,6 +54,59 @@ export default function ConfigureWebhook(props) {
     } catch (error) {
       console.log(error.response.data.errors);
       setLoading(false);
+      props.setSnackbar("error", error.response.data.errors[0].message);
+    }
+  };
+
+  const handleUpdateWebhook = async () => {
+    try {
+      setLoading(true);
+      const ghUpdateWebhookResponse = await axios({
+        method: "post",
+        url: `${rc4gitApiDomain}/webhooks/github/update`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          hook_id: props.webhookId,
+          repository: props.location.pathname.split("/")[2].replace("_", "/"),
+          events: selectedEvents,
+        },
+        withCredentials: true,
+      });
+      console.log(ghUpdateWebhookResponse);
+      setLoading(false);
+      props.setSnackbar("success", "Webhook updated successfully!");
+      props.setOpenWebhookDialog(false);
+    } catch (error) {
+      console.log(error.response.data.errors);
+      setLoading(false);
+      props.setSnackbar("error", error.response.data.errors[0].message);
+    }
+  };
+
+  const handleDeleteWebhook = async () => {
+    try {
+      setDeleteLoading(true);
+      const ghDeleteWebhookResponse = await axios({
+        method: "post",
+        url: `${rc4gitApiDomain}/webhooks/github/delete`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          hook_id: props.webhookId,
+          repository: props.location.pathname.split("/")[2].replace("_", "/"),
+        },
+        withCredentials: true,
+      });
+      console.log(ghDeleteWebhookResponse);
+      setDeleteLoading(false);
+      props.setSnackbar("success", "Webhook deleted successfully!");
+      props.setOpenWebhookDialog(false);
+    } catch (error) {
+      console.log(error.response.data.errors);
+      setDeleteLoading(false);
       props.setSnackbar("error", error.response.data.errors[0].message);
     }
   };
@@ -111,28 +171,59 @@ export default function ConfigureWebhook(props) {
             <br />
             <p>Webhook Repository</p>
             <p style={{ color: "#8e9299" }}>
-              A webhook for the repository{" "}
+              {props.webhookId ? "The" : "A"} webhook for the repository{" "}
               <strong>
                 {props.location.pathname.split("/")[2]
                   ? props.location.pathname.split("/")[2].replace("_", "/")
                   : ""}
               </strong>{" "}
-              would be created
+              would be {props.webhookId ? "updated" : "created"}
             </p>
             <br />
             <br />
-            <Button
-              disabled={!selectedEvents.length || loading}
-              onClick={handleCreateWebhook}
-              style={{ marginBottom: "10px" }}
-              variant="contained"
-              color="primary"
-              startIcon={
-                loading && <CircularProgress size={14} color="secondary" />
-              }
-            >
-              {loading ? "Creating" : "Create"}
-            </Button>
+            {props.webhookId ? (
+              <>
+                <Button
+                  disabled={!selectedEvents.length || loading}
+                  onClick={handleUpdateWebhook}
+                  style={{ marginBottom: "10px", marginRight: "10px" }}
+                  variant="contained"
+                  color="primary"
+                  startIcon={
+                    loading && <CircularProgress size={14} color="secondary" />
+                  }
+                >
+                  {loading ? "Updating" : "Update"}
+                </Button>
+                <Button
+                  disabled={deleteLoading}
+                  onClick={handleDeleteWebhook}
+                  style={{ marginBottom: "10px" }}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={
+                    deleteLoading && (
+                      <CircularProgress size={14} color="secondary" />
+                    )
+                  }
+                >
+                  {deleteLoading ? "Deleting" : "Delete"}
+                </Button>
+              </>
+            ) : (
+              <Button
+                disabled={!selectedEvents.length || loading}
+                onClick={handleCreateWebhook}
+                style={{ marginBottom: "10px" }}
+                variant="contained"
+                color="primary"
+                startIcon={
+                  loading && <CircularProgress size={14} color="secondary" />
+                }
+              >
+                {loading ? "Creating" : "Create"}
+              </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

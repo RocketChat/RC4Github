@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import ActivityItem from "./../ActivityItem";
 import MuiAlert from "@material-ui/lab/Alert";
-import { Button, Snackbar } from "@material-ui/core";
+import { Snackbar } from "@material-ui/core";
 import ConfigureWebhook from "../ConfigureWebhook";
 import { githubPrivateRepoAccessClientID } from "../../utils/constants";
+import { IoSettingsOutline } from "react-icons/io5";
 
 import "./index.css";
 
@@ -14,6 +15,7 @@ function Alert(props) {
 
 export default function ActivityPane(props) {
   const [webhookId, setWebhookId] = useState(null);
+  const [webhookSubscriptions, setWebhookSubscriptions] = useState([]);
   const [events, setEvents] = useState([]);
   const [openWebhookDialog, setOpenWebhookDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -30,18 +32,33 @@ export default function ActivityPane(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if(data.data.webhook){
+        if (data.data.webhook) {
           setWebhookId(data.data.webhook.hook_id);
+          /* On setting state directly as array setWebhookSubscriptions reducer
+         sets state repeatedly due to its inability to compare previous and 
+        new values of webhookSubscriptions array leading to useEffect being called 
+        indefinitely. We therefore check for previous equality of webhookSubscriptions ourselves. */
+
+          // "if" executes if length doesn't match OR arrays are not equal.
+          if (
+            webhookSubscriptions.length !== data.data.subscriptions.length ||
+            data.data.subscriptions.forEach((i, subscription) => {
+              if (webhookSubscriptions[i] !== subscription) {
+                return false;
+              }
+            })
+          )
+            setWebhookSubscriptions(data.data.webhook.subscriptions);
           const events = data.data.webhook.events;
           events.sort((a, b) => {
-            if(a.updated_at < b.updated_at){
+            if (a.updated_at < b.updated_at) {
               return 1;
             }
-            if(a.updated_at > b.updated_at){
+            if (a.updated_at > b.updated_at) {
               return -1;
             }
             return 0;
-          })
+          });
           setEvents(events);
         } else {
           setWebhookId(null);
@@ -91,8 +108,14 @@ export default function ActivityPane(props) {
     <div className="activity-pane-wrapper">
       <div className="activity-pane-header">
         <span>Activity </span>
+        <div className="configure-webhooks-control">
+          <IoSettingsOutline
+            className="configure-webhooks-icon"
+            onClick={handleClickConfigureWebhooks}
+          />
+        </div>
       </div>
-      <hr className="left-sidebar-divider"></hr>
+      <hr className="activity-pane-divider"></hr>
       <div className="activity-pane-body">
         {webhookId &&
           events.map((event) => {
@@ -104,18 +127,6 @@ export default function ActivityPane(props) {
               />
             );
           })}
-        {!webhookId && (
-          <Button
-            style={{
-              display: props.location.pathname.split("/")[2] ? "block" : "none",
-            }}
-            onClick={handleClickConfigureWebhooks}
-            variant="contained"
-            color="primary"
-          >
-            Configure Webhooks
-          </Button>
-        )}
       </div>
       <a
         id="webhook-scope-link"
@@ -125,6 +136,8 @@ export default function ActivityPane(props) {
         <ConfigureWebhook
           setSnackbar={setSnackbar}
           setOpenWebhookDialog={setOpenWebhookDialog}
+          webhookId={webhookId}
+          webhookSubscriptions={webhookSubscriptions}
           {...props}
         />
       )}

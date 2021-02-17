@@ -1,0 +1,6 @@
+.git
+.gitignore
+docker-compose.yml
+#Environment variables and secret Keys
+/server/config/constants.js
+/client/src/utils/constants.js

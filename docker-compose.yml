@@ -1,0 +1,27 @@
+version: "2"
+services:
+    client:
+        build: ./client
+        restart: always
+        ports:
+            - "8090:8090"
+        volumes:
+            - ./client:/client
+            - /client/node_modules
+        
+    server:
+        build: ./server
+        restart: always
+        ports:
+            - "3030:3030"
+        environment:
+            - MONGODB_URI=mongodb://mongo:27017/rc4git
+        volumes:
+            - ./server:/server
+            - /server/node_modules
+        networks:
+            - dbnet
+
+networks:
+    dbnet:
+        external: true

@@ -8,11 +8,11 @@ const cors = require('cors')
 const cookieParser = require("cookie-parser")
 const {handleGithubWebhookVerificationError} = require("./middlewares/verifyWebhooks");
 const path = require("path");
-const { rcApiDomain } = require('./config/constants')
+const { rocketChatDomain } = require("./config/constants");
 
 const port = process.env.PORT || 8090
 
-const whitelist = [`${rcApiDomain}`];
+const whitelist = [`${rocketChatDomain}`];
 const corsOptionsDelegate = function (req, callback) {
   var corsOptions;
   if (whitelist.indexOf(req.header("Origin")) !== -1) {

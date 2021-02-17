@@ -1,0 +1,33 @@
+version: "2"
+services:
+    client:
+        image: rohanlekhwani/rc4git_client
+        restart: always
+        ports:
+            - "8090:8090"
+        volumes:
+            - ./client:/client
+            - /client/node_modules
+        links: 
+            - server
+        networks:
+            - webappnetwork
+    server:
+        image: rohanlekhwani/rc4git_server
+        restart: always
+        ports:
+            - "3030:3030"
+        environment:
+            - MONGODB_URI=mongodb://mongo:27017/rc4git
+        volumes:
+            - ./server:/server
+            - /server/node_modules
+        networks:
+            - webappnetwork
+            - dbnet
+
+networks:
+    webappnetwork:
+        driver: bridge
+    dbnet:
+        external: true

@@ -51,7 +51,6 @@ module.exports.fetchGithubActivities = async (req, res) => {
       "Cache-Control": "no-cache",
     };
     res.writeHead(200, headers);
-    res.write(`data: ${JSON.stringify(hook.events)}\n\n`);
     // Generate an id based on timestamp and save res
     // object of client connection on clients list
     // Later we'll iterate it and send updates to each client
@@ -93,7 +92,7 @@ module.exports.fetchWebhook = async (req, res) => {
       return res.status(200).json({success: true, data: {}})
     }
     return res.status(200).json({success: true, data: {
-      hook_id: webhook.hook_id
+      webhook
     }})
   } catch(err){
     console.log("ERROR", err);

@@ -16,10 +16,9 @@ router.post(
   verifyWebhooks.verifyGithubWebhook,
   webhooksController.handleGithubWebhook
 )
-router.get('/activities/github', passport.authenticate('jwt', {session: false}), webhooksController.fetchGithubActivities)
+router.get('/activities/github', webhooksController.fetchGithubActivities)
 router.get(
   "/webhooks",
-  passport.authenticate("jwt", { session: false }),
   webhooksController.fetchWebhook
 );
 router.post('/webhooks/github', passport.authenticate('jwt', {session: false}), webhooksController.createGithubWebhook)

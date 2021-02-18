@@ -1,19 +1,16 @@
-FROM node:12
+FROM node:14
 
 # Set the working directory
-WORKDIR /rc4git
+WORKDIR /rc4git/server
 
 # Copy the current directory contents into the container working directory
 COPY . /rc4git/
 
 # install dependencies for client
-RUN cd client && npm install && cd ../
+RUN npm install --prefix ../client
 
 # install dependencies for server
-RUN cd server && npm install
-
-# install PM2
-RUN npm install -g pm2
+RUN npm install
 
 # Make port 8090 available to the world outside this container
 EXPOSE 8090

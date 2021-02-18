@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon app.js",
-    "prod": "npm run build --prefix ../client && NODE_ENV=production pm2 start app.js"
+    "prod": "npm run build --prefix ../client && NODE_ENV=production nodemon app.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

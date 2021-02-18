@@ -1,7 +1,7 @@
 version: "2"
 services:
     server:
-        build: ./
+        build: .
         restart: always
         ports:
             - "8090:8090"

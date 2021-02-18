@@ -9,6 +9,8 @@ services:
             - MONGODB_URI=mongodb://mongo:27017/rc4git
         volumes:
             - ./:/rc4git
+            - /rc4git/client/node_modules
+            - /rc4git/server/node_modules
         networks:
             - dbnet
 

@@ -1,13 +1,13 @@
 FROM node:14
 
-# Set the working directory
-WORKDIR /rc4git/server
-
 # Copy the current directory contents into the container working directory
 COPY . /rc4git/
 
 # install dependencies for client
-RUN npm install --prefix ../client
+RUN npm install --prefix rc4git/client
+
+# Set the working directory
+WORKDIR /rc4git/server
 
 # install dependencies for server
 RUN npm install

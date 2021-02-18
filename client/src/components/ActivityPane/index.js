@@ -30,10 +30,25 @@ export default function ActivityPane(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setWebhookId(data.data.hook_id || null);
+        if(data.data.webhook){
+          setWebhookId(data.data.webhook.hook_id);
+          const events = data.data.webhook.events;
+          events.sort((a, b) => {
+            if(a.updated_at < b.updated_at){
+              return 1;
+            }
+            if(a.updated_at > b.updated_at){
+              return -1;
+            }
+            return 0;
+          })
+          setEvents(events);
+        } else {
+          setWebhookId(null);
+        }
       })
       .catch((error) => console.log(error));
-  });
+  }, [props.location.pathname]);
   useEffect(() => {
     if (webhookId) {
       let activityConnection = new EventSource(
@@ -42,14 +57,9 @@ export default function ActivityPane(props) {
       );
       activityConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (Array.isArray(data)) {
-          setEvents(data);
-        } else {
-          setEvents((events) => [data, ...events]);
-        }
+        setEvents((events) => [data, ...events]);
       };
       return () => {
-        console.log("CLOSED");
         activityConnection.close();
       };
     }

@@ -41,8 +41,8 @@ export default function ActivityPane(props) {
 
           // "if" executes if length doesn't match OR arrays are not equal.
           if (
-            webhookSubscriptions.length !== data.data.subscriptions.length ||
-            data.data.subscriptions.forEach((i, subscription) => {
+            webhookSubscriptions.length !== data.data.webhook.subscriptions.length ||
+            data.data.webhook.subscriptions.forEach((i, subscription) => {
               if (webhookSubscriptions[i] !== subscription) {
                 return false;
               }
@@ -138,6 +138,9 @@ export default function ActivityPane(props) {
           setOpenWebhookDialog={setOpenWebhookDialog}
           webhookId={webhookId}
           webhookSubscriptions={webhookSubscriptions}
+          setWebhookSubscriptions={setWebhookSubscriptions}
+          setWebhookId={setWebhookId}
+          setEvents={setEvents}
           {...props}
         />
       )}

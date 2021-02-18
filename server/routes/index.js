@@ -22,7 +22,7 @@ router.get(
   webhooksController.fetchWebhook
 );
 router.post(
-  "/webhooks/github/create",
+  "/webhooks/github",
   passport.authenticate("jwt", { session: false }),
   webhooksController.createGithubWebhook
 );

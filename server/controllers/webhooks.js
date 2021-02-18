@@ -171,7 +171,7 @@ module.exports.updateGithubWebhook = async (req, res) => {
 
       const config = {
         //This URL should be the server's public payload URL
-        url: `${constants.rc4gitApiDomain}/webhooks/github`,
+        url: `${constants.rc4gitApiURL}/webhooks/github/events`,
         secret: secret_token,
         content_type: "json",
       };

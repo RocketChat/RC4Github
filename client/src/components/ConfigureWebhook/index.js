@@ -48,6 +48,7 @@ export default function ConfigureWebhook(props) {
         },
         withCredentials: true,
       });
+      props.setWebhookId(ghCreateWebhookResponse.data.data.hook_id)
       setLoading(false);
       props.setSnackbar("success", "Webhook created successfully!");
       props.setOpenWebhookDialog(false);
@@ -74,6 +75,7 @@ export default function ConfigureWebhook(props) {
         },
         withCredentials: true,
       });
+      props.setWebhookSubscriptions(selectedEvents)
       setLoading(false);
       props.setSnackbar("success", "Webhook updated successfully!");
       props.setOpenWebhookDialog(false);
@@ -99,6 +101,8 @@ export default function ConfigureWebhook(props) {
         },
         withCredentials: true,
       });
+      props.setWebhookId(null)
+      props.setEvents([])
       setDeleteLoading(false);
       props.setSnackbar("success", "Webhook deleted successfully!");
       props.setOpenWebhookDialog(false);

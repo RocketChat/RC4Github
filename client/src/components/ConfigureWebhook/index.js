@@ -62,8 +62,8 @@ export default function ConfigureWebhook(props) {
     try {
       setLoading(true);
       const ghUpdateWebhookResponse = await axios({
-        method: "post",
-        url: `${rc4gitApiDomain}/webhooks/github/update`,
+        method: "patch",
+        url: `${rc4gitApiDomain}/webhooks/github`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -74,7 +74,6 @@ export default function ConfigureWebhook(props) {
         },
         withCredentials: true,
       });
-      console.log(ghUpdateWebhookResponse);
       setLoading(false);
       props.setSnackbar("success", "Webhook updated successfully!");
       props.setOpenWebhookDialog(false);
@@ -89,8 +88,8 @@ export default function ConfigureWebhook(props) {
     try {
       setDeleteLoading(true);
       const ghDeleteWebhookResponse = await axios({
-        method: "post",
-        url: `${rc4gitApiDomain}/webhooks/github/delete`,
+        method: "delete",
+        url: `${rc4gitApiDomain}/webhooks/github`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -100,7 +99,6 @@ export default function ConfigureWebhook(props) {
         },
         withCredentials: true,
       });
-      console.log(ghDeleteWebhookResponse);
       setDeleteLoading(false);
       props.setSnackbar("success", "Webhook deleted successfully!");
       props.setOpenWebhookDialog(false);

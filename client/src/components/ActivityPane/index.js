@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { rc4gitApiDomain } from "../../utils/constants";
 import Cookies from "js-cookie";
 import ActivityItem from "./../ActivityItem";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -22,18 +21,13 @@ export default function ActivityPane(props) {
   const [snackbarText, setSnackbarText] = useState("");
 
   useEffect(() => {
-    fetch(
-      `${rc4gitApiDomain}/webhooks?room_name=${
-        props.location.pathname.split("/")[2]
-      }`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("rc4git_token")}`,
-        },
-      }
-    )
+    fetch(`/api/webhooks?room_name=${props.location.pathname.split("/")[2]}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("rc4git_token")}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setWebhookId(data.data.hook_id || null);
@@ -43,7 +37,7 @@ export default function ActivityPane(props) {
   useEffect(() => {
     if (webhookId) {
       let activityConnection = new EventSource(
-        `${rc4gitApiDomain}/activities/github?hook_id=${webhookId}`,
+        `/api/activities/github?hook_id=${webhookId}`,
         { withCredentials: true }
       );
       activityConnection.onmessage = (event) => {

@@ -38,7 +38,7 @@ app.use(cookieParser())
 
 app.use(handleGithubWebhookVerificationError);
 
-app.use('/', require('./routes'))
+app.use('/api', require('./routes'))
 
 if(process.env.NODE_ENV === 'production') {
   // Serve static files from the React frontend app

@@ -63,7 +63,7 @@ export default function ConfigureWebhook(props) {
       setLoading(true);
       const ghUpdateWebhookResponse = await axios({
         method: "patch",
-        url: `${rc4gitApiDomain}/webhooks/github`,
+        url: `/api/webhooks/github`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -89,7 +89,7 @@ export default function ConfigureWebhook(props) {
       setDeleteLoading(true);
       const ghDeleteWebhookResponse = await axios({
         method: "delete",
-        url: `${rc4gitApiDomain}/webhooks/github`,
+        url: `/api/webhooks/github`,
         headers: {
           "Content-Type": "application/json",
         },

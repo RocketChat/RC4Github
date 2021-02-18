@@ -11,7 +11,6 @@ router.post("/auth/github/upgrade", loginController.upgradeAccess);
 router.post("/sso", loginController.sso);
 router.get("/logout", loginController.logout);
 router.post("/createChannel", createChannelController);
-// TODO: Change this to another route (/webhooks/github/event) to make webhook create consistent with update and delete.
 router.post(
   "/webhooks/github/events",
   verifyWebhooks.verifyGithubWebhook,

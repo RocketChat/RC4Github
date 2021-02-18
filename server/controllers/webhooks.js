@@ -212,7 +212,6 @@ module.exports.updateGithubWebhook = async (req, res) => {
 module.exports.deleteGithubWebhook = async (req, res) => {
   try {
     if (req.cookies["gh_private_repo_token"]) {
-      const hook = await githubWebhook.findOne({ hook_id: req.body.hook_id });
 
       const headers = {
         accept: "application/vnd.github.v3+json",

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { FaGithub, FaGitlab, FaTwitter } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import { VscLoading } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
-import { githubClientID, rc4gitApiDomain } from "./../../utils/constants";
+import { githubClientID } from "./../../utils/constants";
 
 import "./index.css";
 
@@ -86,14 +86,6 @@ export default function Login(props) {
             Login with github
           </a>
         )}
-        <Link className="login-button login-button-gitlab" to="/login">
-          <FaGitlab />
-          Login With Gitlab
-        </Link>
-        <Link className="login-button login-button-twitter" to="/login">
-          <FaTwitter />
-          Login With Twitter
-        </Link>
       </div>
       <div className="login-terms">
         {"By proceeding you are agreeing to our "}

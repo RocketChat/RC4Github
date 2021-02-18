@@ -61,14 +61,6 @@
     width: 1.4em !important;
 }
 
-.login-button-gitlab {
-    background-color: #fc6d26;
-}
-
-.login-button-twitter {
-    background-color: #55acee;
-}
-
 .login-terms {
     max-width: 100%;
     padding: 10px;

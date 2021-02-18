@@ -3,15 +3,44 @@
 }
 
 .activity-pane-header {
-    padding: 20px 17px;
-    color: #9a9ea4;
-    font-size: 1.2em;
-    text-transform: uppercase;
+  padding: 20px 17px;
+  color: #9a9ea4;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+
+.configure-webhooks-control {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.configure-webhooks-icon {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  padding: 0.25em;
+  cursor: pointer;
+  color: #9a9ea4;
+}
+
+.configure-webhooks-icon:hover {
+  background-color: #1f2329;
+}
+
+.activity-pane-divider {
+  margin-block-start: -0.125rem !important;
+  margin-block-end: 0px !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 0.0625rem solid rgb(31 35 41 / 40%);
 }
 
 .activity-pane-body {
-    padding: 20px 10px 0 20px;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
+  padding: 20px 10px 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

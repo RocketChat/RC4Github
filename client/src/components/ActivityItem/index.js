@@ -21,7 +21,9 @@ export default function ActivityItem({event, repo}) {
         </div>
         <span className="activity-event-time">{`${new Date(
           updated_at
-        ).getHours()}:${
+        ).getHours() < 10
+        ? `0${new Date(updated_at).getHours()}`
+        : new Date(updated_at).getHours()}:${
           new Date(updated_at).getMinutes() < 10
             ? `0${new Date(updated_at).getMinutes()}`
             : new Date(updated_at).getMinutes()

@@ -7,9 +7,12 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require("cookie-parser")
 const {handleGithubWebhookVerificationError} = require("./middlewares/verifyWebhooks");
+const path = require("path");
+const { rocketChatDomain } = require("./config/constants");
 
-const port = process.env.PORT || 3030
-const whitelist = ["http://localhost:3000", "http://localhost:3002"];
+const port = process.env.PORT || 8090
+
+const whitelist = [`${rocketChatDomain}`];
 const corsOptionsDelegate = function (req, callback) {
   var corsOptions;
   if (whitelist.indexOf(req.header("Origin")) !== -1) {
@@ -35,7 +38,16 @@ app.use(cookieParser())
 
 app.use(handleGithubWebhookVerificationError);
 
-app.use('/', require('./routes'))
+app.use('/api', require('./routes'))
+
+if(process.env.NODE_ENV === 'production') {
+  // Serve static files from the React frontend app
+  app.use(express.static(path.join(__dirname, "../client/build")));
+  // Anything that doesn't match the above, send back index.html
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + "/../client/build/index.html"));
+  });
+}
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)

@@ -13,7 +13,7 @@ export default function MainLayout(props) {
     const url = window.location.href;
     const hasCode = url.includes("?code=");
 
-    const proxy_url = `${rc4gitApiDomain}/auth/github/upgrade`;
+    const proxy_url = `/api/auth/github/upgrade`;
 
     // If Github API returns the code parameter
     if (hasCode) {

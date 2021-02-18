@@ -12,7 +12,7 @@ router.post('/sso', loginController.sso)
 router.get("/logout", loginController.logout);
 router.post('/createChannel', createChannelController)
 router.post(
-  "/webhooks/github",
+  "/webhooks/github/events",
   verifyWebhooks.verifyGithubWebhook,
   webhooksController.handleGithubWebhook
 )
@@ -22,6 +22,6 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   webhooksController.fetchWebhook
 );
-router.post('/webhooks/github/create', passport.authenticate('jwt', {session: false}), webhooksController.createGithubWebhook)
+router.post('/webhooks/github', passport.authenticate('jwt', {session: false}), webhooksController.createGithubWebhook)
 
 module.exports = router;

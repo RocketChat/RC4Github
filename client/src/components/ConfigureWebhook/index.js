@@ -8,7 +8,6 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import axios from "axios";
-import { rc4gitApiDomain } from "../../utils/constants";
 
 import "./index.css";
 
@@ -46,7 +45,7 @@ export default function ConfigureWebhook(props) {
       setLoading(true);
       const ghCreateWebhookResponse = await axios({
         method: "post",
-        url: `${rc4gitApiDomain}/webhooks/github/create`,
+        url: `/api/webhooks/github`,
         headers: {
           "Content-Type": "application/json",
         },

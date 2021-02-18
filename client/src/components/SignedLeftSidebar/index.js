@@ -7,19 +7,17 @@ import { FiLogOut } from "react-icons/fi";
 import { VscLoading } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import CommunityListItem from "../CommunityListItem/";
-import {
-  Menu,
-  MenuItem,
-  Snackbar,
-  Checkbox,
-  Radio
-} from "@material-ui/core";
+import { Menu, MenuItem, Snackbar, Checkbox, Radio } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import Cookies from "js-cookie";
 import CreateCommunity from "../CreateCommunity";
 import CreateChannel from "../CreateChannel";
 import axios from "axios";
-import { rcApiDomain, githubApiDomain, rc4gitApiDomain } from "./../../utils/constants";
+import {
+  rcApiDomain,
+  githubApiDomain,
+  rc4gitApiDomain,
+} from "./../../utils/constants";
 import SidebarSearch from "../SidebarSearch";
 
 import "./index.css";
@@ -60,12 +58,12 @@ export default function SignedLeftSidebar(props) {
       return 0;
     });
     setChatRooms(chatRooms);
-  }
+  };
 
   const setChatRooms = (rooms) => {
     let communities = {};
     let directMessages = [];
-    rooms.forEach( room => {
+    rooms.forEach((room) => {
       if (room["t"] === "c" || room["t"] === "p") {
         let community_name = room.name.split(/_(.+)/)[0];
         if (!communities[community_name]) communities[community_name] = [];
@@ -73,11 +71,11 @@ export default function SignedLeftSidebar(props) {
       } else {
         directMessages.push(room);
       }
-    })
+    });
     setRooms(rooms);
     setCommunities(communities);
     setDirectMessages(directMessages);
-  }
+  };
 
   const fetchRooms = () => {
     const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
@@ -188,7 +186,7 @@ export default function SignedLeftSidebar(props) {
     const logoutButton = document.getElementById("logout-menu-item");
     loadingIcon.classList.remove("hide-logout-loading");
     logoutButton.classList.add("disable-click");
-    fetch(`${rc4gitApiDomain}/logout`, {
+    fetch(`/api/logout`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -213,11 +211,11 @@ export default function SignedLeftSidebar(props) {
   };
 
   const handleSortMenuClose = () => {
-      setSortAnchorEl(null);
+    setSortAnchorEl(null);
   };
 
   const openSortMenu = (event) => {
-    setSortAnchorEl(event.currentTarget)
+    setSortAnchorEl(event.currentTarget);
   };
 
   return (
@@ -244,7 +242,6 @@ export default function SignedLeftSidebar(props) {
             vertical: "bottom",
             horizontal: "left",
           }}
-          
         >
           <div className="profile-wrapper">
             <div className="profile-left-container">

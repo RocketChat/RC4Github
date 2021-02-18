@@ -17,7 +17,7 @@ import jwt_decode from "jwt-decode";
 import {
   githubPrivateRepoAccessClientID,
   rcApiDomain,
-  rc4gitApiDomain,
+  rc4gitDomain,
 } from "../../utils/constants";
 import EmbedBadgeDialog from "../EmbedBadgeDialog";
 
@@ -187,7 +187,7 @@ export default class CreateChannel extends Component {
 
 -----
 Embed this channel
-<pre><code>&lt;a&nbsp;href=&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
+<pre><code>&lt;a&nbsp;href=&quot;${rc4gitDomain}/channel/${room.name}&quot;&gt;
 &lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
 &lt;/a&gt;</code></pre>
 `);

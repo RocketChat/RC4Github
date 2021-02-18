@@ -14,30 +14,15 @@ import "./index.css";
 export default function ConfigureWebhook(props) {
   const [loading, setLoading] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([
-    "push",
     "issues",
-    "issue_comment",
-    "commit_comment",
     "pull_request",
-    "pull_request_review_comment",
-    "member",
-    "team_add",
   ]);
 
   const allEvents = [
-    "Push",
     "Issues",
     "Issue Comment",
-    "Commit Comment",
     "Pull Request",
     "Pull Request Review Comment",
-    "Wiki",
-    "Watch",
-    "Fork",
-    "Member",
-    "Public",
-    "Team Add",
-    "Status",
   ];
 
   const handleCreateWebhook = async () => {

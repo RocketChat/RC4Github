@@ -12,6 +12,9 @@ RUN npm install --prefix ../client
 # install dependencies for server
 RUN npm install
 
+# install nodemon
+RUN npm install nodemon -g
+
 # Make port 8090 available to the world outside this container
 EXPOSE 8090
 

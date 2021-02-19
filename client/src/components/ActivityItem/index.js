@@ -8,22 +8,24 @@ export default function ActivityItem({event, repo}) {
       <div className="activity-item-wrapper">
         <div className="activity-event-info">
           <DiGithubBadge className="activity-item-vcs-badge" />
-          <a href={`https://github.com/${sender.username}`} target="_blank">
-            {sender.username}
-          </a>
-          <span>&nbsp;{`${action} `}&nbsp;</span>
-          <a
-            href={`https://github.com/${repo}/issues/${resource.number}`}
-            target="_blank"
-          >
-            #{resource.number}
-          </a>
+          <div className="activity-item-content">
+            <a href={`https://github.com/${sender.username}`} target="_blank">
+              {sender.username}
+            </a>
+            <span>&nbsp;{`${action} `}&nbsp;</span>
+            <a
+              href={`https://github.com/${repo}/issues/${resource.number}`}
+              target="_blank"
+            >
+              #{resource.number}
+            </a>
+          </div>
         </div>
-        <span className="activity-event-time">{`${new Date(
-          updated_at
-        ).getHours() < 10
-        ? `0${new Date(updated_at).getHours()}`
-        : new Date(updated_at).getHours()}:${
+        <span className="activity-event-time">{`${
+          new Date(updated_at).getHours() < 10
+            ? `0${new Date(updated_at).getHours()}`
+            : new Date(updated_at).getHours()
+        }:${
           new Date(updated_at).getMinutes() < 10
             ? `0${new Date(updated_at).getMinutes()}`
             : new Date(updated_at).getMinutes()

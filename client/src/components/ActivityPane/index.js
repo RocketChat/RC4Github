@@ -84,6 +84,7 @@ export default function ActivityPane(props) {
 
   const handleClickConfigureWebhooks = async () => {
     if (!Cookies.get("gh_private_repo_token")) {
+      Cookies.set("gh_upgrade_prev_path", window.location.pathname)
       document.getElementById("webhook-scope-link").click();
     } else {
       setOpenWebhookDialog(true);

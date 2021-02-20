@@ -116,6 +116,7 @@ export default class CreateChannel extends Component {
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
     if (event.target.checked) {
       if (!Cookies.get("gh_private_repo_token")) {
+        Cookies.set("gh_upgrade_prev_path", window.location.pathname)
         document.getElementById("scope-upgrade-link").click();
       }
       this.setState({

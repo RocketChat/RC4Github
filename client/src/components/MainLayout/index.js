@@ -41,22 +41,22 @@ export default function MainLayout(props) {
   return (
     <Switch>
       <Route
+        path={["/direct", "(.*)_community"]}
+        render={(props) => {
+          return (
+            <div className="mainLayout-wrapper">
+              <ChatWindow {...props} />
+            </div>
+          );
+        }}
+      />
+      <Route
         path={["/channel", "/group"]}
         render={(props) => {
           return (
             <div className="mainLayout-wrapper">
               <ChatWindow {...props} />
               <RightSidebar {...props} />
-            </div>
-          );
-        }}
-      />
-      <Route
-        path={["/direct"]}
-        render={(props) => {
-          return (
-            <div className="mainLayout-wrapper">
-              <ChatWindow {...props} />
             </div>
           );
         }}

@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
-import { rcApiDomain, rc4gitApiDomain } from "../../utils/constants";
+import { rcApiDomain, rc4gitDomain } from "../../utils/constants";
 import EmbedBadgeDialog from "../EmbedBadgeDialog";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -105,7 +105,7 @@ export default class CreateCommunity extends Component {
 
 -----
 Embed this community
-<pre><code>&lt;a&nbsp;href=&quot;http://localhost:3002/channel/${room.name}&quot;&gt;
+<pre><code>&lt;a&nbsp;href=&quot;${rc4gitDomain}/channel/${room.name}&quot;&gt;
 &lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
 &lt;/a&gt;</code></pre>
 `);
@@ -215,7 +215,7 @@ Embed this community
         </Dialog>
         {showEmbedBadgeDialog && (
           <EmbedBadgeDialog
-            channelURL={`http://localhost:3002/channel/${room.name}`}
+            channelURL={`${rc4gitDomain}/channel/${room.name}`}
             createType="community"
             setSnackbar={setSnackbar}
             endCreate={handleEndCreateCommunity}

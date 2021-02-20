@@ -367,7 +367,7 @@ Embed this channel
         </Dialog>
         {showEmbedBadgeDialog && (
           <EmbedBadgeDialog
-            channelURL={`http://localhost:3002/channel/${room.name}`}
+            channelURL={`${rc4gitDomain}/channel/${room.name}`}
             createType="channel"
             setSnackbar={setSnackbar}
             endCreate={handleEndCreateChannel}

@@ -1,8 +1,38 @@
 .home-wrapper {
-    width: 80%;
+    width: 77%;
+    padding: 20px;
 }
 
-.home-title {
-    margin-left: 20px;
-    text-transform: uppercase;
+.features {
+    font-size: 0.95em;
+    margin-top: 40px;
+}
+
+.feature-title {
+    font-size: large;
+    font-weight: 400;
+    margin: 15px 0px;
+}
+
+.join-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+}
+
+.join-button {	
+    padding: 10px;	
+    background-color: #1d74f5;	
+    color: white;	
+    cursor: pointer;
+    text-decoration: none;
+} 	
+
+.explore-desc-wrapper {
+    margin-top: 40px;
+}
+
+.search-icon-explore-desc {
+    vertical-align: bottom;
 }

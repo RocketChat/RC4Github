@@ -280,8 +280,8 @@ export default function SignedLeftSidebar(props) {
           {showSearch ? (
             <SidebarSearch handleSearchClose={toggleShowSearch}></SidebarSearch>
           ) : null}
-          <div className="left-sidebar-control-icons">
-            <HiSortDescending onClick={openSortMenu} />
+          <div className="left-sidebar-control-icons" onClick={openSortMenu}>
+            <HiSortDescending />
           </div>
           <Menu
             id="sort-menu"

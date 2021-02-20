@@ -3,7 +3,6 @@ import { Route, Switch } from "react-router-dom";
 import ChatWindow from "../ChatWindow";
 import Home from "./../Home";
 import Cookies from "js-cookie";
-import { rc4gitApiDomain } from "./../../utils/constants";
 import RightSidebar from "./../RightSidebar";
 
 import "./index.css";

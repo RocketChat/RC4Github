@@ -16,7 +16,6 @@ import axios from "axios";
 import {
   rcApiDomain,
   githubApiDomain,
-  rc4gitApiDomain,
 } from "./../../utils/constants";
 import SidebarSearch from "../SidebarSearch";
 

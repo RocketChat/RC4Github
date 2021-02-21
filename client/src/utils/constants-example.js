@@ -6,16 +6,13 @@ const rcApiDomain =
   process.env.RC_API_DOMAIN || "YOUR_SELF_HOSTED_RC_API_DOMAIN";
 const githubApiDomain =
   process.env.GITHUB_API_DOMAIN || "https://api.github.com";
-const rc4gitApiDomain =
-  process.env.RC4GIT_API_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_API_DOMAIN";
 const rc4gitDomain =
-  process.env.RC4GIT_DOMAIN || "http://rc4git.rceng.shop"
+  process.env.RC4GIT_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_CLIENT"
 
 export {
   githubClientID,
   githubPrivateRepoAccessClientID,
   rcApiDomain,
-  rc4gitApiDomain,
   githubApiDomain,
   rc4gitDomain
 };

@@ -118,6 +118,13 @@ export default function ActivityPane(props) {
       </div>
       <hr className="activity-pane-divider"></hr>
       <div className="activity-pane-body">
+        {!webhookId && (
+          <div className="configure-webhook-message">
+            You can configure your GitHub Webhook by clicking on the configure
+            button <IoSettingsOutline /> above to receive realtime updates about
+            your GitHub repository here.
+          </div>
+        )}
         {webhookId &&
           events.map((event) => {
             return (

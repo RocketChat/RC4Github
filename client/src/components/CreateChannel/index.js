@@ -117,7 +117,7 @@ export default class CreateChannel extends Component {
     if (event.target.checked) {
       if (!Cookies.get("gh_private_repo_token")) {
         Cookies.set("gh_upgrade_prev_path", window.location.pathname)
-        document.getElementById("scope-upgrade-link").click();
+        window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`
       }
       this.setState({
         repositories: publicRepositories.concat(privateRepositories),
@@ -242,10 +242,6 @@ Embed this channel
 
     return (
       <div style={{ justifyContent: "center", display: "flex" }}>
-        <a
-          id="scope-upgrade-link"
-          href={`https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`}
-        />
 
         <Dialog
           open={openCreateChannelDialog}

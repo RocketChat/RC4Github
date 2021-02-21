@@ -32,7 +32,7 @@ export default function MainLayout(props) {
         .then((response) => response.json())
         .then((data) => {
           Cookies.set("gh_private_repo_token", data.data.gh_private_repo_token);
-          window.location = window.location.origin + Cookies.get("gh_upgrade_prev_path")
+          window.location.href = window.location.origin + Cookies.get("gh_upgrade_prev_path")
         })
         .catch((error) => console.log(error));
     }

@@ -119,9 +119,9 @@ export default function ActivityPane(props) {
       <div className="activity-pane-body">
         {!webhookId && (
           <div className="configure-webhook-message">
-            You can configure your Github Webhook by clicking on the configure
+            You can configure your GitHub Webhook by clicking on the configure
             button <IoSettingsOutline /> above to receive realtime updates here about
-            your Github repository.
+            your GitHub repository.
           </div>
         )}
         {webhookId &&

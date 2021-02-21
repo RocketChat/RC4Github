@@ -37,6 +37,9 @@ export default function MainLayout(props) {
         .catch((error) => console.log(error));
     }
   });
+  
+  const {authState} = props;
+
   return (
     <Switch>
       <Route
@@ -63,7 +66,15 @@ export default function MainLayout(props) {
           );
         }}
       />
-      <Route exact path={["/home", "/"]} component={Home} />
+      <Route
+        exact
+        path={["/home", "/"]}
+        render={(props) => {
+          return (
+            <Home {...props} authState={authState} />
+          );
+        }}
+      />
     </Switch>
   );
 }

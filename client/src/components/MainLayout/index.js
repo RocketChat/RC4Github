@@ -40,22 +40,25 @@ export default function MainLayout(props) {
   return (
     <Switch>
       <Route
+        //TODO Shift this to programmatically check if repo is associated to hide activity
+        //_community (without repo) -> custom field (not repo)
+        //abcd (without repo) -> custom field (not repo)
+        path={["/direct", "(.*)_community"]}
+        render={(props) => {
+          return (
+            <div className="mainLayout-wrapper">
+              <ChatWindow {...props} />
+            </div>
+          );
+        }}
+      />
+      <Route
         path={["/channel", "/group"]}
         render={(props) => {
           return (
             <div className="mainLayout-wrapper">
               <ChatWindow {...props} />
               <RightSidebar {...props} />
-            </div>
-          );
-        }}
-      />
-      <Route
-        path={["/direct"]}
-        render={(props) => {
-          return (
-            <div className="mainLayout-wrapper">
-              <ChatWindow {...props} />
             </div>
           );
         }}

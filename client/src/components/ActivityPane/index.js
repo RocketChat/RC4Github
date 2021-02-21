@@ -84,7 +84,8 @@ export default function ActivityPane(props) {
 
   const handleClickConfigureWebhooks = async () => {
     if (!Cookies.get("gh_private_repo_token")) {
-      document.getElementById("webhook-scope-link").click();
+      Cookies.set("gh_upgrade_prev_path", window.location.pathname)
+      window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`
     } else {
       setOpenWebhookDialog(true);
     }
@@ -128,10 +129,6 @@ export default function ActivityPane(props) {
             );
           })}
       </div>
-      <a
-        id="webhook-scope-link"
-        href={`https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`}
-      />
       {openWebhookDialog && (
         <ConfigureWebhook
           setSnackbar={setSnackbar}

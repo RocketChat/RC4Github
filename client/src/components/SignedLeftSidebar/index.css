@@ -87,16 +87,6 @@
   background: #000;
 }
 
-.code-copy-icon-div {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.code-copy-icon:hover {
-  color: #9a9ea4;
-  cursor: pointer;
-}
-
 .profile-wrapper {
   padding: 10px 18px;
   display: flex;

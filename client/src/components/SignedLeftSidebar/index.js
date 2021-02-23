@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RiHome4Line, RiSearchLine } from "react-icons/ri";
-import { IoCreateOutline } from "react-icons/io5";
+import { IoMdAdd } from "react-icons/io";
 import { HiSortDescending } from "react-icons/hi";
 import { CgCommunity, CgHashtag } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
@@ -333,7 +333,7 @@ export default function SignedLeftSidebar(props) {
             className="left-sidebar-control-icons"
             onClick={handleCreateClick}
           >
-            <IoCreateOutline />
+            <IoMdAdd />
           </div>
         </div>
         <Menu

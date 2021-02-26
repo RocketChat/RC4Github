@@ -40,6 +40,7 @@ export default function SignedLeftSidebar(props) {
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [groupByCommunity, setGroupByCommunity] = useState(true);
+  const {setCommunityTourStepNumber, setCommunityTourOpen} = props
 
   const sortRoomsAlphabetically = () => {
     let chatRooms = rooms;
@@ -125,6 +126,7 @@ export default function SignedLeftSidebar(props) {
 
   const handleCreateClick = (event) => {
     setAnchorEl(event.currentTarget);
+    props.setCommunityTourStepNumber(3)
   };
 
   const handleCreateClose = () => {
@@ -330,7 +332,7 @@ export default function SignedLeftSidebar(props) {
             </div>
           </Menu>
           <div
-            className="left-sidebar-control-icons"
+            className="left-sidebar-control-icons createButton"
             onClick={handleCreateClick}
           >
             <IoMdAdd />
@@ -353,10 +355,12 @@ export default function SignedLeftSidebar(props) {
           }}
         >
           <MenuItem
+            className="createCommunityMenuItem"
             onClick={() => {
               fetchOrganizations();
               setStartCreateCommunity(true);
               handleCreateClose();
+              setCommunityTourOpen(false)
             }}
           >
             <CgCommunity color="#000" className="create-menu-icons" />
@@ -373,7 +377,7 @@ export default function SignedLeftSidebar(props) {
             Create Channel
           </MenuItem>
         </Menu>
-      </div>
+        </div>
       {startCreateCommunity && (
         <CreateCommunity
           handleEndCreateCommunity={handleEndCreateCommunity}

@@ -15,7 +15,9 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
-    "react-syntax-highlighter": "^15.4.3"
+    "react-syntax-highlighter": "^15.4.3",
+    "reactour": "^1.18.1",
+    "styled-components": "^4.4.1"
   },
   "scripts": {
     "start": "PORT=3002 react-scripts start",

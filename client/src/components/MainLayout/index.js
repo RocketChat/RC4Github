@@ -38,8 +38,8 @@ export default function MainLayout(props) {
     }
   });
   
-  const {authState} = props;
-
+  const {authState, setCommunityTourOpen} = props;
+  
   return (
     <Switch>
       <Route
@@ -71,7 +71,7 @@ export default function MainLayout(props) {
         path={["/home", "/"]}
         render={(props) => {
           return (
-            <Home {...props} authState={authState} />
+            <Home {...props} authState={authState} setCommunityTourOpen={setCommunityTourOpen} />
           );
         }}
       />

@@ -1,6 +1,8 @@
+import React from 'react'
 import {Link} from "react-router-dom";
 import {RiSearchLine} from "react-icons/ri";
 import "./index.css";
+import { Button } from "@material-ui/core";
 export default function Home(props) {
     return (
       <div className="home-wrapper">
@@ -50,6 +52,14 @@ export default function Home(props) {
             </Link>
           </div>
         )}
+        <br/>
+        <br/>
+        <Button
+        className="communityTourButton"
+        variant="contained"
+        color="primary"
+        onClick={()=>props.setCommunityTourOpen(true)}
+        >Create Community</Button>
       </div>
     );
 }

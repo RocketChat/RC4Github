@@ -32,13 +32,14 @@ export default function MainLayout(props) {
         .then((response) => response.json())
         .then((data) => {
           Cookies.set("gh_private_repo_token", data.data.gh_private_repo_token);
-          window.location.href = window.location.origin + Cookies.get("gh_upgrade_prev_path")
+          window.location.href =
+            window.location.origin + Cookies.get("gh_upgrade_prev_path");
         })
         .catch((error) => console.log(error));
     }
   });
-  
-  const {authState} = props;
+
+  const { authState } = props;
 
   return (
     <Switch>
@@ -61,7 +62,7 @@ export default function MainLayout(props) {
           return (
             <div className="mainLayout-wrapper">
               <ChatWindow {...props} />
-              <RightSidebar {...props} />
+              <RightSidebar {...props} authState={authState} />
             </div>
           );
         }}
@@ -70,9 +71,7 @@ export default function MainLayout(props) {
         exact
         path={["/home", "/"]}
         render={(props) => {
-          return (
-            <Home {...props} authState={authState} />
-          );
+          return <Home {...props} authState={authState} />;
         }}
       />
     </Switch>

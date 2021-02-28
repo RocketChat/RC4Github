@@ -1,55 +1,71 @@
-import {Link} from "react-router-dom";
-import {RiSearchLine} from "react-icons/ri";
+import {Button} from '@material-ui/core';
+import Countup from "./../common/Countup";
+
 import "./index.css";
+
 export default function Home(props) {
-    return (
-      <div className="home-wrapper">
-        <h1>Welcome to RC4GIT</h1>
-        <h2>HOME</h2>
-        <div>
-          <Link to="/home">RC4GIT</Link> is a chat and networking platform that
-          helps to manage, grow and connect communities through messaging,
-          content and discovery.
+    const { users, channels, onlineUsers, totalMessages } = props.stats;
+    if(!props.authState.isLoggedIn){
+      return (
+        <div className="home-wrapper">
+          <header>
+            <h1>
+              Real-time Collaboration
+              <br />
+              <strong>Powered by RC4GIT Community</strong>
+            </h1>
+
+            <p>
+              <strong>Monitor</strong> your <strong>workflows</strong>,
+              <strong>collaborate</strong> and <strong>access data</strong> any
+              time you need it, all in one{" "}
+              <strong>productivity-amplifying</strong> full-lifecycle platform
+            </p>
+          </header>
+          <div className="rocket-logo"></div>
+          <main>
+            <div className="main-stats-container">
+              <div className="stat-container">
+                <img
+                  src="https://img.icons8.com/plasticine/80/000000/organization.png"
+                  alt="channels"
+                />
+                <Countup end={channels} className="stat-number" />
+                <div className="stat-label">Channels</div>
+              </div>
+              <div className="stat-container">
+                <img
+                  src="https://img.icons8.com/color/80/000000/circled-user-male-skin-type-7--v2.png"
+                  alt="users"
+                />
+                <Countup end={users} className="stat-number" />
+                <div className="stat-label">Users</div>
+              </div>
+              <div className="stat-container">
+                <img
+                  src="https://img.icons8.com/color/80/000000/filled-chat.png"
+                  alt="messages"
+                />
+                <Countup end={totalMessages} className="stat-number" />
+                <div className="stat-label">Messages Exchanged</div>
+              </div>
+              <div className="stat-container">
+                <img
+                  src="https://img.icons8.com/color/80/000000/online--v1.png"
+                  alt="online-users"
+                />
+                <Countup end={onlineUsers} className="stat-number" />
+                <div className="stat-label">Online Users</div>
+              </div>
+            </div>
+            <div className="button-container">
+              <Button variant="contained" color="primary" href="/login">
+                JOIN NOW TO EXPLORE MORE
+              </Button>
+            </div>
+          </main>
         </div>
-        <div className="features">
-          <ul>
-            <li>
-              <div className="feature-title">Free without limits</div>
-              <div>
-                Enjoy free public and private communities with unlimited people,
-                message history and integrations.
-              </div>
-            </li>
-            <li>
-              <div className="feature-title">Simple to create</div>
-              <div className="feature-desc">
-                Simply create your community and start talking - no need to set
-                up any invitation services.
-              </div>
-            </li>
-            <li>
-              <div className="feature-title">Markdown and KaTeX</div>
-              <div className="feature-desc">
-                Format your messages just like with your other favorite
-                developer tools.
-              </div>
-            </li>
-          </ul>
-        </div>
-        {props.authState.isLoggedIn ? (
-          <div className="explore-desc-wrapper">
-            Click on the search icon{" "}
-            <RiSearchLine className="search-icon-explore-desc" /> in the sidebar
-            to explore the list of communities and users already leveraging
-            RC4GIT.
-          </div>
-        ) : (
-          <div className="join-button-wrapper">
-            <Link to="/login" className="join-button">
-              JOIN NOW AND UNLEASH THE POWER OF RC4GIT
-            </Link>
-          </div>
-        )}
-      </div>
-    );
+      );
+    }
+    return <div></div>
 }

@@ -16,13 +16,13 @@ import {
 } from "./";
 
 function RestrictedRoute(restrictedRouteProps) {
-  const { authState } = restrictedRouteProps;
+  const { authState, stats } = restrictedRouteProps;
   return (
     <>
       {authState.isLoggedIn ? (
         <SignedLeftSidebar user={authState.user}/>
       ) : (
-        <AnonymousModeLeftSidebar />
+        <AnonymousModeLeftSidebar stats={stats} />
       )}
       <MainLayout {...restrictedRouteProps} />
     </>
@@ -53,7 +53,37 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       auth: checkAuth(),
+      stats: {
+        communities: 0,
+        users: 0,
+        channels: 0,
+        onlineUsers: 0
+      }
     };
+  }
+
+  setStats = () => {
+    fetch(`/api/stats`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({
+          stats: data.data
+        })
+      })
+      .catch((err) => {
+        console.log("Error logging out --->", err);
+        return;
+      });
+  }
+
+  componentDidMount() {
+    this.setStats();
   }
 
   setAuthState = (auth) => {
@@ -82,6 +112,7 @@ export default class App extends React.Component {
           <RestrictedRoute
             path={"/"}
             authState={this.state.auth}
+            stats={this.state.stats}
           />
         </Switch>
       </Router>

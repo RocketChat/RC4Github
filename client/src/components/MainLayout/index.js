@@ -38,7 +38,7 @@ export default function MainLayout(props) {
     }
   });
   
-  const {authState} = props;
+  const {authState, stats} = props;
 
   return (
     <Switch>
@@ -71,7 +71,7 @@ export default function MainLayout(props) {
         path={["/home", "/"]}
         render={(props) => {
           return (
-            <Home {...props} authState={authState} />
+            <Home {...props} authState={authState} stats={stats}/>
           );
         }}
       />

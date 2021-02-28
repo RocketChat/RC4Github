@@ -5,6 +5,7 @@ const createChannelController = require("../controllers/createChannel");
 const verifyWebhooks = require("../middlewares/verifyWebhooks");
 const webhooksController = require("../controllers/webhooks");
 const passport = require("passport");
+const statsController = require("../controllers/stats");
 
 router.post("/login", loginController.createToken);
 router.post("/auth/github/upgrade", loginController.upgradeAccess);
@@ -36,5 +37,7 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   webhooksController.deleteGithubWebhook
 );
+
+router.get("/stats", statsController.fetchStats);
 
 module.exports = router;

@@ -80,9 +80,8 @@ export default function ActivityPane(props) {
         const repository = props.location.pathname
           .split("/")[2]
           .replace("_", "/");
-        const authToken = Cookies.get("gh_private_repo_token")
-          ? Cookies.get("gh_private_repo_token")
-          : Cookies.get("gh_login_token");
+        const authToken =
+          Cookies.get("gh_private_repo_token") || Cookies.get("gh_login_token");
         const ghRepoResponse = await axios({
           method: "get",
           url: `${githubApiDomain}/repos/${repository}`,

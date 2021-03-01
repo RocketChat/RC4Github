@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Cookies from "js-cookie";
 import ActivityItem from "./../ActivityItem";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Snackbar } from "@material-ui/core";
 import ConfigureWebhook from "../ConfigureWebhook";
-import { githubPrivateRepoAccessClientID } from "../../utils/constants";
+import {
+  githubPrivateRepoAccessClientID,
+  githubApiDomain,
+} from "../../utils/constants";
 import { IoSettingsOutline } from "react-icons/io5";
 
 import "./index.css";
@@ -21,8 +25,11 @@ export default function ActivityPane(props) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarText, setSnackbarText] = useState("");
+  const [isRepoOwner, setIsRepoOwner] = useState(false);
 
-  useEffect(() => {
+  const { authState } = props;
+
+  useEffect(async () => {
     fetch(`/api/webhooks?room_name=${props.location.pathname.split("/")[2]}`, {
       method: "GET",
       headers: {
@@ -41,7 +48,8 @@ export default function ActivityPane(props) {
 
           // "if" executes if length doesn't match OR arrays are not equal.
           if (
-            webhookSubscriptions.length !== data.data.webhook.subscriptions.length ||
+            webhookSubscriptions.length !==
+              data.data.webhook.subscriptions.length ||
             data.data.webhook.subscriptions.forEach((i, subscription) => {
               if (webhookSubscriptions[i] !== subscription) {
                 return false;
@@ -65,6 +73,29 @@ export default function ActivityPane(props) {
         }
       })
       .catch((error) => console.log(error));
+
+    try {
+      // Checks if the current user is also the owner of the repo
+      if (authState.user.username) {
+        const repository = props.location.pathname
+          .split("/")[2]
+          .replace("_", "/");
+        const authToken =
+          Cookies.get("gh_private_repo_token") || Cookies.get("gh_login_token");
+        const ghRepoResponse = await axios({
+          method: "get",
+          url: `${githubApiDomain}/repos/${repository}`,
+          headers: {
+            accept: "application/json",
+            Authorization: `token ${authToken}`,
+          },
+        });
+
+        setIsRepoOwner(ghRepoResponse.data.permissions.admin);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }, [props.location.pathname]);
   useEffect(() => {
     if (webhookId) {
@@ -84,8 +115,8 @@ export default function ActivityPane(props) {
 
   const handleClickConfigureWebhooks = async () => {
     if (!Cookies.get("gh_private_repo_token")) {
-      Cookies.set("gh_upgrade_prev_path", window.location.pathname)
-      window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`
+      Cookies.set("gh_upgrade_prev_path", window.location.pathname);
+      window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`;
     } else {
       setOpenWebhookDialog(true);
     }
@@ -109,12 +140,14 @@ export default function ActivityPane(props) {
     <div className="activity-pane-wrapper">
       <div className="activity-pane-header">
         <span>Activity </span>
-        <div className="configure-webhooks-control">
-          <IoSettingsOutline
-            className="configure-webhooks-icon"
-            onClick={handleClickConfigureWebhooks}
-          />
-        </div>
+        {authState.isLoggedIn && isRepoOwner && (
+          <div className="configure-webhooks-control">
+            <IoSettingsOutline
+              className="configure-webhooks-icon"
+              onClick={handleClickConfigureWebhooks}
+            />
+          </div>
+        )}
       </div>
       <hr className="activity-pane-divider"></hr>
       <div className="activity-pane-body">

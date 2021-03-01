@@ -93,7 +93,6 @@ export default class CreateCommunity extends Component {
           rc_uid: Cookies.get("rc_uid"),
           channel: community.value.concat("_community"),
           members: communityMembers,
-          description: description,
           topic: `GitHub: https://github.com/${community.value}`,
           type: "c",
         },

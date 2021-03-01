@@ -16,6 +16,8 @@ const rocketChatDomain =
 const mongodbURI = process.env.MONGODB_URI || "mongodb://127.0.0.1/rc4git";
 const rc4gitApiURL =
   process.env.RC4GIT_API_URL || "YOUR_PUBLICLY_HOSTED_RC4GIT_API_URL";
+const rc4gitDomain =
+  process.env.RC4GIT_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_CLIENT";
 module.exports = {
   jwtSecret,
   algorithm,
@@ -30,4 +32,5 @@ module.exports = {
   githubPrivateRepoAccessClientID,
   githubPrivateRepoAccessClientSecret,
   rc4gitApiURL,
+  rc4gitDomain
 };

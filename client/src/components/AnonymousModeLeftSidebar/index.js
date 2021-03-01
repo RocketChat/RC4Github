@@ -10,7 +10,7 @@ export default function AnonymousModeLeftSidebar(props) {
       </Link>
       <div className="anonymous-left-sidebar-title-container">
         <h2 className="anonymous-left-sidebar-title">
-          Where communities thrive
+          Where communities shape the future
         </h2>
       </div>
       <div className="anonymous-left-sidebar-content">
@@ -34,7 +34,7 @@ export default function AnonymousModeLeftSidebar(props) {
             <p className="sidebar-stat">
               <img src="https://img.icons8.com/color/35/000000/online--v1.png" alt="online-users" />
               <strong className="sidebar-stat-number">{onlineUsers}</strong>&nbsp;
-              <span className="sidebar-stat-label">Online Users</span>
+              <span className="sidebar-stat-label">Total Online Users</span>
             </p>
           </Route>
           <Route path={["/"]}>

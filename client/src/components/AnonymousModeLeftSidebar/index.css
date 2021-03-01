@@ -15,7 +15,7 @@
 }
 
 .anonymous-left-sidebar-title-container {
-    padding:0px 10px;
+    padding:0px 8px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;

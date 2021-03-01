@@ -76,7 +76,21 @@ export default function SignedLeftSidebar(props) {
     setDirectMessages(directMessages);
   };
 
-  const fetchRooms = () => {
+  const addRoom = (room) => {
+    setRooms([...rooms, room]);
+    if (room["t"] === "c" || room["t"] === "p") {
+      let newCommnunities = { ...communities };
+      let community_name = room.name.split(/_(.+)/)[0];
+      if (!newCommnunities[community_name])
+        newCommnunities[community_name] = [];
+      newCommnunities[community_name].push(room);
+      setCommunities(newCommnunities);
+    } else {
+      setDirectMessages([...directMessages, room]);
+    }
+  };
+
+  useEffect(() => {
     const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
       "rc_uid"
     )}&fields={"userRooms": 1}`;
@@ -95,24 +109,6 @@ export default function SignedLeftSidebar(props) {
       .catch((err) => {
         console.log("Error Fetching Rooms from server --->", err);
       });
-  };
-
-  const addRoom = (room) => {
-    setRooms([...rooms, room]);
-    if (room["t"] === "c" || room["t"] === "p") {
-      let newCommnunities = { ...communities };
-      let community_name = room.name.split(/_(.+)/)[0];
-      if (!newCommnunities[community_name])
-        newCommnunities[community_name] = [];
-      newCommnunities[community_name].push(room);
-      setCommunities(newCommnunities);
-    } else {
-      setDirectMessages([...directMessages, room]);
-    }
-  };
-
-  useEffect(() => {
-    fetchRooms();
   }, []);
 
   const handleEndCreateCommunity = () => {

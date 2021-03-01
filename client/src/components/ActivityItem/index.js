@@ -9,13 +9,18 @@ export default function ActivityItem({event, repo}) {
         <div className="activity-event-info">
           <DiGithubBadge className="activity-item-vcs-badge" />
           <div className="activity-item-content">
-            <a href={`https://github.com/${sender.username}`} target="_blank">
+            <a
+              href={`https://github.com/${sender.username}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               {sender.username}
             </a>
             <span>&nbsp;{`${action} `}&nbsp;</span>
             <a
               href={`https://github.com/${repo}/issues/${resource.number}`}
               target="_blank"
+              rel="noreferrer"
             >
               #{resource.number}
             </a>

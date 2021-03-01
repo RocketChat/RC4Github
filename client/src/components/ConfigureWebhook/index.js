@@ -30,6 +30,7 @@ export default function ConfigureWebhook(props) {
     if (props.webhookId) {
       setSelectedEvents(props.webhookSubscriptions);
     }
+    // eslint-disable-next-line
   }, [props.webhookId]);
 
   const handleCreateWebhook = async () => {
@@ -62,7 +63,7 @@ export default function ConfigureWebhook(props) {
   const handleUpdateWebhook = async () => {
     try {
       setLoading(true);
-      const ghUpdateWebhookResponse = await axios({
+      await axios({
         method: "patch",
         url: `/api/webhooks/github`,
         headers: {
@@ -89,7 +90,7 @@ export default function ConfigureWebhook(props) {
   const handleDeleteWebhook = async () => {
     try {
       setDeleteLoading(true);
-      const ghDeleteWebhookResponse = await axios({
+      await axios({
         method: "delete",
         url: `/api/webhooks/github`,
         headers: {

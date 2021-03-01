@@ -96,6 +96,7 @@ export default function ActivityPane(props) {
     } catch (error) {
       console.log(error);
     }
+    // eslint-disable-next-line
   }, [props.location.pathname]);
   useEffect(() => {
     if (webhookId) {

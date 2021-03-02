@@ -30,8 +30,7 @@ export default function ConfigureWebhook(props) {
     if (props.webhookId) {
       setSelectedEvents(props.webhookSubscriptions);
     }
-    // eslint-disable-next-line
-  }, [props.webhookId]);
+  }, [props.webhookId, props.webhookSubscriptions]);
 
   const handleCreateWebhook = async () => {
     try {

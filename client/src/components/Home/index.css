@@ -87,3 +87,49 @@
     text-align: center;
 }
 
+.search-icon-explore-desc {
+    vertical-align: bottom;
+}
+
+.community-home-img {
+    margin: 10px;
+    width: 500px;
+}
+
+.signed-home-main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.signed-home-header {
+    margin-bottom: 40px;
+}
+
+.signed-home-header p {
+    font-size: 0.87em;
+    line-height: 27px;
+    color: #252525;
+}
+
+.signed-home-shortcut-container {
+    margin-bottom: 30px;
+}
+
+.signed-home-shortcut {
+    padding: 14px;
+    border-radius: 5px;
+    font-size: 0.87em;
+    cursor: pointer;
+    display: flex;
+}
+
+.signed-home-shortcut:hover {
+    background-color: #e3e9fe66;
+}
+
+.signed-home-shortcut-icon {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 5px;
+}

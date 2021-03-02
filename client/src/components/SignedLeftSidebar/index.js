@@ -259,6 +259,7 @@ export default function SignedLeftSidebar(props) {
           <div
             className="left-sidebar-control-icons"
             onClick={toggleShowSearch}
+            id="search"
           >
             <RiSearchLine />
           </div>

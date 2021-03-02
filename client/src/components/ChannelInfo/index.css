@@ -1,0 +1,44 @@
+.repo-info-wrapper {
+  height: -webkit-fill-available;
+}
+
+.repo-info-header {
+  color: #9a9ea4;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.repo-info-description {
+  color: #70747b;
+  margin-bottom: 20px;
+}
+
+.repo-info-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.repo-info-stats a {
+  color: #9a9ea4;
+  text-decoration: none;
+}
+
+.repo-info-stats a:hover {
+  text-decoration: underline;
+}
+
+.private-repo-message {
+  font-size: 0.95em;
+  color: #9a9ea4;
+  line-height: 25px;
+}
+
+.channel-info-tab {
+  min-width: "50%";
+  width: "50%";
+  text-transform: "uppercase";
+}

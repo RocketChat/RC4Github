@@ -29,7 +29,7 @@ export default function ActivityPane(props) {
 
   const { authState } = props;
 
-  useEffect(async () => {
+  useEffect(() => {
     fetch(`/api/webhooks?room_name=${props.location.pathname.split("/")[2]}`, {
       method: "GET",
       headers: {
@@ -74,28 +74,33 @@ export default function ActivityPane(props) {
       })
       .catch((error) => console.log(error));
 
-    try {
-      // Checks if the current user is also the owner of the repo
-      if (authState.user.username) {
-        const repository = props.location.pathname
-          .split("/")[2]
-          .replace("_", "/");
-        const authToken =
-          Cookies.get("gh_private_repo_token") || Cookies.get("gh_login_token");
-        const ghRepoResponse = await axios({
-          method: "get",
-          url: `${githubApiDomain}/repos/${repository}`,
-          headers: {
-            accept: "application/json",
-            Authorization: `token ${authToken}`,
-          },
-        });
+    const checkIfUserIsOwner = async () => {
+      try {
+        // Checks if the current user is also the owner of the repo
+        if (authState.user.username) {
+          const repository = props.location.pathname
+            .split("/")[2]
+            .replace("_", "/");
+          const authToken =
+            Cookies.get("gh_private_repo_token") ||
+            Cookies.get("gh_login_token");
+          const ghRepoResponse = await axios({
+            method: "get",
+            url: `${githubApiDomain}/repos/${repository}`,
+            headers: {
+              accept: "application/json",
+              Authorization: `token ${authToken}`,
+            },
+          });
 
-        setIsRepoOwner(ghRepoResponse.data.permissions.admin);
+          setIsRepoOwner(ghRepoResponse.data.permissions.admin);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
+    checkIfUserIsOwner();
+    // eslint-disable-next-line
   }, [props.location.pathname]);
   useEffect(() => {
     if (webhookId) {

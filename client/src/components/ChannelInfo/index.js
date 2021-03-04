@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Tabs, Tab, Typography, Box } from "@material-ui/core";
+import {
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+  Grid,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Slide,
+} from "@material-ui/core";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { githubApiDomain } from "../../utils/constants";
+import { githubApiDomain, rcApiDomain } from "../../utils/constants";
+import online from "../../images/online.png";
 
 import "./index.css";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,6 +58,13 @@ export default function ChannelInfo(props) {
   const [repoInfo, setRepoInfo] = useState({});
   const [isPrivate, setIsPrivate] = useState(false);
   const [issuesCount, setIssuesCount] = useState(0);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [channelMembers, setChannelMembers] = useState([]);
+  const [openMembersDialog, setOpenMembersDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const repoURL = `https://github.com/${props.location.pathname
+    .split("/")[2]
+    .replace("_", "/")}`;
 
   useEffect(() => {
     const ghRepoInfo = async () => {
@@ -51,18 +74,18 @@ export default function ChannelInfo(props) {
         const repository = props.location.pathname
           .split("/")[2]
           .replace("_", "/");
-        const headers = {
+        const ghHeaders = {
           accept: "application/json",
         };
         if (Cookies.get("gh_private_repo_token")) {
-          headers["Authorization"] = `token ${Cookies.get(
+          ghHeaders["Authorization"] = `token ${Cookies.get(
             "gh_private_repo_token"
           )}`;
         }
         const ghRepoInfoResponse = await axios({
           method: "get",
           url: `${githubApiDomain}/repos/${repository}`,
-          headers: headers,
+          headers: ghHeaders,
         });
         const ghIssuesResponse = await axios({
           method: "get",
@@ -80,7 +103,29 @@ export default function ChannelInfo(props) {
         setIsPrivate(true);
       }
     };
+
+    const channelMembers = async () => {
+      try {
+        // Fetches channel members
+        const channelMembersResponse = await axios({
+          method: "get",
+          url: `${rcApiDomain}/api/v1/channels.members`,
+          headers: {
+            "X-Auth-Token": Cookies.get("rc_token"),
+            "X-User-Id": Cookies.get("rc_uid"),
+          },
+          params: {
+            roomName: props.location.pathname.split("/")[2],
+          },
+        });
+        setChannelMembers(channelMembersResponse.data.members);
+      } catch (error) {
+        console.log(error);
+        setIsLoggedOut(true);
+      }
+    };
     ghRepoInfo();
+    channelMembers();
   }, [props.location.pathname]);
 
   const [activeTab, setActiveTab] = useState(0);
@@ -93,6 +138,10 @@ export default function ChannelInfo(props) {
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
+  };
+
+  const handleCloseMembersDialog = () => {
+    setOpenMembersDialog(false);
   };
 
   return (
@@ -115,8 +164,62 @@ export default function ChannelInfo(props) {
         />
       </Tabs>
       <TabPanel value={activeTab} index={0}>
-        {/* TODO: Users Online */}
-        Users
+        <div className="channel-info-wrapper">
+          {!isLoggedOut ? (
+            <>
+              <Grid container spacing={2} style={{ marginBottom: "20px" }}>
+                {channelMembers
+                  .filter(
+                    (user, index) => user.status === "online" && index <= 25
+                  )
+                  .map((user) => {
+                    return (
+                      <Grid
+                        key={user.username}
+                        item
+                        xs={2}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          position: "relative",
+                        }}
+                      >
+                        <img
+                          style={{
+                            width: "10px",
+                            height: "10px",
+                            zIndex: "2",
+                            position: "absolute",
+                          }}
+                          src={online}
+                        />
+                        <img
+                          style={{
+                            width: "30px",
+                            zIndex: "1",
+                            marginLeft: "5px",
+                          }}
+                          src={`${rcApiDomain}/avatar/${user.username}`}
+                        />
+                      </Grid>
+                    );
+                  })}
+              </Grid>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => setOpenMembersDialog(true)}
+              >
+                See All
+              </Button>
+            </>
+          ) : (
+            <div className="user-logged-out-message">
+              Please sign in to view this information.
+            </div>
+          )}
+        </div>
       </TabPanel>
       <TabPanel value={activeTab} index={1}>
         <div className="repo-info-wrapper">
@@ -177,6 +280,54 @@ export default function ChannelInfo(props) {
           )}
         </div>
       </TabPanel>
+      <Dialog
+        open={openMembersDialog}
+        keepMounted
+        onClose={handleCloseMembersDialog}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+        TransitionComponent={Transition}
+        maxWidth="sm"
+        fullWidth={true}
+        scroll="paper"
+      >
+        <DialogTitle>Channel Members</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2} style={{ margin: "10px 0px" }}>
+            {channelMembers.map((user) => {
+              return (
+                <Grid
+                  key={user.username}
+                  item
+                  md={4}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    position: "relative",
+                  }}
+                >
+                  <img
+                    style={{ width: "30px" }}
+                    src={`${rcApiDomain}/avatar/${user.username}`}
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      marginLeft: "5px",
+                    }}
+                  >
+                    <span style={{ fontWeight: "bold" }}>{user.name}</span>
+                    <span style={{ fontSize: "x-small" }}>
+                      @{user.username}
+                    </span>
+                  </div>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

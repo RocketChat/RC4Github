@@ -42,3 +42,13 @@
   width: "50%";
   text-transform: "uppercase";
 }
+
+.channel-info-wrapper {
+  height: -webkit-fill-available;
+}
+
+.user-logged-out-message {
+  font-size: 0.95em;
+  color: #9a9ea4;
+  line-height: 25px;
+}

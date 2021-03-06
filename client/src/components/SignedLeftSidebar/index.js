@@ -174,14 +174,13 @@ export default function SignedLeftSidebar(props) {
   };
 
   const logout = () => {
-    const iframe = window.document.getElementsByTagName("iframe")[0];
+    const iframe = document.getElementsByTagName("iframe")[0];
     if (iframe) {
       iframe.contentWindow.postMessage(
         { externalCommand: "logout" },
         `${rcApiDomain}`
       );
-      window.document.getElementsByClassName("loading-chatWindow")[0].style =
-        "display: flex";
+      document.getElementsByClassName("loading-chatWindow")[0].classList.remove("hide-chatWindow");
     }
     const loadingIcon = document.getElementById("logout-loading-icon");
     const logoutButton = document.getElementById("logout-menu-item");
@@ -207,8 +206,9 @@ export default function SignedLeftSidebar(props) {
         console.log("Error logging out --->", err);
         loadingIcon.classList.add("hide-logout-loading");
         logoutButton.classList.remove("disable-click");
-        window.document.getElementsByClassName("loading-chatWindow")[0].style =
-          "";
+        document
+          .getElementsByClassName("loading-chatWindow")[0]
+          .classList.add("hide-chatWindow");
         return;
       });
   };

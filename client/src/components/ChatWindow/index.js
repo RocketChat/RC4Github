@@ -18,7 +18,7 @@ export default function ChatWindow(props) {
   }, [pathname]);
   return (
     <div className="chatWindow-container">
-      <div className="loading-chatWindow"></div>
+      <div className="loading-chatWindow hide-chatWindow"></div>
       <iframe
         src={`${rcApiDomain}/home/?layout=embedded`}
         title="myframe"

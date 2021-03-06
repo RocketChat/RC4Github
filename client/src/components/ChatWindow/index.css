@@ -1,4 +1,21 @@
 .chatWindow-container {
-    width: -webkit-fill-available;;
-    border: none;
+  width: -webkit-fill-available;
+  display: flex;
+  position: relative;
+}
+
+.loading-chatWindow {
+  background-color: #2f343d;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.hide-chatWindow {
+  display: none;
+}
+
+.chatWindow {
+  width: -webkit-fill-available;
+  border: none;
 }

@@ -13,10 +13,7 @@ import Cookies from "js-cookie";
 import CreateCommunity from "../CreateCommunity";
 import CreateChannel from "../CreateChannel";
 import axios from "axios";
-import {
-  rcApiDomain,
-  githubApiDomain,
-} from "./../../utils/constants";
+import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
 import SidebarSearch from "../SidebarSearch";
 
 import "./index.css";
@@ -177,6 +174,14 @@ export default function SignedLeftSidebar(props) {
   };
 
   const logout = () => {
+    const iframe = document.getElementsByTagName("iframe")[0];
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        { externalCommand: "logout" },
+        `${rcApiDomain}`
+      );
+      document.getElementsByClassName("loading-chatWindow")[0].classList.remove("hide-chatWindow");
+    }
     const loadingIcon = document.getElementById("logout-loading-icon");
     const logoutButton = document.getElementById("logout-menu-item");
     loadingIcon.classList.remove("hide-logout-loading");
@@ -201,6 +206,9 @@ export default function SignedLeftSidebar(props) {
         console.log("Error logging out --->", err);
         loadingIcon.classList.add("hide-logout-loading");
         logoutButton.classList.remove("disable-click");
+        document
+          .getElementsByClassName("loading-chatWindow")[0]
+          .classList.add("hide-chatWindow");
         return;
       });
   };

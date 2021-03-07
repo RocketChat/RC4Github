@@ -12,10 +12,10 @@ module.exports.fetchStats = async (req, res) => {
           },
         });
         const stats = {
-          channels: RCStats.data.totalRooms,
+          rooms: RCStats.data.totalChannels + RCStats.data.totalPrivateGroups,
           users: RCStats.data.totalUsers,
           onlineUsers: RCStats.data.onlineUsers,
-          totalMessages: RCStats.data.totalMessages
+          totalMessages: RCStats.data.totalMessages,
         };
         return res.status(200).json({success: true, data: stats});
     } catch(err) {

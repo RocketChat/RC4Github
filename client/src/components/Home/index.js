@@ -4,7 +4,7 @@ import Countup from "./../common/Countup";
 import "./index.css";
 
 export default function Home(props) {
-    const { users, channels, onlineUsers, totalMessages } = props.stats;
+    const { users, rooms, onlineUsers, totalMessages } = props.stats;
     if(!props.authState.isLoggedIn){
       return (
         <div className="home-wrapper">
@@ -12,7 +12,9 @@ export default function Home(props) {
             <h1>
               Real-time Collaboration
               <br />
-              <strong>Powered by RC4GIT Community</strong>
+              <a href="http://github.com/RocketChat/RC4Community" rel="noreferrer" target="_blank" className="powered-by-title">
+                <strong>Powered by RCforCommunities</strong>
+              </a>
             </h1>
 
             <p>
@@ -28,10 +30,10 @@ export default function Home(props) {
               <div className="stat-container">
                 <img
                   src="https://img.icons8.com/plasticine/80/000000/organization.png"
-                  alt="channels"
+                  alt="rooms"
                 />
-                <Countup end={channels} className="stat-number" />
-                <div className="stat-label">Channels</div>
+                <Countup end={rooms} className="stat-number" />
+                <div className="stat-label">Rooms</div>
               </div>
               <div className="stat-container">
                 <img

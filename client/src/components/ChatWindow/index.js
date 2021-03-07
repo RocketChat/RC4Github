@@ -8,6 +8,7 @@ export default function ChatWindow(props) {
     document.getElementsByTagName(
       "iframe"
     )[0].src = `${rcApiDomain}${pathname}/?layout=embedded`;
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     const iframe = document.getElementsByTagName("iframe")[0];

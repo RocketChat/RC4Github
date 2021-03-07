@@ -49,6 +49,8 @@ export default function ConfigureWebhook(props) {
         withCredentials: true,
       });
       props.setWebhookId(ghCreateWebhookResponse.data.data.hook_id)
+      props.setWebhookSubscriptions(selectedEvents)
+      props.setEvents([])
       setLoading(false);
       props.setSnackbar("success", "Webhook created successfully!");
       props.setOpenWebhookDialog(false);
@@ -102,6 +104,7 @@ export default function ConfigureWebhook(props) {
         withCredentials: true,
       });
       props.setWebhookId(null)
+      props.setWebhookSubscriptions([])
       props.setEvents([])
       setDeleteLoading(false);
       props.setSnackbar("success", "Webhook deleted successfully!");

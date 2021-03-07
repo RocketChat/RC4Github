@@ -13,7 +13,7 @@
 }
 
 .repo-info-description {
-  color: #70747b;
+  color: #9a9ea4;
   margin-bottom: 20px;
 }
 
@@ -38,7 +38,20 @@
 }
 
 .channel-info-tab {
-  min-width: "50%";
-  width: "50%";
-  text-transform: "uppercase";
+  width: 50%;
+  color: #70747b !important;
+}
+
+.tabpanel-box {
+  padding: 15px 20px 0px 20px;
+}
+
+.active-tab {
+  color: #9a9ea4 !important;
+}
+
+.channel-info-wrapper {
+  max-height: 50%;
+  overflow-wrap: break-word;
+  overflow-y: scroll;
 }

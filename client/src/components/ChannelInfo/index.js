@@ -18,25 +18,23 @@ function TabPanel(props) {
       aria-labelledby={`channelinfo-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box style={{ padding: "15px 20px 0px 20px" }}>
-          <Typography component={"span"}>{children}</Typography>
-        </Box>
-      )}
+      <Box className="tabpanel-box">
+        <Typography component={"span"}>{children}</Typography>
+      </Box>
     </div>
   );
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.any.isRequired,
+  index: PropTypes.number.isRequired,
   value: PropTypes.any.isRequired,
 };
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `channel-info-tab-${index}`,
+    "aria-controls": `channel-info-tabpanel-${index}`,
   };
 }
 
@@ -46,6 +44,7 @@ export default function ChannelInfo(props) {
 
   useEffect(() => {
     const ghRepoInfo = async () => {
+      setIsPrivate(false);
       try {
         // Fetches repository information
         const repository = props.location.pathname
@@ -73,47 +72,39 @@ export default function ChannelInfo(props) {
     ghRepoInfo();
   }, [props.location.pathname]);
 
-  const [value, setValue] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const repoURL = `https://github.com/${props.location.pathname
     .split("/")[2]
     .replace("_", "/")}`;
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
     setActiveTab(newValue);
   };
 
   return (
-    <div>
+    <div className="channel-info-wrapper">
       <Tabs
-        value={value}
+        value={activeTab}
         onChange={handleChange}
-        aria-label="simple tabs example"
+        aria-label="channel info tabs"
         indicatorColor="none"
       >
         <Tab
-          className="channel-info-tab"
-          style={{
-            color: activeTab == 0 ? "#9a9ea4" : "#70747b",
-          }}
+          className={`channel-info-tab ${activeTab == 0 ? "active-tab" : ""}`}
           label="People"
           {...a11yProps(0)}
         />
         <Tab
-          className="channel-info-tab"
-          style={{
-            color: activeTab == 1 ? "#9a9ea4" : "#70747b",
-          }}
+          className={`channel-info-tab ${activeTab == 1 ? "active-tab" : ""}`}
           label="Repo Info"
           {...a11yProps(1)}
         />
       </Tabs>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={activeTab} index={0}>
         {/* TODO: Users Online */}
         Users
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={activeTab} index={1}>
         <div className="repo-info-wrapper">
           {!isPrivate ? (
             <>

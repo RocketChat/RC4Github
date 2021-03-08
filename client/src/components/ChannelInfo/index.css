@@ -53,5 +53,5 @@
 .channel-info-wrapper {
   max-height: 50%;
   overflow-wrap: break-word;
-  overflow-y: scroll;
+  overflow-y: auto;
 }

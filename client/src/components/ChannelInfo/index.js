@@ -41,6 +41,7 @@ function a11yProps(index) {
 export default function ChannelInfo(props) {
   const [repoInfo, setRepoInfo] = useState({});
   const [isPrivate, setIsPrivate] = useState(false);
+  const [issuesCount, setIssuesCount] = useState(0);
 
   useEffect(() => {
     const ghRepoInfo = async () => {
@@ -63,6 +64,16 @@ export default function ChannelInfo(props) {
           url: `${githubApiDomain}/repos/${repository}`,
           headers: headers,
         });
+        const ghIssuesResponse = await axios({
+          method: "get",
+          url: `${githubApiDomain}/repos/${repository}/issues`,
+          headers: headers,
+        });
+        // GitHub treats both PRs and issues as issues except that PRs can be 
+        // distinguished by the presence of a pull_request key
+        setIssuesCount(
+          ghIssuesResponse.data.filter((issue) => !issue.pull_request).length
+        );
         setRepoInfo(ghRepoInfoResponse.data);
       } catch (error) {
         console.log(error);
@@ -90,12 +101,12 @@ export default function ChannelInfo(props) {
         indicatorColor="none"
       >
         <Tab
-          className={`channel-info-tab ${activeTab == 0 ? "active-tab" : ""}`}
+          className={`channel-info-tab ${activeTab === 0 ? "active-tab" : ""}`}
           label="People"
           {...a11yProps(0)}
         />
         <Tab
-          className={`channel-info-tab ${activeTab == 1 ? "active-tab" : ""}`}
+          className={`channel-info-tab ${activeTab === 1 ? "active-tab" : ""}`}
           label="Repo Info"
           {...a11yProps(1)}
         />
@@ -127,17 +138,29 @@ export default function ChannelInfo(props) {
 
               <div className="repo-info-stats">
                 <span>
-                  <a href={`${repoURL}/issues`}>
-                    <strong>{repoInfo.open_issues_count}</strong> issues
+                  <a
+                    href={`${repoURL}/issues`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <strong>{issuesCount}</strong> issues
                   </a>
                 </span>
                 <span>
-                  <a href={`${repoURL}/watchers`}>
+                  <a
+                    href={`${repoURL}/watchers`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <strong>{repoInfo.watchers_count}</strong> watchers
                   </a>
                 </span>
                 <span>
-                  <a href={`${repoURL}/stargazers`}>
+                  <a
+                    href={`${repoURL}/stargazers`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <strong>{repoInfo.stargazers_count}</strong> stars
                   </a>
                 </span>

@@ -30,10 +30,8 @@ export default function RoomItem({room}) {
           <FiUser className="room-item-type-icon"></FiUser>
         )}
         <span className="room-name">
-          {room.name.split(/_(.+)/)[1] && room["t"] !== "d"
-            ? room.name.split(/_(.+)/)[1]
-            : room.name}
-          {room.username ? ` (${room.username})` : null}
+          {(room.fname && (room.fname.split(/_(.+)/)[1] || room.fname)) ||
+            room.name || room.username}
         </span>
       </NavLink>
     );

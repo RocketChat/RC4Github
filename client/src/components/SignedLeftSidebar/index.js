@@ -442,7 +442,7 @@ export default function SignedLeftSidebar(props) {
               fetchOrganizations();
               setStartCreateChannel(true);
               handleCreateClose();
-            }}
+            }} 
           >
             <CgHashtag color="#000" className="create-menu-icons" />
             Create Channel

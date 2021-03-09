@@ -31,18 +31,25 @@ export default function SignedLeftSidebar(props) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarText, setSnackbarText] = useState("");
-  const [rooms, setRooms] = useState([]);
-  const [communities, setCommunities] = useState({});
-  const [directMessages, setDirectMessages] = useState([]);
+  const [rooms, setRooms] = useState({
+    conversations: {},
+    communities: {},
+    directMessages: {},
+  });
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [groupByCommunity, setGroupByCommunity] = useState(true);
 
-  const sortRoomsAlphabetically = () => {
-    let chatRooms = rooms;
+  const sortRoomsAlphabetically = (conversations) => {
+    let chatRooms = [];
+    for (let roomId in conversations) {
+      chatRooms.push(conversations[roomId]);
+    }
     chatRooms.sort((a, b) => {
-      let roomAname = a.name.split(/_(.+)/)[1] || a.name;
-      let roomBname = b.name.split(/_(.+)/)[1] || b.name;
+      let roomAname =
+        (a.fname && (a.fname.split(/_(.+)/)[1] || a.fname)) || a.name;
+      let roomBname =
+        (b.fname && (b.fname.split(/_(.+)/)[1] || b.fname)) || b.name;
       roomAname = roomAname.toUpperCase();
       roomBname = roomBname.toUpperCase();
       if (roomAname < roomBname) {
@@ -53,44 +60,49 @@ export default function SignedLeftSidebar(props) {
       }
       return 0;
     });
-    setChatRooms(chatRooms);
+    formatAndSetRooms(chatRooms);
   };
 
-  const setChatRooms = (rooms) => {
+  const formatAndSetRooms = (rooms) => {
     let communities = {};
-    let directMessages = [];
+    let directMessages = {};
+    let conversations = {};
     rooms.forEach((room) => {
+      conversations[room._id] = room;
       if (room["t"] === "c" || room["t"] === "p") {
         let community_name = room.name.split(/_(.+)/)[0];
-        if (!communities[community_name]) communities[community_name] = [];
-        communities[community_name].push(room);
+        if (!communities[community_name]) communities[community_name] = {};
+        communities[community_name][room._id] = room;
       } else {
-        directMessages.push(room);
+        directMessages[room._id] = room;
       }
     });
-    setRooms(rooms);
-    setCommunities(communities);
-    setDirectMessages(directMessages);
+    setRooms({
+      conversations,
+      communities,
+      directMessages,
+    });
   };
 
   const addRoom = (room) => {
-    setRooms([...rooms, room]);
-    if (room["t"] === "c" || room["t"] === "p") {
-      let newCommnunities = { ...communities };
-      let community_name = room.name.split(/_(.+)/)[0];
-      if (!newCommnunities[community_name])
-        newCommnunities[community_name] = [];
-      newCommnunities[community_name].push(room);
-      setCommunities(newCommnunities);
-    } else {
-      setDirectMessages([...directMessages, room]);
+    let newRooms = rooms;
+    newRooms["conversations"][room._id] = room;
+    if (document.getElementById("alpha-sort").checked) {
+      return sortRoomsAlphabetically(newRooms["conversations"]);
     }
+    if (room["t"] === "c" || room["t"] === "p") {
+      let community_name = room.name.split(/_(.+)/)[0];
+      if (!newRooms["communities"][community_name])
+        newRooms["communities"][community_name] = {};
+      newRooms["communities"][community_name][room._id] = room;
+    } else {
+      newRooms["directMessages"][room._id] = room;
+    }
+    setRooms(newRooms);
   };
 
   useEffect(() => {
-    const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
-      "rc_uid"
-    )}&fields={"userRooms": 1}`;
+    const url = `${rcApiDomain}/api/v1/subscriptions.get`;
     fetch(url, {
       headers: {
         "X-Auth-Token": Cookies.get("rc_token"),
@@ -101,12 +113,32 @@ export default function SignedLeftSidebar(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setChatRooms(data.user.rooms);
+        formatAndSetRooms(data.update);
       })
       .catch((err) => {
         console.log("Error Fetching Rooms from server --->", err);
       });
   }, []);
+
+  window.addEventListener("message", function (e) {
+    if (
+      e.data.eventName === "unread-changed-by-subscription" &&
+      rooms["conversations"][e.data.data._id] &&
+      rooms["conversations"][e.data.data._id].alert !== e.data.data.alert
+    ) {
+      let newRooms = rooms;
+      newRooms["conversations"][e.data.data._id]["alert"] = e.data.data.alert;
+      if (e.data.data.t === "d") {
+        newRooms["directMessages"][e.data.data._id]["alert"] =
+          e.data.data.alert;
+      } else {
+        newRooms["communities"][e.data.data.name.split(/_(.+)/)[0]][
+          e.data.data._id
+        ]["alert"] = e.data.data.alert;
+      }
+      setRooms({ ...newRooms });
+    }
+  });
 
   const handleEndCreateCommunity = () => {
     setStartCreateCommunity(false);
@@ -180,7 +212,9 @@ export default function SignedLeftSidebar(props) {
         { externalCommand: "logout" },
         `${rcApiDomain}`
       );
-      document.getElementsByClassName("loading-chatWindow")[0].classList.remove("hide-chatWindow");
+      document
+        .getElementsByClassName("loading-chatWindow")[0]
+        .classList.remove("hide-chatWindow");
     }
     const loadingIcon = document.getElementById("logout-loading-icon");
     const logoutButton = document.getElementById("logout-menu-item");
@@ -311,7 +345,9 @@ export default function SignedLeftSidebar(props) {
                 <Radio
                   color="primary"
                   id="alpha-sort"
-                  onChange={sortRoomsAlphabetically}
+                  onChange={() => {
+                    sortRoomsAlphabetically(rooms["conversations"]);
+                  }}
                 />
               </div>
             </div>
@@ -392,7 +428,7 @@ export default function SignedLeftSidebar(props) {
           organizations={organizations}
           setSnackbar={setSnackbar}
           addRoom={addRoom}
-          rooms={rooms}
+          rooms={rooms["conversations"]}
         />
       )}
       <Snackbar
@@ -409,24 +445,24 @@ export default function SignedLeftSidebar(props) {
       <div className="signed-left-sidebar-body">
         {!groupByCommunity && (
           <CommunityListItem
-            community={rooms}
+            community={rooms["conversations"]}
             key={"Conversations"}
             community_name={"Conversations"}
           ></CommunityListItem>
         )}
         {groupByCommunity &&
-          Object.keys(communities).map((community_name) => {
+          Object.keys(rooms["communities"]).map((community_name) => {
             return (
               <CommunityListItem
-                community={communities[community_name]}
+                community={rooms["communities"][community_name]}
                 key={community_name}
                 community_name={community_name}
               ></CommunityListItem>
             );
           })}
-        {groupByCommunity && directMessages.length > 0 ? (
+        {groupByCommunity && Object.keys(rooms["directMessages"]).length ? (
           <CommunityListItem
-            community={directMessages}
+            community={rooms["directMessages"]}
             key={"Direct Messages"}
             community_name={"Direct Messages"}
           ></CommunityListItem>

@@ -55,7 +55,7 @@ export default class CreateChannel extends Component {
     let communityChannels = [],
       communityMember = [];
 
-    communityChannels = rooms
+    communityChannels = Object.keys(rooms).map((roomId) => rooms[roomId])
       .filter((room) => {
         return room.name.endsWith("_community");
       })

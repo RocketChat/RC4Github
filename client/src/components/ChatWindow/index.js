@@ -7,7 +7,7 @@ export default function ChatWindow(props) {
   useEffect(() => {
     document.getElementsByTagName(
       "iframe"
-    )[0].src = `${rcApiDomain}${pathname}/?layout=embedded`;
+    )[0].src = `${rcApiDomain}${pathname}?layout=embedded`;
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
@@ -18,7 +18,12 @@ export default function ChatWindow(props) {
     );
   }, [pathname]);
   return (
-    <div className="chatWindow-container">
+    <div
+      className={`chatWindow-container ${
+        (pathname === "/home" || pathname === "/") &&
+        "hide-chatWindow-container"
+      }`}
+    >
       <div className="loading-chatWindow hide-chatWindow"></div>
       <iframe
         src={`${rcApiDomain}/home/?layout=embedded`}

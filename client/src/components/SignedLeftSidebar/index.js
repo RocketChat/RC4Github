@@ -115,6 +115,15 @@ export default function SignedLeftSidebar(props) {
   useEffect(() => {
     const handleMessageEvents = (e) => {
       switch (e.data.eventName) {
+        case "unread-changed":
+          if (typeof e.data.data === "number") {
+            document.title = `(${e.data.data}) RCforCommunity`;
+          } else if (e.data.data === "") {
+            document.title = "RCforCommunity";
+          } else {
+            document.title = "(*) RCforCommunity";
+          }
+          break;
         case "unread-changed-by-subscription":
           if (
             rooms["conversations"] &&

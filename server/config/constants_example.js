@@ -11,13 +11,14 @@ const githubPrivateRepoAccessClientID =
   process.env.githubPrivateRepoAccessClientID || "GH CLIENT ID 2";
 const githubAuthURL = "https://github.com/login/oauth/access_token";
 const githubAPIDomain = "https://api.github.com";
-const rocketChatDomain =
-  process.env.RC_DOMAIN || "http://localhost:3000";
+const rocketChatDomain = process.env.RC_DOMAIN || "http://localhost:3000";
 const mongodbURI = process.env.MONGODB_URI || "mongodb://127.0.0.1/rc4git";
 const rc4gitApiURL =
   process.env.RC4GIT_API_URL || "YOUR_PUBLICLY_HOSTED_RC4GIT_API_URL";
 const rc4gitDomain =
   process.env.RC4GIT_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_CLIENT";
+const rc_uid = process.env.RC_UID || "ROCKET.CHAT SERVER USER ID FOR STATS";
+const rc_token = process.env.RC_TOKEN || "ROCKET.CHAT SERVER USER TOKEN FOR STATS";
 module.exports = {
   jwtSecret,
   algorithm,
@@ -32,5 +33,7 @@ module.exports = {
   githubPrivateRepoAccessClientID,
   githubPrivateRepoAccessClientSecret,
   rc4gitApiURL,
-  rc4gitDomain
+  rc4gitDomain,
+  rc_uid,
+  rc_token
 };

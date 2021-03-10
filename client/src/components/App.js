@@ -53,12 +53,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       auth: checkAuth(),
-      stats: {
-        communities: 0,
-        users: 0,
-        channels: 0,
-        onlineUsers: 0
-      }
+      stats: {}
     };
   }
 

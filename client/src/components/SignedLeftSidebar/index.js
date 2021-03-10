@@ -27,11 +27,7 @@ export default function SignedLeftSidebar(props) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarText, setSnackbarText] = useState("");
-  const [rooms, setRooms] = useState({
-    conversations: {},
-    communities: {},
-    directMessages: {},
-  });
+  const [rooms, setRooms] = useState({});
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [groupByCommunity, setGroupByCommunity] = useState(true);
@@ -115,6 +111,70 @@ export default function SignedLeftSidebar(props) {
         console.log("Error Fetching Rooms from server --->", err);
       });
   }, []);
+
+  useEffect(() => {
+    const handleMessageEvents = (e) => {
+      switch (e.data.eventName) {
+        case "unread-changed-by-subscription":
+          if (
+            rooms["conversations"] &&
+            rooms["conversations"][e.data.data._id] &&
+            rooms["conversations"][e.data.data._id].alert !== e.data.data.alert
+          ) {
+            console.log(e.data.data);
+            let newRooms = rooms;
+            newRooms["conversations"][e.data.data._id]["alert"] =
+              e.data.data.alert;
+            if (e.data.data.t === "d") {
+              newRooms["directMessages"][e.data.data._id]["alert"] =
+                e.data.data.alert;
+            } else {
+              newRooms["communities"][e.data.data.name.split(/_(.+)/)[0]][
+                e.data.data._id
+              ]["alert"] = e.data.data.alert;
+            }
+            setRooms({ ...newRooms });
+          }
+          break;
+        case "room-opened":
+          if (
+            rooms["conversations"] &&
+            !rooms["conversations"][e.data.data._id]
+          ) {
+            rooms["conversations"][e.data.data._id] = e.data.data;
+            fetch(
+              `${rcApiDomain}/api/v1/subscriptions.getOne?roomId=${e.data.data._id}`,
+              {
+                headers: {
+                  "X-Auth-Token": Cookies.get("rc_token"),
+                  "X-User-Id": Cookies.get("rc_uid"),
+                  "Content-Type": "application/json",
+                },
+                method: "GET",
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                delete rooms["conversations"][e.data.data._id];
+                addRoom(data.subscription);
+              })
+              .catch((err) => {
+                console.log("Error Fetching Room from server --->", err);
+              });
+            break;
+          }
+          break;
+      }
+    };
+    window.addEventListener("message", handleMessageEvents, true);
+    return () => {
+      window.removeEventListener("message", handleMessageEvents, true);
+    };
+  }, [rooms]);
+
+  const handleEndCreateCommunity = () => {
+    setStartCreateCommunity(false);
+  };
 
   const handleEndCreateChannel = () => {
     setStartCreateChannel(false);
@@ -218,7 +278,6 @@ export default function SignedLeftSidebar(props) {
   const openSortMenu = (event) => {
     setSortAnchorEl(event.currentTarget);
   };
-
   return (
     <div className="signed-left-sidebar-wrapper">
       <div className="signed-left-sidebar-header">
@@ -373,6 +432,7 @@ export default function SignedLeftSidebar(props) {
           ></CommunityListItem>
         )}
         {groupByCommunity &&
+          rooms["communities"] &&
           Object.keys(rooms["communities"]).map((community_name) => {
             return (
               <CommunityListItem
@@ -382,13 +442,15 @@ export default function SignedLeftSidebar(props) {
               ></CommunityListItem>
             );
           })}
-        {groupByCommunity && Object.keys(rooms["directMessages"]).length ? (
-          <CommunityListItem
-            community={rooms["directMessages"]}
-            key={"Direct Messages"}
-            community_name={"Direct Messages"}
-          ></CommunityListItem>
-        ) : null}
+        {groupByCommunity &&
+          rooms["directMessages"] &&
+          Object.keys(rooms["directMessages"]).length > 0 && (
+            <CommunityListItem
+              community={rooms["directMessages"]}
+              key={"Direct Messages"}
+              community_name={"Direct Messages"}
+            ></CommunityListItem>
+          )}
       </div>
       <div className="signed-left-sidebar-footer">
         <img

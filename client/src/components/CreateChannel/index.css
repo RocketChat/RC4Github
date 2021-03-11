@@ -1,0 +1,16 @@
+.create-channel-wrapper {
+  justify-content: center;
+  display: flex;
+}
+
+.create-dialog-description {
+  color: #8e9299;
+}
+
+.repository-autocomplete {
+  width: 80%;
+}
+
+.create-button {
+  margin-bottom: 10px;
+}

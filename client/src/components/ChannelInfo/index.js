@@ -69,7 +69,7 @@ export default function ChannelInfo(props) {
           url: `${githubApiDomain}/repos/${repository}/issues`,
           headers: headers,
         });
-        // GitHub treats both PRs and issues as issues except that PRs can be 
+        // GitHub treats both PRs and issues as issues except that PRs can be
         // distinguished by the presence of a pull_request key
         setIssuesCount(
           ghIssuesResponse.data.filter((issue) => !issue.pull_request).length
@@ -84,9 +84,12 @@ export default function ChannelInfo(props) {
   }, [props.location.pathname]);
 
   const [activeTab, setActiveTab] = useState(0);
-  const repoURL = `https://github.com/${props.location.pathname
-    .split("/")[2]
-    .replace("_", "/")}`;
+  // Covers case where pathname is /channel
+  const repoURL = `https://github.com/${
+    props.location.pathname.split("/")[2]
+      ? props.location.pathname.split("/")[2].replace("_", "/")
+      : ""
+  }`;
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);

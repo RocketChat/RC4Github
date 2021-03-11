@@ -22,8 +22,8 @@ export default function Home(props) {
   if (!props.authState.isLoggedIn) {
     return (
       <div className="home-wrapper">
-        <header>
-          <h1>
+        <header className="unsigned-home-header">
+          <h1 className="unsigned-home-heading">
             Real-time Collaboration
             <br />
             <a
@@ -36,7 +36,7 @@ export default function Home(props) {
             </a>
           </h1>
 
-          <p>
+          <p className="unsigned-home-text">
             <strong>Monitor</strong> your <strong>workflows</strong>,
             <strong>collaborate</strong> and <strong>access data</strong> any
             time you need it, all in one{" "}
@@ -91,18 +91,11 @@ export default function Home(props) {
   return (
     <div className="home-wrapper">
       <header class="signed-home-header">
-        <h3>
+        <h2>
           {getGreetings()}, {props.authState.user.name}
-        </h3>
+        </h2>
         <p>
-          To help you get started real quick, we have already created a
-          community for you.&nbsp; Now create channels for your repositories
-          within{" "}
-          <strong>{props.authState.user.username.split("_github")}</strong>{" "}
-          community.
-          <br></br>
-          To add channels for a new GitHub organization, start by creating a
-          community for it.
+          We're ready to go.
         </p>
       </header>
       <div class="signed-home-main">
@@ -112,23 +105,14 @@ export default function Home(props) {
             <div
               className="signed-home-shortcut"
               onClick={() => {
-                document.getElementById("create-community").click();
-              }}
-            >
-              <img src="/community.png" className="signed-home-shortcut-icon" />
-              Create a community
-            </div>
-            <div
-              className="signed-home-shortcut"
-              onClick={() => {
                 document.getElementById("create-channel").click();
               }}
             >
               <img
                 src="https://img.icons8.com/plasticine/35/000000/organization.png"
-                className="signed-home-shortcut-icon"
+                className="shortcut-icon-medium"
               />
-              Create a channel
+              Create a room
             </div>
           </div>
           <div className="signed-home-shortcut-container">
@@ -141,7 +125,7 @@ export default function Home(props) {
             >
               <img
                 src="/search-icon.png"
-                className="signed-home-shortcut-icon"
+                className="shortcut-icon-small"
               />
               Discover existing rooms
             </div>

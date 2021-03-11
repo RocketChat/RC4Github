@@ -39,8 +39,6 @@ module.exports.createToken = async function (req, res) {
 
     //Check if the user exists in our db
     let user = await User.findOne({ email: ghUserEmailResponse.data[0].email });
-    // userBio acts both as a flag to see if it is a sign up and to get the user bio
-    let userBio = "";
     if (!user) {
       //Create a new user if the user does not exist in our db
       const newUser = {
@@ -58,8 +56,6 @@ module.exports.createToken = async function (req, res) {
       newUser["name"] = ghUserResponse.data.name || ghUserResponse.data.login;
       newUser["username"] = `${ghUserResponse.data.login}_github`;
       newUser["avatarUrl"] = ghUserResponse.data.avatar_url;
-      userBio = ghUserResponse.data.bio;
-
       /*
                 In order to handle a case when user tries signing in gets created on RC but fails get stored in our db due to some error
                 To keep it consistent with RC we store the (user-email,encrypted-rcPassword) pair in our fs so that it can be used
@@ -131,55 +127,6 @@ module.exports.createToken = async function (req, res) {
                 "user": "${user.username}_rc4git"
             }`,
     });
-
-    //Create a user community for newly signed up user
-    if (userBio !== "") {
-      const headers = {
-        "X-Auth-Token": rcLoginUserResponse.data.data.authToken,
-        "X-User-Id": rcLoginUserResponse.data.data.userId,
-        "Content-type": "application/json",
-      };
-
-      //Create a user community on signup
-      const rcCreateChannelResponse = await axios({
-        method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.create`,
-        headers: headers,
-        data: {
-          name: user.username.slice(0, -7).concat("_community"),
-        },
-      });
-
-      await axios({
-        method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.setTopic`,
-        headers: headers,
-        data: {
-          roomId: rcCreateChannelResponse.data.channel._id,
-          topic: `GitHub: https://github.com/${user.username.slice(0, -7)}`,
-        },
-      });
-      
-      // User bio fetched from GitHub can either be null or a non-empty string
-      let description = (userBio ? userBio : "").concat(`
-
------
-Embed this channel
-<pre><code>&lt;a&nbsp;href=&quot;${constants.rc4gitDomain}/channel/${user.username.slice(0, -7).concat("_community")}&quot;&gt;
-&lt;img&nbsp;src=&quot;${constants.rocketChatDomain}/images/join-chat.svg&quot;/&gt;
-&lt;/a&gt;</code></pre>
-`);
-
-      await axios({
-        method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.setDescription`,
-        headers: headers,
-        data: {
-          roomId: rcCreateChannelResponse.data.channel._id,
-          description: description,
-        },
-      });
-    }
 
     return res.status(200).json({
       success: true,

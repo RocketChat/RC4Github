@@ -13,6 +13,7 @@ import CreateChannel from "../CreateChannel";
 import axios from "axios";
 import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
 import SidebarSearch from "../SidebarSearch";
+import { useHistory } from "react-router-dom";
 
 import "./index.css";
 
@@ -31,6 +32,7 @@ export default function SignedLeftSidebar(props) {
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [groupByCommunity, setGroupByCommunity] = useState(true);
+  const history = useHistory();
 
   const sortRoomsAlphabetically = (conversations) => {
     let chatRooms = [];
@@ -90,7 +92,7 @@ export default function SignedLeftSidebar(props) {
     } else {
       newRooms["directMessages"][room._id] = room;
     }
-    setRooms(newRooms);
+    setRooms({ ...newRooms });
   };
 
   useEffect(() => {
@@ -113,8 +115,29 @@ export default function SignedLeftSidebar(props) {
   }, []);
 
   useEffect(() => {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
     const handleMessageEvents = (e) => {
       switch (e.data.eventName) {
+        case "notification":
+          const { fromOpenedRoom, hasFocus, notification } = e.data.data;
+          const { title, text, payload } = notification;
+          const { name, type } = payload;
+          if (fromOpenedRoom && hasFocus) {
+            break;
+          }
+          let noty = new Notification(`${title}`, {
+            body: `${text}`,
+          });
+          noty.onclick = function () {
+            let newUnreadUrl = `/${
+              type === "c" ? "channel" : type === "p" ? "group" : "direct"
+            }/${type === "d" ? title : name}`;
+            history.push(newUnreadUrl);
+            window.focus();
+          };
+          break;
         case "unread-changed":
           if (typeof e.data.data === "number") {
             document.title = `(${e.data.data}) RCforCommunity`;
@@ -130,7 +153,6 @@ export default function SignedLeftSidebar(props) {
             rooms["conversations"][e.data.data._id] &&
             rooms["conversations"][e.data.data._id].alert !== e.data.data.alert
           ) {
-            console.log(e.data.data);
             let newRooms = rooms;
             newRooms["conversations"][e.data.data._id]["alert"] =
               e.data.data.alert;
@@ -143,6 +165,11 @@ export default function SignedLeftSidebar(props) {
               ]["alert"] = e.data.data.alert;
             }
             setRooms({ ...newRooms });
+          } else if (
+            rooms["conversations"] &&
+            !rooms["conversations"][e.data.data._id]
+          ) {
+            addRoom(e.data.data);
           }
           break;
         case "room-opened":

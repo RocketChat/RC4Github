@@ -15,7 +15,7 @@
 }
 
 .anonymous-left-sidebar-title-container {
-    padding:0px 10px;
+    padding:0px 8px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -24,9 +24,9 @@
 .anonymous-left-sidebar-title {
     font-family: 'source-sans-pro';
     color: white;
-    font-size: 44px;
+    font-size: 42px;
     font-weight: 100;
-    margin: 10px 0px 40px 0px;
+    margin: 20px 0px 40px 0px;
 }
 
 .anonymous-left-sidebar-content {
@@ -40,4 +40,18 @@
     margin: 10px 0px;
     font-size: 0.87em;
     text-transform: uppercase;
+}
+
+.sidebar-stat-number {
+    font-size: large;
+    letter-spacing: 1px;
+}
+
+.sidebar-stat {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-stat img {
+    margin-right: 10px;
 }

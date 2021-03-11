@@ -74,18 +74,18 @@ export default function ChannelInfo(props) {
         const repository = props.location.pathname
           .split("/")[2]
           .replace("_", "/");
-        const ghHeaders = {
+        const headers = {
           accept: "application/json",
         };
         if (Cookies.get("gh_private_repo_token")) {
-          ghHeaders["Authorization"] = `token ${Cookies.get(
+          headers["Authorization"] = `token ${Cookies.get(
             "gh_private_repo_token"
           )}`;
         }
         const ghRepoInfoResponse = await axios({
           method: "get",
           url: `${githubApiDomain}/repos/${repository}`,
-          headers: ghHeaders,
+          headers: headers,
         });
         const ghIssuesResponse = await axios({
           method: "get",
@@ -104,7 +104,7 @@ export default function ChannelInfo(props) {
       }
     };
 
-    const channelMembers = async () => {
+    const fetchChannelMembers = async () => {
       try {
         // Fetches channel members
         const channelMembersResponse = await axios({
@@ -125,7 +125,7 @@ export default function ChannelInfo(props) {
       }
     };
     ghRepoInfo();
-    channelMembers();
+    fetchChannelMembers();
   }, [props.location.pathname]);
 
   const [activeTab, setActiveTab] = useState(0);
@@ -167,7 +167,7 @@ export default function ChannelInfo(props) {
         <div className="channel-info-wrapper">
           {!isLoggedOut ? (
             <>
-              <Grid container spacing={2} style={{ marginBottom: "20px" }}>
+              <Grid container spacing={2} className="online-users-grid">
                 {channelMembers
                   .filter(
                     (user, index) => user.status === "online" && index <= 25
@@ -178,27 +178,11 @@ export default function ChannelInfo(props) {
                         key={user.username}
                         item
                         xs={2}
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          position: "relative",
-                        }}
+                        className="online-users-grid-item"
                       >
+                        <img className="online-status" src={online} />
                         <img
-                          style={{
-                            width: "10px",
-                            height: "10px",
-                            zIndex: "2",
-                            position: "absolute",
-                          }}
-                          src={online}
-                        />
-                        <img
-                          style={{
-                            width: "30px",
-                            zIndex: "1",
-                            marginLeft: "5px",
-                          }}
+                          className="online-user-avatar"
                           src={`${rcApiDomain}/avatar/${user.username}`}
                         />
                       </Grid>
@@ -293,18 +277,14 @@ export default function ChannelInfo(props) {
       >
         <DialogTitle>Channel Members</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} style={{ margin: "10px 0px" }}>
+          <Grid container spacing={2} className="channel-member-grid">
             {channelMembers.map((user) => {
               return (
                 <Grid
                   key={user.username}
                   item
                   md={4}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    position: "relative",
-                  }}
+                  className="channel-member-grid-item"
                 >
                   <img
                     style={{ width: "30px" }}

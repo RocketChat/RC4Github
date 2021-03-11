@@ -56,12 +56,42 @@
   overflow-y: auto;
 }
 
-.channel-info-wrapper {
-  height: -webkit-fill-available;
-}
-
 .user-logged-out-message {
   font-size: 0.95em;
   color: #9a9ea4;
   line-height: 25px;
+}
+
+.online-users-grid {
+  width: 100% !important;
+  margin-bottom: 20px !important;
+}
+
+.online-users-grid-item {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.online-status {
+  width: 10px;
+  height: 10px;
+  z-index: 2;
+  position: absolute;
+}
+
+.online-user-avatar {
+  width: 30px;
+  z-index: 1;
+  margin-left: 5px;
+}
+
+.channel-member-grid {
+  margin: 10px 0px !important;
+}
+
+.channel-member-grid-item {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
 }

@@ -9,18 +9,13 @@ module.exports = async function (req, res) {
       "Content-type": "application/json",
     };
 
-    const channel = req.body.channel;
-    const members = req.body.members;
-    const topic = req.body.topic;
-    const type = req.body.type;
-
     const rcCreateChannelResponse = await axios({
       method: "post",
       url: `${constants.rocketChatDomain}/api/v1/channels.create`,
       headers: headers,
       data: {
-        name: channel,
-        members: members,
+        name: req.body.channel,
+        members: req.body.members,
       },
     });
 
@@ -30,23 +25,36 @@ module.exports = async function (req, res) {
       headers: headers,
       data: {
         roomId: rcCreateChannelResponse.data.channel._id,
-        topic: topic,
+        topic: req.body.topic,
       },
     });
 
-    if (type === "p") {
+    if (req.body.type === "p") {
       const rcSetChannelType = await axios({
         method: "post",
         url: `${constants.rocketChatDomain}/api/v1/channels.setType`,
         headers: headers,
         data: {
           roomId: rcCreateChannelResponse.data.channel._id,
-          type: type,
+          type: req.body.type,
         },
       });
       rcCreateChannelResponse.data.channel["type"] =
         rcSetChannelType.data.channel.t;
     }
+
+    // Set associated repository in channel custom fields
+    await axios({
+      method: "post",
+        url: `${constants.rocketChatDomain}/api/v1/channels.setCustomFields`,
+        headers: headers,
+        data: {
+          roomId: rcCreateChannelResponse.data.channel._id,
+          customFields: {
+            "github_repository": req.body.channel.replace("_", "/")
+          }
+        },
+    })
 
     rcCreateChannelResponse.data.channel["topic"] =
       rcSetChannelTopic.data.topic;

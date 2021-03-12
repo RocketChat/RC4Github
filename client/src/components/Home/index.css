@@ -100,30 +100,35 @@
 }
 
 .signed-home-header {
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }
 
 .signed-home-header p {
-  font-size: 0.88em;
+  font-size: 0.90em;
   line-height: 27px;
   color: #252525;
 }
 
 .signed-home-shortcut-container {
-  margin-bottom: 30px;
+  margin-bottom: 50px;
+}
+
+.signed-home-shortcut-container h5 {
+  font-size: 0.90em;
 }
 
 .signed-home-shortcut {
+  background-color: #e3e9fe66;
   padding: 14px;
   border-radius: 5px;
-  font-size: 0.87em;
+  font-size: 0.90em;
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 
 .signed-home-shortcut:hover {
-  background-color: #e3e9fe66;
+  background-color: #dae0f7b0;
 }
 
 .shortcut-icon-small {

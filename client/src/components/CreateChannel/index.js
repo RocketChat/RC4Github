@@ -156,11 +156,11 @@ export default class CreateChannel extends Component {
       });
       if (rcCreateChannelResponse.data.data.success) {
         let room = rcCreateChannelResponse.data.data.channel;
-        //Add embeddable code for community to description
+        //Add embeddable code for room to description
         description = description.concat(`
 
 -----
-Embed this community
+Embed this room
 <pre><code>&lt;a&nbsp;href=&quot;${rc4gitDomain}/channel/${room.name}&quot;&gt;
 &lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
 &lt;/a&gt;</code></pre>
@@ -180,7 +180,7 @@ Embed this community
         });
 
         addRoom(room);
-        setSnackbar(true, "success", "Community created successfully!");
+        setSnackbar(true, "success", "Room created successfully!");
         this.setState({
           loading: false,
           room: room,
@@ -189,12 +189,12 @@ Embed this community
         });
       } else {
         this.setState({ loading: false });
-        setSnackbar(true, "error", "Error Creating Community!");
+        setSnackbar(true, "error", "Error Creating Room!");
       }
     } catch (error) {
       console.log(error);
       this.setState({ loading: false });
-      setSnackbar(true, "error", "Error Creating Community!");
+      setSnackbar(true, "error", "Error Creating Room!");
     }
   };
 
@@ -223,52 +223,20 @@ Embed this community
           maxWidth="sm"
           fullWidth={true}
         >
-          <DialogTitle>Create a New Community</DialogTitle>
+          <DialogTitle >Create Room</DialogTitle>
           <DialogContent>
             <p className="create-dialog-description">
-              Communities are where your teams communicate.
+              Rooms are where your teams communicate.
             </p>
             <div>
               <br />
-              <FormControlLabel
-                control={
-                  <RCSwitch
-                    checked={publicChannel}
-                    onChange={() =>
-                      this.setState({ publicChannel: !publicChannel })
-                    }
-                    name="publicChannel"
-                  />
-                }
-                label="Public Community"
-              />
-              <p className="create-dialog-description">
-                {publicChannel
-                  ? "Everyone can access this community."
-                  : "Just invited people can access this community."}
-              </p>
-              <br />
-              <FormControlLabel
-                control={
-                  <RCSwitch
-                    checked={this.state.includePrivateRepositories}
-                    onChange={this.handleAllRepositories}
-                    name="includePrivateRepositories"
-                  />
-                }
-                label="Show All Repositories"
-              />
-              <p className="create-dialog-description">
-                Show public {includePrivateRepositories ? "and private " : ""}
-                repositories.
-              </p>
-              <br />
-              <p>Select a repository</p>
+              <p className="repository-select-label">Select Repository</p>
               <Autocomplete
                 id="combo-box-repo"
-                className="repository-autocomplete"
+                fullWidth
                 options={repositories.sort()}
-                getOptionLabel={(option) => option.split("/")[1]}
+                renderOption={(option) => option.split("/")[1]}
+                getOptionLabel={(option) => option}
                 groupBy={(option) => option.split("/")[0]}
                 onChange={(event, value) => {
                   this.setState({ channel: value });
@@ -285,11 +253,55 @@ Embed this community
               {channel && (
                 <>
                   <p className="create-dialog-description">
-                    Your community would be created as{" "}
+                    Your room would be created as{" "}
                     <strong>{channel.replace("/", "_")}</strong>
                   </p>
                 </>
               )}
+              <br />
+              <div className="form-switch">
+              <p>Show All Repositories</p>
+              <FormControlLabel
+                className="form-control-label"
+                control={
+                  <RCSwitch
+                    checked={this.state.includePrivateRepositories}
+                    onChange={this.handleAllRepositories}
+                    name="includePrivateRepositories"
+                  />
+                }
+              />
+              </div>
+              
+              <p className="create-dialog-description">
+                {includePrivateRepositories ? "Both public and private " : "Only public "}
+                repositories are visible.
+              </p>
+              <br />
+              <div className="form-switch">
+
+                <p>
+                  Public Room
+                </p>
+              <FormControlLabel
+                className="form-control-label"
+                control={
+                  <RCSwitch
+                    checked={publicChannel}
+                    onChange={() =>
+                      this.setState({ publicChannel: !publicChannel })
+                    }
+                    name="publicChannel"
+
+                  />
+                }
+              />
+              </div>
+              <p className="create-dialog-description">
+                {publicChannel
+                  ? "Everyone can access this room."
+                  : "Just invited people can access this room."}
+              </p>
               <br />
               <Button
                 className="create-button"

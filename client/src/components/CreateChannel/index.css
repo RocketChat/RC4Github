@@ -4,13 +4,24 @@
 }
 
 .create-dialog-description {
+  margin-top: 0px;
   color: #8e9299;
 }
 
-.repository-autocomplete {
-  width: 80%;
+.create-button {
+  margin-bottom: 10px !important;
 }
 
-.create-button {
-  margin-bottom: 10px;
+.form-switch {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-control-label {
+  margin-right: 0px !important;
+}
+
+.repository-select-label {
+  margin-top: 0px;
 }

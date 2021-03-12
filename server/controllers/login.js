@@ -39,8 +39,6 @@ module.exports.createToken = async function (req, res) {
 
     //Check if the user exists in our db
     let user = await User.findOne({ email: ghUserEmailResponse.data[0].email });
-    // userBio acts both as a flag to see if it is a sign up and to get the user bio
-    let userBio = "";
     if (!user) {
       //Create a new user if the user does not exist in our db
       const newUser = {
@@ -56,9 +54,8 @@ module.exports.createToken = async function (req, res) {
         },
       });
       newUser["name"] = ghUserResponse.data.name || ghUserResponse.data.login;
-      newUser["username"] = `${ghUserResponse.data.login}_github`;
+      newUser["username"] = `${ghUserResponse.data.login}`;
       newUser["avatarUrl"] = ghUserResponse.data.avatar_url;
-      userBio = ghUserResponse.data.bio;
 
       /*
                 In order to handle a case when user tries signing in gets created on RC but fails get stored in our db due to some error
@@ -94,9 +91,9 @@ module.exports.createToken = async function (req, res) {
           },
           data: `{
                         "name": "${newUser.name}",
-                        "email": "${newUser.username}@rc4git.com",
+                        "email": "${newUser.username}@rc4community.com",
                         "pass": "${rcPassword}",
-                        "username": "${newUser.username}_rc4git"
+                        "username": "${newUser.username}"
                     }`,
         });
         newUser["rcPassword"] = encryptedRCPassword;
@@ -128,69 +125,37 @@ module.exports.createToken = async function (req, res) {
                   decipher.update(user.rcPassword, "hex", "utf8") +
                   decipher.final("utf8")
                 }",
-                "user": "${user.username}_rc4git"
+                "user": "${user.username}"
             }`,
     });
 
-    //Create a user community for newly signed up user
-    if (userBio !== "") {
-      const headers = {
-        "X-Auth-Token": rcLoginUserResponse.data.data.authToken,
-        "X-User-Id": rcLoginUserResponse.data.data.userId,
-        "Content-type": "application/json",
-      };
-
-      //Create a user community on signup
-      const rcCreateChannelResponse = await axios({
-        method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.create`,
-        headers: headers,
-        data: {
-          name: user.username.slice(0, -7).concat("_community"),
-        },
-      });
-
+    if (rcLoginUserResponse.data.data.me.avatarUrl !== user.avatarUrl) {
       await axios({
         method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.setTopic`,
-        headers: headers,
-        data: {
-          roomId: rcCreateChannelResponse.data.channel._id,
-          topic: `GitHub: https://github.com/${user.username.slice(0, -7)}`,
+        url: `${constants.rocketChatDomain}/api/v1/users.setAvatar`,
+        headers: {
+          "Content-type": "application/json",
+          "X-Auth-Token": rcLoginUserResponse.data.data.authToken,
+          "X-User-Id": rcLoginUserResponse.data.data.userId,
         },
-      });
-      
-      // User bio fetched from GitHub can either be null or a non-empty string
-      let description = (userBio ? userBio : "").concat(`
-
------
-Embed this channel
-<pre><code>&lt;a&nbsp;href=&quot;${constants.rc4gitDomain}/channel/${user.username.slice(0, -7).concat("_community")}&quot;&gt;
-&lt;img&nbsp;src=&quot;${constants.rocketChatDomain}/images/join-chat.svg&quot;/&gt;
-&lt;/a&gt;</code></pre>
-`);
-
-      await axios({
-        method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.setDescription`,
-        headers: headers,
-        data: {
-          roomId: rcCreateChannelResponse.data.channel._id,
-          description: description,
-        },
+        data: { avatarUrl: `${user.avatarUrl}` },
       });
     }
+
+    let userData = { ...user.toJSON() };
+    delete userData["rcPassword"];
 
     return res.status(200).json({
       success: true,
       data: {
         rc_token: rcLoginUserResponse.data.data.authToken,
         rc_uid: rcLoginUserResponse.data.data.userId,
-        rc4git_token: jwt.sign(user.toJSON(), constants.jwtSecret),
+        rc4git_token: jwt.sign(userData, constants.jwtSecret),
         gh_login_token: ghTokenResponse.data.access_token,
       },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: `Internal Server Error ---> ${err}`,

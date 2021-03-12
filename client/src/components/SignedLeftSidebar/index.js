@@ -227,7 +227,7 @@ export default function SignedLeftSidebar(props) {
         <img
           className="left-sidebar-user-avatar"
           alt={"username"}
-          src={props.user.avatarUrl}
+          src={`${rcApiDomain}/avatar/${props.user.username}`}
           onClick={handleProfileClick}
         ></img>
         <Menu
@@ -251,7 +251,7 @@ export default function SignedLeftSidebar(props) {
               <img
                 className="profile-menu-img"
                 alt={"username"}
-                src={props.user.avatarUrl}
+                src={`${rcApiDomain}/avatar/${props.user.username}`}
               ></img>
             </div>
             <div className="profile-right-container">

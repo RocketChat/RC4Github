@@ -127,6 +127,7 @@ export default function SignedLeftSidebar(props) {
           if (fromOpenedRoom && hasFocus) {
             break;
           }
+          document.getElementById("custom-sound-chime").play();
           let noty = new Notification(`${title}`, {
             body: `${text}`,
           });
@@ -169,6 +170,7 @@ export default function SignedLeftSidebar(props) {
             rooms["conversations"] &&
             !rooms["conversations"][e.data.data._id]
           ) {
+            document.getElementById("custom-sound-door").play();
             addRoom(e.data.data);
           }
           break;

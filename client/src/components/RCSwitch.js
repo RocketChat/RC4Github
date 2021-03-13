@@ -4,14 +4,14 @@ import Switch from '@material-ui/core/Switch';
 const RCSwitch = withStyles((theme) => ({
     root: {
       width: 42,
-      height: 26,
+      height: 20,
       padding: 0,
       margin: 10,
     },
     switchBase: {
-      padding: 1,
+      padding: 0,
       '&$checked': {
-        transform: 'translateX(16px)',
+        transform: 'translateX(20px)',
         color: theme.palette.common.white,
         '& + $track': {
           backgroundColor: '#52d869',
@@ -21,15 +21,15 @@ const RCSwitch = withStyles((theme) => ({
       },
       '&$focusVisible $thumb': {
         color: '#52d869',
-        border: '6px solid #fff',
       },
     },
     thumb: {
-      width: 24,
-      height: 24,
+      width: 20,
+      height: 20,
     },
     track: {
-      borderRadius: 26 / 2,
+      display: "inline-table",
+      borderRadius: 20 / 2,
       border: `1px solid ${theme.palette.grey[400]}`,
       backgroundColor: theme.palette.grey[50],
       opacity: 1,

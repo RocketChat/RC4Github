@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { RiHome4Line, RiSearchLine } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { HiSortDescending } from "react-icons/hi";
-import { CgCommunity, CgHashtag } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
 import { VscLoading } from "react-icons/vsc";
 import { Link } from "react-router-dom";
@@ -10,7 +9,6 @@ import CommunityListItem from "../CommunityListItem/";
 import { Menu, MenuItem, Snackbar, Checkbox, Radio } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import Cookies from "js-cookie";
-import CreateCommunity from "../CreateCommunity";
 import CreateChannel from "../CreateChannel";
 import axios from "axios";
 import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
@@ -23,9 +21,7 @@ function Alert(props) {
 }
 
 export default function SignedLeftSidebar(props) {
-  const [anchorEl, setAnchorEl] = useState(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
-  const [startCreateCommunity, setStartCreateCommunity] = useState(false);
   const [startCreateChannel, setStartCreateChannel] = useState(false);
   const [organizations, setOrganizations] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -88,9 +84,7 @@ export default function SignedLeftSidebar(props) {
   };
 
   useEffect(() => {
-    const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
-      "rc_uid"
-    )}&fields={"userRooms": 1}`;
+    const url = `${rcApiDomain}/api/v1/subscriptions.get`;
     fetch(url, {
       headers: {
         "X-Auth-Token": Cookies.get("rc_token"),
@@ -101,27 +95,15 @@ export default function SignedLeftSidebar(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setChatRooms(data.user.rooms);
+        setChatRooms(data.update);
       })
       .catch((err) => {
         console.log("Error Fetching Rooms from server --->", err);
       });
   }, []);
 
-  const handleEndCreateCommunity = () => {
-    setStartCreateCommunity(false);
-  };
-
   const handleEndCreateChannel = () => {
     setStartCreateChannel(false);
-  };
-
-  const handleCreateClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCreateClose = () => {
-    setAnchorEl(null);
   };
 
   const handleProfileClick = (event) => {
@@ -335,57 +317,15 @@ export default function SignedLeftSidebar(props) {
           </Menu>
           <div
             className="left-sidebar-control-icons"
-            onClick={handleCreateClick}
+            onClick={() => {
+              fetchOrganizations();
+              setStartCreateChannel(true);
+            }}
           >
             <IoMdAdd />
           </div>
         </div>
-        <Menu
-          id="create-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleCreateClose}
-          anchorOrigin={{
-            vertical: "center",
-            horizontal: "right",
-          }}
-          getContentAnchorEl={null}
-          transformOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-        >
-          <MenuItem
-            onClick={() => {
-              fetchOrganizations();
-              setStartCreateCommunity(true);
-              handleCreateClose();
-            }}
-          >
-            <CgCommunity color="#000" className="create-menu-icons" />
-            Create Community
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              fetchOrganizations();
-              setStartCreateChannel(true);
-              handleCreateClose();
-            }}
-          >
-            <CgHashtag color="#000" className="create-menu-icons" />
-            Create Channel
-          </MenuItem>
-        </Menu>
       </div>
-      {startCreateCommunity && (
-        <CreateCommunity
-          handleEndCreateCommunity={handleEndCreateCommunity}
-          organizations={organizations}
-          setSnackbar={setSnackbar}
-          addRoom={addRoom}
-        />
-      )}
       {startCreateChannel && (
         <CreateChannel
           handleEndCreateChannel={handleEndCreateChannel}

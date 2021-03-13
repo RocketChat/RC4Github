@@ -54,8 +54,9 @@ module.exports.createToken = async function (req, res) {
         },
       });
       newUser["name"] = ghUserResponse.data.name || ghUserResponse.data.login;
-      newUser["username"] = `${ghUserResponse.data.login}_github`;
+      newUser["username"] = `${ghUserResponse.data.login}`;
       newUser["avatarUrl"] = ghUserResponse.data.avatar_url;
+
       /*
                 In order to handle a case when user tries signing in gets created on RC but fails get stored in our db due to some error
                 To keep it consistent with RC we store the (user-email,encrypted-rcPassword) pair in our fs so that it can be used
@@ -90,9 +91,9 @@ module.exports.createToken = async function (req, res) {
           },
           data: `{
                         "name": "${newUser.name}",
-                        "email": "${newUser.username}@rc4git.com",
+                        "email": "${newUser.username}@rc4community.com",
                         "pass": "${rcPassword}",
-                        "username": "${newUser.username}_rc4git"
+                        "username": "${newUser.username}"
                     }`,
         });
         newUser["rcPassword"] = encryptedRCPassword;
@@ -124,20 +125,37 @@ module.exports.createToken = async function (req, res) {
                   decipher.update(user.rcPassword, "hex", "utf8") +
                   decipher.final("utf8")
                 }",
-                "user": "${user.username}_rc4git"
+                "user": "${user.username}"
             }`,
     });
+
+    if (rcLoginUserResponse.data.data.me.avatarUrl !== user.avatarUrl) {
+      await axios({
+        method: "post",
+        url: `${constants.rocketChatDomain}/api/v1/users.setAvatar`,
+        headers: {
+          "Content-type": "application/json",
+          "X-Auth-Token": rcLoginUserResponse.data.data.authToken,
+          "X-User-Id": rcLoginUserResponse.data.data.userId,
+        },
+        data: { avatarUrl: `${user.avatarUrl}` },
+      });
+    }
+
+    let userData = { ...user.toJSON() };
+    delete userData["rcPassword"];
 
     return res.status(200).json({
       success: true,
       data: {
         rc_token: rcLoginUserResponse.data.data.authToken,
         rc_uid: rcLoginUserResponse.data.data.userId,
-        rc4git_token: jwt.sign(user.toJSON(), constants.jwtSecret),
+        rc4git_token: jwt.sign(userData, constants.jwtSecret),
         gh_login_token: ghTokenResponse.data.access_token,
       },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: `Internal Server Error ---> ${err}`,

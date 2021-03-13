@@ -21,17 +21,23 @@ module.exports.handleGithubWebhook = async (req, res) => {
         (req.body["issue"] && req.body["issue"]["updated_at"]) ||
         req.body.pull_request.updated_at,
     };
-    await githubWebhook.updateOne(
+    const webhook = await githubWebhook.findOneAndUpdate(
       { hook_id: req.get("X-GitHub-Hook-ID") },
       { $push: { events: event } }
     );
+    if(webhook.events.length >= 20){
+      await githubWebhook.updateOne(
+        { hook_id: req.get("X-GitHub-Hook-ID") },
+        { $pop: { events: -1 } }
+      );
+    }
     if (clients[req.get("X-GitHub-Hook-ID")])
       clients[req.get("X-GitHub-Hook-ID")].map((client) => {
         client.res.write(`data: ${JSON.stringify(event)}\n\n`);
       });
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.log(req.body);
+    console.log(err);
     return res.status(500).json({ success: false, error: err });
   }
 };

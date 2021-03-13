@@ -317,6 +317,7 @@ export default function SignedLeftSidebar(props) {
             </div>
           </Menu>
           <div
+            id="create-room"
             className="left-sidebar-control-icons"
             onClick={() => {
               fetchOrganizations();

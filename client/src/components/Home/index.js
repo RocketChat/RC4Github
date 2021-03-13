@@ -105,7 +105,7 @@ export default function Home(props) {
             <div
               className="signed-home-shortcut"
               onClick={() => {
-                document.getElementById("create-channel").click();
+                document.getElementById("create-room").click();
               }}
             >
               <img

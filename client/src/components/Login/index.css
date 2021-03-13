@@ -27,6 +27,7 @@
 }
 
 .login-card {
+    width: 100%;
     max-width: 450px;
     width: -webkit-fill-available;
     width: -moz-available;
@@ -46,6 +47,10 @@
     display: flex;
     margin: 0px auto 10px;
     width: inherit;
+    max-width: 84%;
+    max-width: -webkit-fill-available;
+    max-width: -moz-available;
+    max-width: fill-available;
     padding: 0.8em 2.5em;
     color: white;
     text-decoration: none;

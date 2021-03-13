@@ -11,6 +11,8 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { rcApiDomain } from '../../utils/constants';
 
+import './index.css'
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -28,7 +30,7 @@ export default class EmbedBadgeDialog extends Component  {
   }
 
   render() {
-    const {channelURL, createdType, setSnackbar, endCreate} = this.props
+    const {channelURL, setSnackbar, endCreate} = this.props
     const {embedCodeString} = this.state
     return(
       <Dialog
@@ -49,7 +51,7 @@ export default class EmbedBadgeDialog extends Component  {
         <br />
         <br />
         <p>
-          Embed a Rocket Chat badge and launch your {createdType} right from
+          Embed a Rocket Chat badge and launch your community right from
           your repositories 🚀{" "}
         </p>
         <div className="code-copy-icon-div">

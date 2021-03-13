@@ -13,13 +13,14 @@ import {
 } from "@material-ui/core";
 import RCSwitch from "../RCSwitch";
 import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import {
   githubPrivateRepoAccessClientID,
   rcApiDomain,
   rc4gitDomain,
 } from "../../utils/constants";
 import EmbedBadgeDialog from "../EmbedBadgeDialog";
+
+import "./index.css";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,12 +33,9 @@ export default class CreateChannel extends Component {
       repositories: [],
       publicRepositories: [],
       privateRepositories: [],
-      username: jwt_decode(Cookies.get("rc4git_token")).username.slice(0, -7),
-      community: null,
       includePrivateRepositories: false,
       publicChannel: true,
       loading: false,
-      communities: [],
       channel: null,
       showEmbedBadgeDialog: false,
       room: null,
@@ -50,31 +48,7 @@ export default class CreateChannel extends Component {
   }
 
   handleClickChannelDialog = async () => {
-    const { publicRepositories, privateRepositories, username } = this.state;
-    const { organizations, rooms } = this.props;
-    let communityChannels = [],
-      communityMember = [];
-
-    communityChannels = rooms
-      .filter((room) => {
-        return room.name.endsWith("_community");
-      })
-      .map((communityRoom) =>
-        communityRoom.name.slice(0, communityRoom.name.length - 10)
-      );
-
-    //Add organizations and username to communityMember
-    communityMember.push(username);
-    communityMember = communityMember.concat(
-      organizations.map((organization) => organization.value)
-    );
-
-    //Intersect communityMembers and communityChannels and set as communities
-    this.setState({
-      communities: communityMember.filter((value) =>
-        communityChannels.includes(value)
-      ),
-    });
+    const { publicRepositories, privateRepositories } = this.state;
 
     //Fetch public repositories
     const publicRepoResponse = await axios({
@@ -116,8 +90,8 @@ export default class CreateChannel extends Component {
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
     if (event.target.checked) {
       if (!Cookies.get("gh_private_repo_token")) {
-        Cookies.set("gh_upgrade_prev_path", window.location.pathname)
-        window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`
+        Cookies.set("gh_upgrade_prev_path", window.location.pathname);
+        window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`;
       }
       this.setState({
         repositories: publicRepositories.concat(privateRepositories),
@@ -128,11 +102,10 @@ export default class CreateChannel extends Component {
   };
 
   handleCreateChannel = async () => {
-    const { channel, community, publicChannel } = this.state;
+    const { channel, publicChannel } = this.state;
     const { setSnackbar, addRoom } = this.props;
-    const authToken = Cookies.get("gh_private_repo_token")
-      ? Cookies.get("gh_private_repo_token")
-      : Cookies.get("gh_login_token");
+    const authToken =
+      Cookies.get("gh_private_repo_token") || Cookies.get("gh_login_token");
     let collaborators = [],
       description = "";
     this.setState({ loading: true });
@@ -142,7 +115,7 @@ export default class CreateChannel extends Component {
       if (Cookies.get("gh_private_repo_token")) {
         const ghCollaboratorsResponse = await axios({
           method: "get",
-          url: `https://api.github.com/repos/${community}/${channel}/collaborators`,
+          url: `https://api.github.com/repos/${channel}/collaborators`,
           headers: {
             accept: "application/json",
             Authorization: `token ${authToken}`,
@@ -158,7 +131,7 @@ export default class CreateChannel extends Component {
 
       const ghRepoResponse = await axios({
         method: "get",
-        url: `https://api.github.com/repos/${community}/${channel}`,
+        url: `https://api.github.com/repos/${channel}`,
         headers: {
           accept: "application/json",
           Authorization: `token ${authToken}`,
@@ -175,19 +148,19 @@ export default class CreateChannel extends Component {
         data: {
           rc_token: Cookies.get("rc_token"),
           rc_uid: Cookies.get("rc_uid"),
-          channel: `${community}_${channel}`,
+          channel: channel.replace("/", "_"),
           members: collaborators,
-          topic: `GitHub: https://github.com/${community}/${channel}`,
+          topic: `GitHub: https://github.com/${channel}`,
           type: publicChannel ? "c" : "p",
         },
       });
       if (rcCreateChannelResponse.data.data.success) {
         let room = rcCreateChannelResponse.data.data.channel;
-        //Add embeddable code for channel to description
+        //Add embeddable code for room to description
         description = description.concat(`
 
 -----
-Embed this channel
+Embed this room
 <pre><code>&lt;a&nbsp;href=&quot;${rc4gitDomain}/channel/${room.name}&quot;&gt;
 &lt;img&nbsp;src=&quot;${rcApiDomain}/images/join-chat.svg&quot;/&gt;
 &lt;/a&gt;</code></pre>
@@ -207,7 +180,7 @@ Embed this channel
         });
 
         addRoom(room);
-        setSnackbar(true, "success", "Channel created successfully!");
+        setSnackbar(true, "success", "Room created successfully!");
         this.setState({
           loading: false,
           room: room,
@@ -216,12 +189,12 @@ Embed this channel
         });
       } else {
         this.setState({ loading: false });
-        setSnackbar(true, "error", "Error Creating Channel!");
+        setSnackbar(true, "error", "Error Creating Room!");
       }
     } catch (error) {
       console.log(error);
       this.setState({ loading: false });
-      setSnackbar(true, "error", "Error Creating Channel!");
+      setSnackbar(true, "error", "Error Creating Room!");
     }
   };
 
@@ -230,8 +203,6 @@ Embed this channel
       repositories,
       publicChannel,
       includePrivateRepositories,
-      community,
-      communities,
       channel,
       loading,
       room,
@@ -241,8 +212,7 @@ Embed this channel
     const { setSnackbar, handleEndCreateChannel } = this.props;
 
     return (
-      <div style={{ justifyContent: "center", display: "flex" }}>
-
+      <div className="create-channel-wrapper">
         <Dialog
           open={openCreateChannelDialog}
           keepMounted
@@ -253,79 +223,21 @@ Embed this channel
           maxWidth="sm"
           fullWidth={true}
         >
-          <DialogTitle>Create a New Channel</DialogTitle>
+          <DialogTitle >Create Room</DialogTitle>
           <DialogContent>
-            <p style={{ color: "#c0c2c6" }}>
-              Channels are where your teams communicate.
+            <p className="create-dialog-description">
+              Rooms are where your teams communicate.
             </p>
             <div>
               <br />
-              <p>Select a community</p>
+              <p className="repository-select-label">Select Repository</p>
               <Autocomplete
                 id="combo-box-repo"
-                options={communities}
-                style={{ width: 300 }}
-                onChange={(event, value) => {
-                  this.setState({ community: value });
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Community" variant="outlined" />
-                )}
-              />
-              <br />
-              <br />
-              <FormControlLabel
-                control={
-                  <RCSwitch
-                    checked={publicChannel}
-                    onChange={() =>
-                      this.setState({ publicChannel: !publicChannel })
-                    }
-                    name="publicChannel"
-                  />
-                }
-                label="Public Channel"
-              />
-              <p style={{ color: "#c0c2c6" }}>
-                {publicChannel
-                  ? "Everyone can access this channel."
-                  : "Just invited people can access this channel."}
-              </p>
-              <br />
-              <FormControlLabel
-                control={
-                  <RCSwitch
-                    checked={this.state.includePrivateRepositories}
-                    onChange={this.handleAllRepositories}
-                    name="includePrivateRepositories"
-                  />
-                }
-                label="Show All Repositories"
-              />
-              <p style={{ color: "#c0c2c6" }}>
-                Show public {includePrivateRepositories ? "and private " : ""}
-                repositories.
-              </p>
-              <br />
-              <p>Select a repository</p>
-              <Autocomplete
-                id="combo-box-repo"
-                options={
-                  community
-                    ? repositories
-                        .filter((repository) =>
-                          repository.startsWith(community.concat("/"))
-                        )
-                        .map((repository) =>
-                          repository.slice(
-                            community.length + 1,
-                            repository.length
-                          )
-                        )
-                        .sort()
-                    : []
-                }
-                style={{ width: 300 }}
+                fullWidth
+                options={repositories.sort()}
+                renderOption={(option) => option.split("/")[1]}
+                getOptionLabel={(option) => option}
+                groupBy={(option) => option.split("/")[0]}
                 onChange={(event, value) => {
                   this.setState({ channel: value });
                 }}
@@ -340,17 +252,61 @@ Embed this channel
               <br />
               {channel && (
                 <>
-                  <p style={{ color: "#8e9299" }}>
-                    Your channel would be created as{" "}
-                    <strong>{community.concat(`_${channel}`)}</strong>
+                  <p className="create-dialog-description">
+                    Your room would be created as{" "}
+                    <strong>{channel.replace("/", "_")}</strong>
                   </p>
                 </>
               )}
               <br />
+              <div className="form-switch">
+              <p>Show All Repositories</p>
+              <FormControlLabel
+                className="form-control-label"
+                control={
+                  <RCSwitch
+                    checked={this.state.includePrivateRepositories}
+                    onChange={this.handleAllRepositories}
+                    name="includePrivateRepositories"
+                  />
+                }
+              />
+              </div>
+              
+              <p className="create-dialog-description">
+                {includePrivateRepositories ? "Both public and private " : "Only public "}
+                repositories are visible.
+              </p>
+              <br />
+              <div className="form-switch">
+
+                <p>
+                  Public Room
+                </p>
+              <FormControlLabel
+                className="form-control-label"
+                control={
+                  <RCSwitch
+                    checked={publicChannel}
+                    onChange={() =>
+                      this.setState({ publicChannel: !publicChannel })
+                    }
+                    name="publicChannel"
+
+                  />
+                }
+              />
+              </div>
+              <p className="create-dialog-description">
+                {publicChannel
+                  ? "Everyone can access this room."
+                  : "Just invited people can access this room."}
+              </p>
+              <br />
               <Button
+                className="create-button"
                 disabled={!channel || loading}
                 onClick={this.handleCreateChannel}
-                style={{ marginBottom: "10px" }}
                 variant="contained"
                 color="primary"
                 startIcon={
@@ -365,7 +321,6 @@ Embed this channel
         {showEmbedBadgeDialog && (
           <EmbedBadgeDialog
             channelURL={`${rc4gitDomain}/channel/${room.name}`}
-            createType="channel"
             setSnackbar={setSnackbar}
             endCreate={handleEndCreateChannel}
           />

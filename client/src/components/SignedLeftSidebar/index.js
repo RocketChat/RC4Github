@@ -88,9 +88,7 @@ export default function SignedLeftSidebar(props) {
   };
 
   useEffect(() => {
-    const url = `${rcApiDomain}/api/v1/users.info?userId=${Cookies.get(
-      "rc_uid"
-    )}&fields={"userRooms": 1}`;
+    const url = `${rcApiDomain}/api/v1/subscriptions.get`;
     fetch(url, {
       headers: {
         "X-Auth-Token": Cookies.get("rc_token"),
@@ -101,7 +99,7 @@ export default function SignedLeftSidebar(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setChatRooms(data.user.rooms);
+        setChatRooms(data.update);
       })
       .catch((err) => {
         console.log("Error Fetching Rooms from server --->", err);

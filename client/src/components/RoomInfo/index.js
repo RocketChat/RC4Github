@@ -15,7 +15,6 @@ import {
 import Cookies from "js-cookie";
 import axios from "axios";
 import { githubApiDomain, rcApiDomain } from "../../utils/constants";
-import online from "../../images/online.png";
 
 import "./index.css";
 
@@ -30,8 +29,8 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`channelinfo-tabpanel-${index}`}
-      aria-labelledby={`channelinfo-tab-${index}`}
+      id={`roominfo-tabpanel-${index}`}
+      aria-labelledby={`roominfo-tab-${index}`}
       {...other}
     >
       <Box className="tabpanel-box">
@@ -49,22 +48,25 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
   return {
-    id: `channel-info-tab-${index}`,
-    "aria-controls": `channel-info-tabpanel-${index}`,
+    id: `roominfo-tab-${index}`,
+    "aria-controls": `roominfo-tabpanel-${index}`,
   };
 }
 
-export default function ChannelInfo(props) {
+export default function RoomInfo(props) {
   const [repoInfo, setRepoInfo] = useState({});
   const [isPrivate, setIsPrivate] = useState(false);
   const [issuesCount, setIssuesCount] = useState(0);
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
-  const [channelMembers, setChannelMembers] = useState([]);
+  const [isNotAccessible, setIsNotAccessible] = useState(false);
+  const [roomMembers, setRoomMembers] = useState([]);
   const [openMembersDialog, setOpenMembersDialog] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const repoURL = `https://github.com/${props.location.pathname
-    .split("/")[2]
-    .replace("_", "/")}`;
+  // Covers case where pathname is /channel or /group
+  const repoURL = `https://github.com/${
+    props.location.pathname.split("/")[2]
+      ? props.location.pathname.split("/")[2].replace("_", "/")
+      : ""
+  }`;
 
   useEffect(() => {
     const ghRepoInfo = async () => {
@@ -104,37 +106,62 @@ export default function ChannelInfo(props) {
       }
     };
 
-    const fetchChannelMembers = async () => {
+    const fetchRoomMembers = async () => {
       try {
-        // Fetches channel members
-        const channelMembersResponse = await axios({
-          method: "get",
-          url: `${rcApiDomain}/api/v1/channels.members`,
-          headers: {
-            "X-Auth-Token": Cookies.get("rc_token"),
-            "X-User-Id": Cookies.get("rc_uid"),
-          },
-          params: {
-            roomName: props.location.pathname.split("/")[2],
-          },
-        });
-        setChannelMembers(channelMembersResponse.data.members);
+        // User is logged in: Fetch channel members using their tokens
+        if (props.authState.isLoggedIn) {
+          const channelMembersResponse = await axios({
+            method: "get",
+            url: `${rcApiDomain}/api/v1/channels.members`,
+            headers: {
+              "X-Auth-Token": Cookies.get("rc_token"),
+              "X-User-Id": Cookies.get("rc_uid"),
+            },
+            params: {
+              roomName: props.location.pathname.split("/")[2],
+            },
+          });
+          setRoomMembers(channelMembersResponse.data.members);
+        } else {
+          // User not logged in: Fetch channel members through backend
+          const anonymousModeChannelMembers = await axios({
+            method: "get",
+            url: `/api/roomMembers`,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            params: {
+              roomName: props.location.pathname.split("/")[2],
+            },
+          });
+          setRoomMembers(anonymousModeChannelMembers.data.data);
+        }
       } catch (error) {
-        console.log(error);
-        setIsLoggedOut(true);
+        // Room is private
+        try {
+          // User is a member of the private room
+          const groupMembersResponse = await axios({
+            method: "get",
+            url: `${rcApiDomain}/api/v1/groups.members`,
+            headers: {
+              "X-Auth-Token": Cookies.get("rc_token"),
+              "X-User-Id": Cookies.get("rc_uid"),
+            },
+            params: {
+              roomName: props.location.pathname.split("/")[2],
+            },
+          });
+          setRoomMembers(groupMembersResponse.data.members);
+        } catch (error) {
+          // User is logged out and not a member of the private room
+          console.log(error);
+          setIsNotAccessible(true);
+        }
       }
     };
     ghRepoInfo();
-    fetchChannelMembers();
+    fetchRoomMembers();
   }, [props.location.pathname]);
-
-  const [activeTab, setActiveTab] = useState(0);
-  // Covers case where pathname is /channel
-  const repoURL = `https://github.com/${
-    props.location.pathname.split("/")[2]
-      ? props.location.pathname.split("/")[2].replace("_", "/")
-      : ""
-  }`;
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -145,30 +172,30 @@ export default function ChannelInfo(props) {
   };
 
   return (
-    <div className="channel-info-wrapper">
+    <div className="roominfo-wrapper">
       <Tabs
         value={activeTab}
         onChange={handleChange}
-        aria-label="channel info tabs"
+        aria-label="room info tabs"
         indicatorColor="none"
       >
         <Tab
-          className={`channel-info-tab ${activeTab === 0 ? "active-tab" : ""}`}
+          className={`roominfo-tab ${activeTab === 0 ? "active-tab" : ""}`}
           label="People"
           {...a11yProps(0)}
         />
         <Tab
-          className={`channel-info-tab ${activeTab === 1 ? "active-tab" : ""}`}
+          className={`roominfo-tab ${activeTab === 1 ? "active-tab" : ""}`}
           label="Repo Info"
           {...a11yProps(1)}
         />
       </Tabs>
       <TabPanel value={activeTab} index={0}>
-        <div className="channel-info-wrapper">
-          {!isLoggedOut ? (
+        <div className="roominfo-wrapper">
+          {!isNotAccessible ? (
             <>
               <Grid container spacing={2} className="online-users-grid">
-                {channelMembers
+                {roomMembers
                   .filter(
                     (user, index) => user.status === "online" && index <= 25
                   )
@@ -180,7 +207,7 @@ export default function ChannelInfo(props) {
                         xs={2}
                         className="online-users-grid-item"
                       >
-                        <img className="online-status" src={online} />
+                        <img className="online-status" src="/online.png" />
                         <img
                           className="online-user-avatar"
                           src={`${rcApiDomain}/avatar/${user.username}`}
@@ -221,7 +248,7 @@ export default function ChannelInfo(props) {
                     <i>{repoInfo.language}</i>
                   </span>
                 </div>
-                <div style={{ marginTop: "10px" }}>
+                <div className="repo-info-owner">
                   <span>by {repoInfo.owner ? repoInfo.owner.login : ""}</span>
                 </div>
               </div>
@@ -275,30 +302,24 @@ export default function ChannelInfo(props) {
         fullWidth={true}
         scroll="paper"
       >
-        <DialogTitle>Channel Members</DialogTitle>
+        <DialogTitle>Room Members</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} className="channel-member-grid">
-            {channelMembers.map((user) => {
+          <Grid container spacing={2} className="room-member-grid">
+            {roomMembers.map((user) => {
               return (
                 <Grid
                   key={user.username}
                   item
                   md={4}
-                  className="channel-member-grid-item"
+                  className="room-member-grid-item"
                 >
                   <img
-                    style={{ width: "30px" }}
+                    className="room-member-grid-avatar"
                     src={`${rcApiDomain}/avatar/${user.username}`}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      marginLeft: "5px",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>{user.name}</span>
-                    <span style={{ fontSize: "x-small" }}>
+                  <div className="room-member-grid-name-wrapper">
+                    <span className="room-member-grid-name">{user.name}</span>
+                    <span className="room-member-grid-username">
                       @{user.username}
                     </span>
                   </div>

@@ -6,6 +6,7 @@ const verifyWebhooks = require("../middlewares/verifyWebhooks");
 const webhooksController = require("../controllers/webhooks");
 const passport = require("passport");
 const statsController = require("../controllers/stats");
+const roomMembersController = require("../controllers/roomMembers");
 
 router.post("/login", loginController.createToken);
 router.post("/auth/github/upgrade", loginController.upgradeAccess);
@@ -39,5 +40,6 @@ router.delete(
 );
 
 router.get("/stats", statsController.fetchStats);
+router.get("/roomMembers", roomMembersController.fetchRoomMembers);
 
 module.exports = router;

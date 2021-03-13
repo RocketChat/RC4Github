@@ -46,15 +46,17 @@ module.exports = async function (req, res) {
     // Set associated repository in channel custom fields
     await axios({
       method: "post",
-        url: `${constants.rocketChatDomain}/api/v1/channels.setCustomFields`,
-        headers: headers,
-        data: {
-          roomId: rcCreateChannelResponse.data.channel._id,
-          customFields: {
-            "github_repository": req.body.channel.replace("_", "/")
-          }
+      url: `${constants.rocketChatDomain}/api/v1/${
+        req.body.type === "p" ? "groups" : "channels"
+      }.setCustomFields`,
+      headers: headers,
+      data: {
+        roomId: rcCreateChannelResponse.data.channel._id,
+        customFields: {
+          github_repository: req.body.channel.replace("_", "/"),
         },
-    })
+      },
+    });
 
     rcCreateChannelResponse.data.channel["topic"] =
       rcSetChannelTopic.data.topic;

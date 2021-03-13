@@ -17,6 +17,10 @@
   margin-bottom: 20px;
 }
 
+.repo-info-owner {
+  margin-top: 10px;
+}
+
 .repo-info-stats {
   display: flex;
   justify-content: space-between;
@@ -37,7 +41,7 @@
   line-height: 25px;
 }
 
-.channel-info-tab {
+.roominfo-tab {
   width: 50%;
   color: #70747b !important;
 }
@@ -50,7 +54,7 @@
   color: #9a9ea4 !important;
 }
 
-.channel-info-wrapper {
+.roominfo-wrapper {
   max-height: 50%;
   overflow-wrap: break-word;
   overflow-y: auto;
@@ -86,12 +90,30 @@
   margin-left: 5px;
 }
 
-.channel-member-grid {
+.room-member-grid {
   margin: 10px 0px !important;
 }
 
-.channel-member-grid-item {
+.room-member-grid-item {
   display: flex;
   align-items: flex-start;
   position: relative;
+}
+
+.room-member-grid-avatar {
+  width: 30px;
+}
+
+.room-member-grid-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+}
+
+.room-member-grid-name {
+  font-weight: bold;
+}
+
+.room-member-grid-username {
+  font-size: x-small;
 }

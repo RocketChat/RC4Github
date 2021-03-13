@@ -44,7 +44,6 @@ module.exports.handleGithubWebhook = async (req, res) => {
 
 module.exports.fetchGithubActivities = async (req, res) => {
   try {
-    // TODO Check if the user is part of the room for which activity subscription is requested
     const hook = await githubWebhook.findOne({ hook_id: req.query.hook_id });
     if (!hook) {
       res.status(404).write("error: Activity Not Found\n\n");
@@ -89,16 +88,31 @@ module.exports.fetchWebhook = async (req, res) => {
         error: "Room name required as query parameter",
       });
     }
+
+    // Check if the user is part of the room for which activity subscription is requested
+    await axios({
+      method: "get",
+      url: `${constants.rocketChatDomain}/api/v1/channels.info?roomName=${req.query.room_name}`,
+      headers: {
+        "X-Auth-Token": req.cookies.rc_token || constants.rc_token,
+        "X-User-Id": req.cookies.rc_uid || constants.rc_uid,
+        "Content-type": "application/json",
+      },
+    });
+
     const webhook = await githubWebhook.findOne({
       channel_name: req.query.room_name,
     });
     if (!webhook) {
       return res.status(200).json({ success: true, data: {} });
     }
-    return res.status(200).json({success: true, data: {
-      webhook
-    }})
-  } catch(err){
+    return res.status(200).json({
+      success: true,
+      data: {
+        webhook,
+      },
+    });
+  } catch (err) {
     console.log("ERROR", err);
     return res
       .status(500)
@@ -218,7 +232,6 @@ module.exports.updateGithubWebhook = async (req, res) => {
 module.exports.deleteGithubWebhook = async (req, res) => {
   try {
     if (req.cookies["gh_private_repo_token"]) {
-
       const headers = {
         accept: "application/vnd.github.v3+json",
         Authorization: `token ${req.cookies["gh_private_repo_token"]}`,

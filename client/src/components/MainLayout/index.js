@@ -55,7 +55,7 @@ export default function MainLayout(props) {
           exact
           path={["/home", "/"]}
           render={(props) => {
-            return <Home {...props} authState={authState} />;
+            return <Home {...props} authState={authState} stats={stats} />;
           }}
         />
       </Switch>

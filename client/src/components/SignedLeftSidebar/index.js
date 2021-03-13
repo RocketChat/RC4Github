@@ -210,10 +210,6 @@ export default function SignedLeftSidebar(props) {
     };
   }, [rooms]);
 
-  const handleEndCreateCommunity = () => {
-    setStartCreateCommunity(false);
-  };
-
   const handleEndCreateChannel = () => {
     setStartCreateChannel(false);
   };

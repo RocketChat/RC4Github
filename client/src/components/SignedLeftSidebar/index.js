@@ -110,7 +110,6 @@ export default function SignedLeftSidebar(props) {
         formatAndSetRooms(data.update);
       })
       .catch((err) => {
-        console.log("Error Fetching Rooms from server --->", err);
       });
   }, []);
 
@@ -174,7 +173,6 @@ export default function SignedLeftSidebar(props) {
           }
           if (rooms["conversations"] &&
             rooms["conversations"][e.data.data._id] && e.data.data.unread > 0) {
-            console.log(e.data.data);
             document.getElementById("custom-sound-chime").play();
           }
           break;
@@ -201,7 +199,6 @@ export default function SignedLeftSidebar(props) {
                 addRoom(data.subscription);
               })
               .catch((err) => {
-                console.log("Error Fetching Room from server --->", err);
               });
             break;
           }
@@ -259,7 +256,6 @@ export default function SignedLeftSidebar(props) {
       });
       setOrganizations(organizations);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -299,7 +295,6 @@ export default function SignedLeftSidebar(props) {
         window.location = "/login";
       })
       .catch((err) => {
-        console.log("Error logging out --->", err);
         loadingIcon.classList.add("hide-logout-loading");
         logoutButton.classList.remove("disable-click");
         document

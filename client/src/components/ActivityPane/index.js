@@ -5,10 +5,7 @@ import ActivityItem from "./../ActivityItem";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Snackbar } from "@material-ui/core";
 import ConfigureWebhook from "../ConfigureWebhook";
-import {
-  githubPrivateRepoAccessClientID,
-  githubApiDomain,
-} from "../../utils/constants";
+import { githubApiDomain } from "../../utils/constants";
 import { IoSettingsOutline } from "react-icons/io5";
 
 import "./index.css";
@@ -81,14 +78,12 @@ export default function ActivityPane(props) {
           const repository = props.location.pathname
             .split("/")[2]
             .replace("_", "/");
-          const authToken =
-            Cookies.get("gh_private_repo_token") ||
-            Cookies.get("gh_login_token");
+          const authToken = Cookies.get("gh_login_token");
           const ghRepoResponse = await axios({
             method: "get",
             url: `${githubApiDomain}/repos/${repository}`,
             headers: {
-              accept: "application/json",
+              accept: "application/vnd.github.v3+json",
               Authorization: `token ${authToken}`,
             },
           });
@@ -98,7 +93,7 @@ export default function ActivityPane(props) {
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     checkIfUserIsOwner();
     // eslint-disable-next-line
   }, [props.location.pathname]);
@@ -118,15 +113,6 @@ export default function ActivityPane(props) {
     }
   }, [webhookId]);
 
-  const handleClickConfigureWebhooks = async () => {
-    if (!Cookies.get("gh_private_repo_token")) {
-      Cookies.set("gh_upgrade_prev_path", window.location.pathname);
-      window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`;
-    } else {
-      setOpenWebhookDialog(true);
-    }
-  };
-
   const setSnackbar = (snackbarSeverity, snackbarText) => {
     setSnackbarSeverity(snackbarSeverity);
     setSnackbarText(snackbarText);
@@ -143,14 +129,14 @@ export default function ActivityPane(props) {
 
   return (
     <div className="activity-pane-wrapper">
-      <hr className="activity-pane-divider"/>
+      <hr className="activity-pane-divider" />
       <div className="activity-pane-header">
         <span>Activity </span>
         {authState.isLoggedIn && isRepoOwner && (
           <div className="configure-webhooks-control">
             <IoSettingsOutline
               className="configure-webhooks-icon"
-              onClick={handleClickConfigureWebhooks}
+              onClick={() => setOpenWebhookDialog(true)}
             />
           </div>
         )}

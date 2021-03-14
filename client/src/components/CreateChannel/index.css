@@ -24,4 +24,12 @@
 
 .repository-select-label {
   margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.install-github-app-link {
+  /* text-transform: capitalize; */
+  color: inherit;
+  text-decoration: underline;
 }

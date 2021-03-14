@@ -122,13 +122,13 @@ module.exports.fetchWebhook = async (req, res) => {
 
 module.exports.createGithubWebhook = async (req, res) => {
   try {
-    if (req.cookies["gh_private_repo_token"]) {
+    if (req.cookies["gh_login_token"]) {
       const secret_token =
         Math.random().toString(36).slice(2) +
         Math.random().toString(36).toUpperCase().slice(2);
       const headers = {
         accept: "application/vnd.github.v3+json",
-        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+        Authorization: `token ${req.cookies["gh_login_token"]}`,
       };
 
       const config = {
@@ -180,13 +180,13 @@ module.exports.createGithubWebhook = async (req, res) => {
 
 module.exports.updateGithubWebhook = async (req, res) => {
   try {
-    if (req.cookies["gh_private_repo_token"]) {
+    if (req.cookies["gh_login_token"]) {
       const hook = await githubWebhook.findOne({ hook_id: req.body.hook_id });
 
       const secret_token = hook.secret_token;
       const headers = {
         accept: "application/vnd.github.v3+json",
-        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+        Authorization: `token ${req.cookies["gh_login_token"]}`,
       };
 
       const config = {
@@ -231,10 +231,11 @@ module.exports.updateGithubWebhook = async (req, res) => {
 
 module.exports.deleteGithubWebhook = async (req, res) => {
   try {
-    if (req.cookies["gh_private_repo_token"]) {
+    if (req.cookies["gh_login_token"]) {
+
       const headers = {
         accept: "application/vnd.github.v3+json",
-        Authorization: `token ${req.cookies["gh_private_repo_token"]}`,
+        Authorization: `token ${req.cookies["gh_login_token"]}`,
       };
 
       const ghDeleteWebhookResponse = await axios({

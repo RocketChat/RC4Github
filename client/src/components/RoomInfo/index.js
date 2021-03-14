@@ -56,7 +56,7 @@ function a11yProps(index) {
 export default function RoomInfo(props) {
   const [repoInfo, setRepoInfo] = useState({});
   const [isPrivate, setIsPrivate] = useState(false);
-  const [issuesCount, setIssuesCount] = useState(0);
+  const [issuesCount] = useState(0);
   const [isNotAccessible, setIsNotAccessible] = useState(false);
   const [roomMembers, setRoomMembers] = useState([]);
   const [openMembersDialog, setOpenMembersDialog] = useState(false);
@@ -77,28 +77,14 @@ export default function RoomInfo(props) {
           .split("/")[2]
           .replace("_", "/");
         const headers = {
-          accept: "application/json",
+          accept: "application/vnd.github.v3+json",
+          Authorization: `Token ${Cookies.get("gh_login_token")}`,
         };
-        if (Cookies.get("gh_private_repo_token")) {
-          headers["Authorization"] = `token ${Cookies.get(
-            "gh_private_repo_token"
-          )}`;
-        }
         const ghRepoInfoResponse = await axios({
           method: "get",
           url: `${githubApiDomain}/repos/${repository}`,
           headers: headers,
         });
-        const ghIssuesResponse = await axios({
-          method: "get",
-          url: `${githubApiDomain}/repos/${repository}/issues`,
-          headers: headers,
-        });
-        // GitHub treats both PRs and issues as issues except that PRs can be
-        // distinguished by the presence of a pull_request key
-        setIssuesCount(
-          ghIssuesResponse.data.filter((issue) => !issue.pull_request).length
-        );
         setRepoInfo(ghRepoInfoResponse.data);
       } catch (error) {
         console.log(error);
@@ -156,12 +142,12 @@ export default function RoomInfo(props) {
         }
       } catch (error) {
         // User is logged out and not a member of the private room
-        console.log(error);
         setIsNotAccessible(true);
       }
     };
     ghRepoInfo();
     fetchRoomMembers();
+    // eslint-disable-next-line
   }, [props.location.pathname]);
 
   const handleChange = (event, newValue) => {
@@ -208,10 +194,11 @@ export default function RoomInfo(props) {
                         xs={2}
                         className="online-users-grid-item"
                       >
-                        <img className="online-status" src="/online.png" />
+                        <img className="online-status" src="/online.png" alt="online"/>
                         <img
                           className="online-user-avatar"
                           src={`${rcApiDomain}/avatar/${user.username}`}
+                          alt={user.username}
                         />
                       </Grid>
                     );
@@ -317,6 +304,7 @@ export default function RoomInfo(props) {
                   <img
                     className="room-member-grid-avatar"
                     src={`${rcApiDomain}/avatar/${user.username}`}
+                    alt={user.username}
                   />
                   <div className="room-member-grid-name-wrapper">
                     <span className="room-member-grid-name">{user.name}</span>

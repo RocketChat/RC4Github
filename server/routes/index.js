@@ -9,7 +9,6 @@ const statsController = require("../controllers/stats");
 const roomMembersController = require("../controllers/roomMembers");
 
 router.post("/login", loginController.createToken);
-router.post("/auth/github/upgrade", loginController.upgradeAccess);
 router.post("/sso", loginController.sso);
 router.get("/logout", loginController.logout);
 router.post("/createChannel", createChannelController);

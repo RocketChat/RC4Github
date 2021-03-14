@@ -167,7 +167,9 @@ Embed this room
 `);
         await axios({
           method: "post",
-          url: `${rcApiDomain}/api/v1/channels.setDescription`,
+          url: `${rcApiDomain}/api/v1/${
+            publicChannel ? "channels" : "groups"
+          }.setDescription`,
           headers: {
             "X-Auth-Token": Cookies.get("rc_token"),
             "X-User-Id": Cookies.get("rc_uid"),
@@ -223,7 +225,7 @@ Embed this room
           maxWidth="sm"
           fullWidth={true}
         >
-          <DialogTitle >Create Room</DialogTitle>
+          <DialogTitle>Create Room</DialogTitle>
           <DialogContent>
             <p className="create-dialog-description">
               Rooms are where your teams communicate.
@@ -260,42 +262,40 @@ Embed this room
               )}
               <br />
               <div className="form-switch">
-              <p>Show All Repositories</p>
-              <FormControlLabel
-                className="form-control-label"
-                control={
-                  <RCSwitch
-                    checked={this.state.includePrivateRepositories}
-                    onChange={this.handleAllRepositories}
-                    name="includePrivateRepositories"
-                  />
-                }
-              />
+                <p>Show All Repositories</p>
+                <FormControlLabel
+                  className="form-control-label"
+                  control={
+                    <RCSwitch
+                      checked={this.state.includePrivateRepositories}
+                      onChange={this.handleAllRepositories}
+                      name="includePrivateRepositories"
+                    />
+                  }
+                />
               </div>
-              
+
               <p className="create-dialog-description">
-                {includePrivateRepositories ? "Both public and private " : "Only public "}
+                {includePrivateRepositories
+                  ? "Both public and private "
+                  : "Only public "}
                 repositories are visible.
               </p>
               <br />
               <div className="form-switch">
-
-                <p>
-                  Public Room
-                </p>
-              <FormControlLabel
-                className="form-control-label"
-                control={
-                  <RCSwitch
-                    checked={publicChannel}
-                    onChange={() =>
-                      this.setState({ publicChannel: !publicChannel })
-                    }
-                    name="publicChannel"
-
-                  />
-                }
-              />
+                <p>Public Room</p>
+                <FormControlLabel
+                  className="form-control-label"
+                  control={
+                    <RCSwitch
+                      checked={publicChannel}
+                      onChange={() =>
+                        this.setState({ publicChannel: !publicChannel })
+                      }
+                      name="publicChannel"
+                    />
+                  }
+                />
               </div>
               <p className="create-dialog-description">
                 {publicChannel

@@ -110,18 +110,36 @@ export default function RoomInfo(props) {
       try {
         // User is logged in: Fetch channel members using their tokens
         if (props.authState.isLoggedIn) {
-          const channelMembersResponse = await axios({
-            method: "get",
-            url: `${rcApiDomain}/api/v1/channels.members`,
-            headers: {
-              "X-Auth-Token": Cookies.get("rc_token"),
-              "X-User-Id": Cookies.get("rc_uid"),
-            },
-            params: {
-              roomName: props.location.pathname.split("/")[2],
-            },
-          });
-          setRoomMembers(channelMembersResponse.data.members);
+          // If user is viewing a public room
+          if (props.location.pathname.split("/")[1] === "channel") {
+            const channelMembersResponse = await axios({
+              method: "get",
+              url: `${rcApiDomain}/api/v1/channels.members`,
+              headers: {
+                "X-Auth-Token": Cookies.get("rc_token"),
+                "X-User-Id": Cookies.get("rc_uid"),
+              },
+              params: {
+                roomName: props.location.pathname.split("/")[2],
+              },
+            });
+            setRoomMembers(channelMembersResponse.data.members);
+          }
+          // If user is viewing a private room
+          else {
+            const groupMembersResponse = await axios({
+              method: "get",
+              url: `${rcApiDomain}/api/v1/groups.members`,
+              headers: {
+                "X-Auth-Token": Cookies.get("rc_token"),
+                "X-User-Id": Cookies.get("rc_uid"),
+              },
+              params: {
+                roomName: props.location.pathname.split("/")[2],
+              },
+            });
+            setRoomMembers(groupMembersResponse.data.members);
+          }
         } else {
           // User not logged in: Fetch channel members through backend
           const anonymousModeChannelMembers = await axios({
@@ -137,26 +155,9 @@ export default function RoomInfo(props) {
           setRoomMembers(anonymousModeChannelMembers.data.data);
         }
       } catch (error) {
-        // Room is private
-        try {
-          // User is a member of the private room
-          const groupMembersResponse = await axios({
-            method: "get",
-            url: `${rcApiDomain}/api/v1/groups.members`,
-            headers: {
-              "X-Auth-Token": Cookies.get("rc_token"),
-              "X-User-Id": Cookies.get("rc_uid"),
-            },
-            params: {
-              roomName: props.location.pathname.split("/")[2],
-            },
-          });
-          setRoomMembers(groupMembersResponse.data.members);
-        } catch (error) {
-          // User is logged out and not a member of the private room
-          console.log(error);
-          setIsNotAccessible(true);
-        }
+        // User is logged out and not a member of the private room
+        console.log(error);
+        setIsNotAccessible(true);
       }
     };
     ghRepoInfo();

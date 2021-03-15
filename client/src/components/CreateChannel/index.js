@@ -35,7 +35,6 @@ export default class CreateChannel extends Component {
       loading: false,
       channel: null,
       showEmbedBadgeDialog: false,
-      room: null,
       openCreateChannelDialog: true,
     };
   }
@@ -151,7 +150,6 @@ Embed this room
         });
         this.setState({
           loading: false,
-          room: room,
           openCreateChannelDialog: false,
           showEmbedBadgeDialog: true,
         });
@@ -175,7 +173,6 @@ Embed this room
       publicChannel,
       channel,
       loading,
-      room,
       openCreateChannelDialog,
       showEmbedBadgeDialog,
     } = this.state;
@@ -286,7 +283,7 @@ Embed this room
         </Dialog>
         {showEmbedBadgeDialog && (
           <EmbedBadgeDialog
-            channelURL={`${rc4gitDomain}/channel/${room.name}`}
+            channelURL={`${rc4gitDomain}/channel/${channel.replace("/", "_")}`}
             setSnackbar={setSnackbar}
             endCreate={handleEndCreateChannel}
           />

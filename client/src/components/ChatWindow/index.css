@@ -1,5 +1,8 @@
 .chatWindow-container {
+  width: 100%;
   width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
   display: flex;
   position: relative;
 }
@@ -20,6 +23,9 @@
 }
 
 .chatWindow {
+  width: 100%;
   width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
   border: none;
 }

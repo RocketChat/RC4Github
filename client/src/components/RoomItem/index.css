@@ -1,6 +1,9 @@
 .room-wrapper{
     display: flex;
+    width: 100%;
     width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
     padding: 6px 1rem;
     flex-direction: row;
     color: #9ea2a8;

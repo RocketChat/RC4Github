@@ -1,7 +1,10 @@
 .anonymous-left-sidebar-wrapper {
     width: 20%;
     background-color: #2f343d;
+    min-height: 100%;
     min-height: -webkit-fill-available;
+    min-height: -moz-available;
+    min-height: fill-available;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -33,7 +36,10 @@
     background-color: rgb(255 255 255 / 10%);
     padding: 10px 20px;
     color: white;
+    width: 100%;
     width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
 }
 
 .anonymous-left-sidebar-content p {

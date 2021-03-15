@@ -56,7 +56,6 @@ function a11yProps(index) {
 export default function RoomInfo(props) {
   const [repoInfo, setRepoInfo] = useState({});
   const [isPrivate, setIsPrivate] = useState(false);
-  const [issuesCount] = useState(0);
   const [isNotAccessible, setIsNotAccessible] = useState(false);
   const [roomMembers, setRoomMembers] = useState([]);
   const [openMembersDialog, setOpenMembersDialog] = useState(false);

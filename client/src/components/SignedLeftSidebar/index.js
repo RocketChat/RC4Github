@@ -292,7 +292,6 @@ export default function SignedLeftSidebar(props) {
         Cookies.remove("rc_uid");
         Cookies.remove("rc_token");
         Cookies.remove("gh_login_token");
-        Cookies.remove("gh_private_repo_token");
         window.location = "/login";
       })
       .catch((err) => {

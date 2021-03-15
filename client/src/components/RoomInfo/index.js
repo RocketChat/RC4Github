@@ -270,7 +270,7 @@ export default function RoomInfo(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <strong>{repoInfo.watchers_count}</strong> watchers
+                    <strong>{repoInfo.subscribers_count}</strong> watchers
                   </a>
                 </span>
                 <span>

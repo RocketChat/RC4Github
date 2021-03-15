@@ -71,8 +71,8 @@ export default class App extends React.Component {
           stats: data.data
         })
       })
-      .catch((err) => {
-        console.log("Error logging out --->", err);
+      .catch((error) => {
+        console.log(error);
         return;
       });
   }

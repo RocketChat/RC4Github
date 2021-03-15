@@ -4,11 +4,7 @@ const rcApiDomain =
 const githubApiDomain =
   process.env.GITHUB_API_DOMAIN || "https://api.github.com";
 const rc4gitDomain =
-  process.env.RC4GIT_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_CLIENT"
+  process.env.RC4GIT_DOMAIN || "YOUR_SELF_HOSTED_RC4GIT_CLIENT";
+const githubAppSlug = process.env.GITHUB_APP_SLUG || "rcforcommunity";
 
-export {
-  githubClientID,
-  rcApiDomain,
-  githubApiDomain,
-  rc4gitDomain
-};
+export { githubClientID, rcApiDomain, githubApiDomain, rc4gitDomain, githubAppSlug };

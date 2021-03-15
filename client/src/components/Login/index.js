@@ -63,7 +63,7 @@ export default function Login(props) {
   return (
     <div className="login-screen">
       <header className="login-header">
-        <Link to="/login">
+        <Link to="/">
           <img className="login-logo" src="/logo.svg" alt="RC-logo"></img>
         </Link>
       </header>

@@ -13,7 +13,11 @@ import {
 } from "@material-ui/core";
 import RCSwitch from "../RCSwitch";
 import Cookies from "js-cookie";
-import { rcApiDomain, rc4gitDomain } from "../../utils/constants";
+import {
+  rcApiDomain,
+  rc4gitDomain,
+  githubAppSlug,
+} from "../../utils/constants";
 import EmbedBadgeDialog from "../EmbedBadgeDialog";
 
 import "./index.css";
@@ -75,7 +79,7 @@ export default class CreateChannel extends Component {
 
   handleCreateChannel = async () => {
     const { channel, publicChannel } = this.state;
-    const { setSnackbar, addRoom } = this.props;
+    const { setSnackbar } = this.props;
     const authToken = Cookies.get("gh_login_token");
     let collaborators = [],
       description = "";
@@ -94,7 +98,7 @@ export default class CreateChannel extends Component {
         },
       });
       ghCollaboratorsResponse.data.map((member) =>
-        collaborators.push(member.login.concat("_github_rc4git"))
+        collaborators.push(member.login)
       );
       const ghRepoResponse = await axios({
         method: "get",
@@ -105,9 +109,7 @@ export default class CreateChannel extends Component {
         },
       });
 
-      description = ghRepoResponse.data.description
-        ? ghRepoResponse.data.description
-        : "";
+      description = ghRepoResponse.data.description || "";
 
       const rcCreateChannelResponse = await axios({
         method: "post",
@@ -121,7 +123,7 @@ export default class CreateChannel extends Component {
           type: publicChannel ? "c" : "p",
         },
       });
-      if (rcCreateChannelResponse.data.data.success) {
+      if (publicChannel) {
         let room = rcCreateChannelResponse.data.data.channel;
         //Add embeddable code for room to description
         description = description.concat(`
@@ -147,9 +149,6 @@ Embed this room
             description: description,
           },
         });
-
-        addRoom(room);
-        setSnackbar(true, "success", "Room created successfully!");
         this.setState({
           loading: false,
           room: room,
@@ -157,9 +156,12 @@ Embed this room
           showEmbedBadgeDialog: true,
         });
       } else {
-        this.setState({ loading: false });
-        setSnackbar(true, "error", "Error Creating Room!");
+        this.setState({
+          loading: false,
+          openCreateChannelDialog: false,
+        });
       }
+      setSnackbar(true, "success", "Room created successfully!");
     } catch (error) {
       console.log(error);
       this.setState({ loading: false });
@@ -201,7 +203,7 @@ Embed this room
               <p className="repository-select-label">
                 Select Repository{" "}
                 <a
-                  href="https://github.com/apps/rcforcommunity/installations/new"
+                  href={`https://github.com/apps/${githubAppSlug}/installations/new`}
                   className="install-github-app-link"
                 >
                   Add/Remove Repositories
@@ -255,9 +257,16 @@ Embed this room
                   : "Just invited people can access this room."}
               </p>
               <br />
+              <p>Note:</p>
+              {publicChannel && (
+                <p className="create-dialog-description">
+                  Public room for a private repository may expose the metadata
+                  of that repository.
+                </p>
+              )}
               <p className="create-dialog-description">
-                * All the repository collaborators who are RCforCommunity users
-                as well will automatically get added in the chat room.
+                All the repository collaborators who are RCforCommunity users as
+                well will automatically get added in the chat room.
               </p>
               <br />
               <Button

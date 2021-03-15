@@ -142,6 +142,7 @@ export default function RoomInfo(props) {
         }
       } catch (error) {
         // User is logged out and not a member of the private room
+        console.log(error);
         setIsNotAccessible(true);
       }
     };

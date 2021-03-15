@@ -16,7 +16,7 @@ export default function ChatWindow(props) {
       { externalCommand: "go", path: `${pathname}/?layout=embedded` },
       `${rcApiDomain}`
     );
-  }, [pathname]);
+  }, [props.location]);
   return (
     <div
       className={`chatWindow-container ${

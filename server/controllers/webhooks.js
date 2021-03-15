@@ -90,9 +90,9 @@ module.exports.fetchWebhook = async (req, res) => {
     }
 
     // Check if the user is part of the room for which activity subscription is requested
-    await axios({
+    const x = await axios({
       method: "get",
-      url: `${constants.rocketChatDomain}/api/v1/channels.info?roomName=${req.query.room_name}`,
+      url: `${constants.rocketChatDomain}/api/v1/rooms.info?roomName=${req.query.room_name}`,
       headers: {
         "X-Auth-Token": req.cookies.rc_token || constants.rc_token,
         "X-User-Id": req.cookies.rc_uid || constants.rc_uid,

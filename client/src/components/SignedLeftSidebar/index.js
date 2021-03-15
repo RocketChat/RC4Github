@@ -203,6 +203,7 @@ export default function SignedLeftSidebar(props) {
             break;
           }
           break;
+        default:
       }
     };
     window.addEventListener("message", handleMessageEvents, true);
@@ -443,7 +444,6 @@ export default function SignedLeftSidebar(props) {
           handleEndCreateChannel={handleEndCreateChannel}
           organizations={organizations}
           setSnackbar={setSnackbar}
-          addRoom={addRoom}
           rooms={rooms["conversations"]}
         />
       )}

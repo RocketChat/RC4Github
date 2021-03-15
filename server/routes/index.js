@@ -1,17 +1,16 @@
 const { Router } = require("express");
 const router = Router();
 const loginController = require("../controllers/login");
-const createChannelController = require("../controllers/createChannel");
+const roomsController = require("../controllers/rooms");
 const verifyWebhooks = require("../middlewares/verifyWebhooks");
 const webhooksController = require("../controllers/webhooks");
 const passport = require("passport");
 const statsController = require("../controllers/stats");
-const roomMembersController = require("../controllers/roomMembers");
 
 router.post("/login", loginController.createToken);
 router.post("/sso", loginController.sso);
 router.get("/logout", loginController.logout);
-router.post("/createChannel", createChannelController);
+router.post("/createChannel", roomsController.createRoom);
 router.post(
   "/webhooks/github/events",
   verifyWebhooks.verifyGithubWebhook,
@@ -39,6 +38,6 @@ router.delete(
 );
 
 router.get("/stats", statsController.fetchStats);
-router.get("/roomMembers", roomMembersController.fetchRoomMembers);
+router.get("/roomMembers", roomsController.fetchRoomMembers);
 
 module.exports = router;

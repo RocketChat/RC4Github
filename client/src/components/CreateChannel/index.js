@@ -14,9 +14,9 @@ import {
 import RCSwitch from "../RCSwitch";
 import Cookies from "js-cookie";
 import {
-  githubPrivateRepoAccessClientID,
   rcApiDomain,
   rc4gitDomain,
+  githubAppSlug,
 } from "../../utils/constants";
 import EmbedBadgeDialog from "../EmbedBadgeDialog";
 
@@ -31,14 +31,10 @@ export default class CreateChannel extends Component {
     super(props);
     this.state = {
       repositories: [],
-      publicRepositories: [],
-      privateRepositories: [],
-      includePrivateRepositories: false,
       publicChannel: true,
       loading: false,
       channel: null,
       showEmbedBadgeDialog: false,
-      room: null,
       openCreateChannelDialog: true,
     };
   }
@@ -48,12 +44,9 @@ export default class CreateChannel extends Component {
   }
 
   handleClickChannelDialog = async () => {
-    const { publicRepositories, privateRepositories } = this.state;
-
-    //Fetch public repositories
-    const publicRepoResponse = await axios({
+    const getAllInstallations = await axios({
       method: "get",
-      url: `https://api.github.com/user/repos?visibility=public&affiliation=owner,organization_member`,
+      url: `https://api.github.com/user/installations`,
       headers: {
         accept: "application/json",
         Authorization: `token ${Cookies.get("gh_login_token")}`,
@@ -62,73 +55,50 @@ export default class CreateChannel extends Component {
         per_page: 100,
       },
     });
-    publicRepoResponse.data.map((repository) =>
-      publicRepositories.push(repository.full_name)
-    );
-
-    if (Cookies.get("gh_private_repo_token")) {
-      const privateRepoResponse = await axios({
+    let repositories = [];
+    for (const installation of getAllInstallations.data.installations) {
+      const fetchReposResponse = await axios({
         method: "get",
-        url: `https://api.github.com/user/repos?visibility=private&affiliation=owner,organization_member`,
+        url: `https://api.github.com/user/installations/${installation.id}/repositories`,
         headers: {
           accept: "application/json",
-          Authorization: `token ${Cookies.get("gh_private_repo_token")}`,
+          Authorization: `token ${Cookies.get("gh_login_token")}`,
         },
         params: {
           per_page: 100,
         },
       });
-      privateRepoResponse.data.map((repository) =>
-        privateRepositories.push(repository.full_name)
-      );
-    }
-    this.setState({ repositories: publicRepositories });
-  };
-
-  handleAllRepositories = async (event) => {
-    const { publicRepositories, privateRepositories } = this.state;
-    this.setState({ ...this.state, [event.target.name]: event.target.checked });
-    if (event.target.checked) {
-      if (!Cookies.get("gh_private_repo_token")) {
-        Cookies.set("gh_upgrade_prev_path", window.location.pathname);
-        window.location.href = `https://github.com/login/oauth/authorize?scope=repo&client_id=${githubPrivateRepoAccessClientID}`;
-      }
-      this.setState({
-        repositories: publicRepositories.concat(privateRepositories),
+      fetchReposResponse.data.repositories.forEach((repo) => {
+        repositories.push(repo.full_name);
       });
-    } else {
-      this.setState({ repositories: publicRepositories });
     }
+
+    this.setState({ repositories });
   };
 
   handleCreateChannel = async () => {
     const { channel, publicChannel } = this.state;
-    const { setSnackbar, addRoom } = this.props;
-    const authToken =
-      Cookies.get("gh_private_repo_token") || Cookies.get("gh_login_token");
+    const { setSnackbar } = this.props;
+    const authToken = Cookies.get("gh_login_token");
     let collaborators = [],
       description = "";
     this.setState({ loading: true });
     //Populate collaborators for the repo
     try {
-      // Fetching collaborators requires repo scope
-      if (Cookies.get("gh_private_repo_token")) {
-        const ghCollaboratorsResponse = await axios({
-          method: "get",
-          url: `https://api.github.com/repos/${channel}/collaborators`,
-          headers: {
-            accept: "application/json",
-            Authorization: `token ${authToken}`,
-          },
-          params: {
-            per_page: 100,
-          },
-        });
-        ghCollaboratorsResponse.data.map((member) =>
-          collaborators.push(member.login.concat("_github_rc4git"))
-        );
-      }
-
+      const ghCollaboratorsResponse = await axios({
+        method: "get",
+        url: `https://api.github.com/repos/${channel}/collaborators`,
+        headers: {
+          accept: "application/json",
+          Authorization: `token ${authToken}`,
+        },
+        params: {
+          per_page: 100,
+        },
+      });
+      ghCollaboratorsResponse.data.map((member) =>
+        collaborators.push(member.login)
+      );
       const ghRepoResponse = await axios({
         method: "get",
         url: `https://api.github.com/repos/${channel}`,
@@ -138,9 +108,7 @@ export default class CreateChannel extends Component {
         },
       });
 
-      description = ghRepoResponse.data.description
-        ? ghRepoResponse.data.description
-        : "";
+      description = ghRepoResponse.data.description || "";
 
       const rcCreateChannelResponse = await axios({
         method: "post",
@@ -154,7 +122,7 @@ export default class CreateChannel extends Component {
           type: publicChannel ? "c" : "p",
         },
       });
-      if (rcCreateChannelResponse.data.data.success) {
+      if (publicChannel) {
         let room = rcCreateChannelResponse.data.data.channel;
         //Add embeddable code for room to description
         description = description.concat(`
@@ -180,19 +148,18 @@ Embed this room
             description: description,
           },
         });
-
-        addRoom(room);
-        setSnackbar(true, "success", "Room created successfully!");
         this.setState({
           loading: false,
-          room: room,
           openCreateChannelDialog: false,
           showEmbedBadgeDialog: true,
         });
       } else {
-        this.setState({ loading: false });
-        setSnackbar(true, "error", "Error Creating Room!");
+        this.setState({
+          loading: false,
+          openCreateChannelDialog: false,
+        });
       }
+      setSnackbar(true, "success", "Room created successfully!");
     } catch (error) {
       console.log(error);
       this.setState({ loading: false });
@@ -204,10 +171,8 @@ Embed this room
     const {
       repositories,
       publicChannel,
-      includePrivateRepositories,
       channel,
       loading,
-      room,
       openCreateChannelDialog,
       showEmbedBadgeDialog,
     } = this.state;
@@ -232,7 +197,15 @@ Embed this room
             </p>
             <div>
               <br />
-              <p className="repository-select-label">Select Repository</p>
+              <p className="repository-select-label">
+                Select Repository{" "}
+                <a
+                  href={`https://github.com/apps/${githubAppSlug}/installations/new`}
+                  className="install-github-app-link"
+                >
+                  Add/Remove Repositories
+                </a>
+              </p>
               <Autocomplete
                 id="combo-box-repo"
                 fullWidth
@@ -260,28 +233,6 @@ Embed this room
                   </p>
                 </>
               )}
-              <br />
-              <div className="form-switch">
-                <p>Show All Repositories</p>
-                <FormControlLabel
-                  className="form-control-label"
-                  control={
-                    <RCSwitch
-                      checked={this.state.includePrivateRepositories}
-                      onChange={this.handleAllRepositories}
-                      name="includePrivateRepositories"
-                    />
-                  }
-                />
-              </div>
-
-              <p className="create-dialog-description">
-                {includePrivateRepositories
-                  ? "Both public and private "
-                  : "Only public "}
-                repositories are visible.
-              </p>
-              <br />
               <div className="form-switch">
                 <p>Public Room</p>
                 <FormControlLabel
@@ -303,6 +254,18 @@ Embed this room
                   : "Just invited people can access this room."}
               </p>
               <br />
+              <p>Note:</p>
+              {publicChannel && (
+                <p className="create-dialog-description">
+                  Public room for a private repository may expose the metadata
+                  of that repository.
+                </p>
+              )}
+              <p className="create-dialog-description">
+                All the repository collaborators who are RCforCommunity users as
+                well will automatically get added in the chat room.
+              </p>
+              <br />
               <Button
                 className="create-button"
                 disabled={!channel || loading}
@@ -320,7 +283,7 @@ Embed this room
         </Dialog>
         {showEmbedBadgeDialog && (
           <EmbedBadgeDialog
-            channelURL={`${rc4gitDomain}/channel/${room.name}`}
+            channelURL={`${rc4gitDomain}/channel/${channel.replace("/", "_")}`}
             setSnackbar={setSnackbar}
             endCreate={handleEndCreateChannel}
           />

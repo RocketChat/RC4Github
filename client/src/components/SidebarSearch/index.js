@@ -36,8 +36,8 @@ export default function SidebarSearch(props) {
         .then(response => response.json())
         .then(data => {
             setSearchResults([...data["users"], ...data["rooms"]]);
-        }).catch(err => {
-          console.log("Error searching rooms --->", err);
+        }).catch(error => {
+          console.log(error);
         })
     }
 

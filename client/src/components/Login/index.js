@@ -63,7 +63,7 @@ export default function Login(props) {
   return (
     <div className="login-screen">
       <header className="login-header">
-        <Link to="/login">
+        <Link to="/">
           <img className="login-logo" src="/logo.svg" alt="RC-logo"></img>
         </Link>
       </header>
@@ -80,7 +80,7 @@ export default function Login(props) {
         ) : (
           <a
             className="login-button login-button-github"
-            href={`https://github.com/login/oauth/authorize?scope=user:email read:org&client_id=${githubClientID}`}
+            href={`https://github.com/login/oauth/authorize?client_id=${githubClientID}`}
           >
             <FaGithub />
             Login with github
@@ -88,10 +88,6 @@ export default function Login(props) {
         )}
       </div>
       <div className="login-terms">
-        {"By proceeding you are agreeing to our "}
-        <Link to="/terms-of-service">Terms of Service</Link>,{" "}
-        <Link to="/privacy-policy">Privacy Policy</Link> and{" "}
-        <Link to="Legal-notice">Legal Notice</Link>.
         <div className="powered-by">
           {"Powered by "}{" "}
           <a href="https://rocket.chat" target="_blank" rel="noreferrer">

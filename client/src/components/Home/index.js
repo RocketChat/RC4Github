@@ -111,6 +111,7 @@ export default function Home(props) {
               <img
                 src="https://img.icons8.com/plasticine/35/000000/organization.png"
                 className="shortcut-icon-medium"
+                alt="room"
               />
               Create a room
             </div>
@@ -126,12 +127,13 @@ export default function Home(props) {
               <img
                 src="/search-icon.png"
                 className="shortcut-icon-small"
+                alt="search"
               />
               Discover existing rooms
             </div>
           </div>
         </div>
-        <img src="/community.jpg" className="community-home-img"></img>
+        <img src="/community.jpg" className="community-home-img" alt="community"></img>
       </div>
     </div>
   );

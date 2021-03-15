@@ -203,6 +203,7 @@ export default function SignedLeftSidebar(props) {
             break;
           }
           break;
+        default:
       }
     };
     window.addEventListener("message", handleMessageEvents, true);
@@ -291,7 +292,6 @@ export default function SignedLeftSidebar(props) {
         Cookies.remove("rc_uid");
         Cookies.remove("rc_token");
         Cookies.remove("gh_login_token");
-        Cookies.remove("gh_private_repo_token");
         window.location = "/login";
       })
       .catch((err) => {
@@ -443,7 +443,6 @@ export default function SignedLeftSidebar(props) {
           handleEndCreateChannel={handleEndCreateChannel}
           organizations={organizations}
           setSnackbar={setSnackbar}
-          addRoom={addRoom}
           rooms={rooms["conversations"]}
         />
       )}

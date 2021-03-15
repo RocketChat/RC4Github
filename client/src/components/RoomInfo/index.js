@@ -245,11 +245,11 @@ export default function RoomInfo(props) {
               <div className="repo-info-stats">
                 <span>
                   <a
-                    href={`${repoURL}/issues`}
+                    href={`https://github.com/search?q=state:open+repo:${repoInfo.full_name}`}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <strong>{issuesCount}</strong> issues
+                    <strong>{repoInfo.open_issues_count}</strong> issues
                   </a>
                 </span>
                 <span>

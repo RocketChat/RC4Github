@@ -97,8 +97,9 @@ export default function ActivityPane(props) {
         }
       } catch (error) {
         console.log(error);
+        setIsRepoOwner(false);
       }
-    }
+    };
     checkIfUserIsOwner();
     // eslint-disable-next-line
   }, [props.location.pathname]);
@@ -143,7 +144,7 @@ export default function ActivityPane(props) {
 
   return (
     <div className="activity-pane-wrapper">
-      <hr className="activity-pane-divider"/>
+      <hr className="activity-pane-divider" />
       <div className="activity-pane-header">
         <span>Activity </span>
         {authState.isLoggedIn && isRepoOwner && (

@@ -30,3 +30,7 @@
 .active-room {
     background-color: #41464f;
 }
+
+.highlight-room {
+    color: white !important;
+}

@@ -10,7 +10,7 @@ export default function RoomItem({room}) {
         to={`/${
           room["t"] === "c" ? "channel" : room["t"] === "p" ? "group" : "direct"
         }/${room.username || room.name}`}
-        className="room-wrapper"
+        className={`room-wrapper ${room.alert && "highlight-room"}`}
         activeClassName="active-room"
       >
         <img
@@ -31,7 +31,8 @@ export default function RoomItem({room}) {
         )}
         <span className="room-name">
           {(room.fname && (room.fname.split(/_(.+)/)[1] || room.fname)) ||
-            room.name || room.username}
+            room.name ||
+            room.username}
         </span>
       </NavLink>
     );

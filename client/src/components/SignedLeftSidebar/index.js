@@ -13,6 +13,7 @@ import CreateChannel from "../CreateChannel";
 import axios from "axios";
 import { rcApiDomain, githubApiDomain } from "./../../utils/constants";
 import SidebarSearch from "../SidebarSearch";
+import { useHistory } from "react-router-dom";
 
 import "./index.css";
 
@@ -27,18 +28,22 @@ export default function SignedLeftSidebar(props) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarText, setSnackbarText] = useState("");
-  const [rooms, setRooms] = useState([]);
-  const [communities, setCommunities] = useState({});
-  const [directMessages, setDirectMessages] = useState([]);
+  const [rooms, setRooms] = useState({});
   const [showSearch, setShowSearch] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
   const [groupByCommunity, setGroupByCommunity] = useState(true);
+  const history = useHistory();
 
-  const sortRoomsAlphabetically = () => {
-    let chatRooms = rooms;
+  const sortRoomsAlphabetically = (conversations) => {
+    let chatRooms = [];
+    for (let roomId in conversations) {
+      chatRooms.push(conversations[roomId]);
+    }
     chatRooms.sort((a, b) => {
-      let roomAname = a.name.split(/_(.+)/)[1] || a.name;
-      let roomBname = b.name.split(/_(.+)/)[1] || b.name;
+      let roomAname =
+        (a.fname && (a.fname.split(/_(.+)/)[1] || a.fname)) || a.name;
+      let roomBname =
+        (b.fname && (b.fname.split(/_(.+)/)[1] || b.fname)) || b.name;
       roomAname = roomAname.toUpperCase();
       roomBname = roomBname.toUpperCase();
       if (roomAname < roomBname) {
@@ -49,38 +54,45 @@ export default function SignedLeftSidebar(props) {
       }
       return 0;
     });
-    setChatRooms(chatRooms);
+    formatAndSetRooms(chatRooms);
   };
 
-  const setChatRooms = (rooms) => {
+  const formatAndSetRooms = (rooms) => {
     let communities = {};
-    let directMessages = [];
+    let directMessages = {};
+    let conversations = {};
     rooms.forEach((room) => {
+      conversations[room._id] = room;
       if (room["t"] === "c" || room["t"] === "p") {
         let community_name = room.name.split(/_(.+)/)[0];
-        if (!communities[community_name]) communities[community_name] = [];
-        communities[community_name].push(room);
+        if (!communities[community_name]) communities[community_name] = {};
+        communities[community_name][room._id] = room;
       } else {
-        directMessages.push(room);
+        directMessages[room._id] = room;
       }
     });
-    setRooms(rooms);
-    setCommunities(communities);
-    setDirectMessages(directMessages);
+    setRooms({
+      conversations,
+      communities,
+      directMessages,
+    });
   };
 
   const addRoom = (room) => {
-    setRooms([...rooms, room]);
-    if (room["t"] === "c" || room["t"] === "p") {
-      let newCommnunities = { ...communities };
-      let community_name = room.name.split(/_(.+)/)[0];
-      if (!newCommnunities[community_name])
-        newCommnunities[community_name] = [];
-      newCommnunities[community_name].push(room);
-      setCommunities(newCommnunities);
-    } else {
-      setDirectMessages([...directMessages, room]);
+    let newRooms = rooms;
+    newRooms["conversations"][room._id] = room;
+    if (document.getElementById("alpha-sort").checked) {
+      return sortRoomsAlphabetically(newRooms["conversations"]);
     }
+    if (room["t"] === "c" || room["t"] === "p") {
+      let community_name = room.name.split(/_(.+)/)[0];
+      if (!newRooms["communities"][community_name])
+        newRooms["communities"][community_name] = {};
+      newRooms["communities"][community_name][room._id] = room;
+    } else {
+      newRooms["directMessages"][room._id] = room;
+    }
+    setRooms({ ...newRooms });
   };
 
   useEffect(() => {
@@ -95,12 +107,109 @@ export default function SignedLeftSidebar(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setChatRooms(data.update);
+        formatAndSetRooms(data.update);
       })
       .catch((err) => {
-        console.log("Error Fetching Rooms from server --->", err);
       });
   }, []);
+
+  useEffect(() => {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+    const handleMessageEvents = (e) => {
+      switch (e.data.eventName) {
+        case "notification":
+          const { fromOpenedRoom, hasFocus, notification } = e.data.data;
+          const { title, text, payload } = notification;
+          const { name, type } = payload;
+          if (fromOpenedRoom && hasFocus) {
+            break;
+          }
+          let noty = new Notification(`${title}`, {
+            body: `${text}`,
+          });
+          noty.onclick = function () {
+            let newUnreadUrl = `/${
+              type === "c" ? "channel" : type === "p" ? "group" : "direct"
+            }/${type === "d" ? title : name}`;
+            history.push(newUnreadUrl);
+            window.focus();
+          };
+          break;
+        case "unread-changed":
+          if (typeof e.data.data === "number") {
+            document.title = `(${e.data.data}) RCforCommunity`;
+          } else if (e.data.data === "") {
+            document.title = "RCforCommunity";
+          } else {
+            document.title = "(*) RCforCommunity";
+          }
+          break;
+        case "unread-changed-by-subscription":
+          if (
+            rooms["conversations"] &&
+            rooms["conversations"][e.data.data._id] &&
+            rooms["conversations"][e.data.data._id].alert !== e.data.data.alert
+          ) {
+            let newRooms = rooms;
+            newRooms["conversations"][e.data.data._id]["alert"] =
+              e.data.data.alert;
+            if (e.data.data.t === "d") {
+              newRooms["directMessages"][e.data.data._id]["alert"] =
+                e.data.data.alert;
+            } else {
+              newRooms["communities"][e.data.data.name.split(/_(.+)/)[0]][
+                e.data.data._id
+              ]["alert"] = e.data.data.alert;
+            }
+            setRooms({ ...newRooms });
+          } else if (
+            rooms["conversations"] &&
+            !rooms["conversations"][e.data.data._id]
+          ) {
+            document.getElementById("custom-sound-door").play();
+            addRoom(e.data.data);
+          }
+          if (rooms["conversations"] &&
+            rooms["conversations"][e.data.data._id] && e.data.data.unread > 0) {
+            document.getElementById("custom-sound-chime").play();
+          }
+          break;
+        case "room-opened":
+          if (
+            rooms["conversations"] &&
+            !rooms["conversations"][e.data.data._id]
+          ) {
+            rooms["conversations"][e.data.data._id] = e.data.data;
+            fetch(
+              `${rcApiDomain}/api/v1/subscriptions.getOne?roomId=${e.data.data._id}`,
+              {
+                headers: {
+                  "X-Auth-Token": Cookies.get("rc_token"),
+                  "X-User-Id": Cookies.get("rc_uid"),
+                  "Content-Type": "application/json",
+                },
+                method: "GET",
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                delete rooms["conversations"][e.data.data._id];
+                addRoom(data.subscription);
+              })
+              .catch((err) => {
+              });
+            break;
+          }
+          break;
+      }
+    };
+    window.addEventListener("message", handleMessageEvents, true);
+    return () => {
+      window.removeEventListener("message", handleMessageEvents, true);
+    };
+  }, [rooms]);
 
   const handleEndCreateChannel = () => {
     setStartCreateChannel(false);
@@ -147,7 +256,6 @@ export default function SignedLeftSidebar(props) {
       });
       setOrganizations(organizations);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -162,7 +270,9 @@ export default function SignedLeftSidebar(props) {
         { externalCommand: "logout" },
         `${rcApiDomain}`
       );
-      document.getElementsByClassName("loading-chatWindow")[0].classList.remove("hide-chatWindow");
+      document
+        .getElementsByClassName("loading-chatWindow")[0]
+        .classList.remove("hide-chatWindow");
     }
     const loadingIcon = document.getElementById("logout-loading-icon");
     const logoutButton = document.getElementById("logout-menu-item");
@@ -185,7 +295,6 @@ export default function SignedLeftSidebar(props) {
         window.location = "/login";
       })
       .catch((err) => {
-        console.log("Error logging out --->", err);
         loadingIcon.classList.add("hide-logout-loading");
         logoutButton.classList.remove("disable-click");
         document
@@ -202,7 +311,6 @@ export default function SignedLeftSidebar(props) {
   const openSortMenu = (event) => {
     setSortAnchorEl(event.currentTarget);
   };
-
   return (
     <div className="signed-left-sidebar-wrapper">
       <div className="signed-left-sidebar-header">
@@ -294,7 +402,9 @@ export default function SignedLeftSidebar(props) {
                 <Radio
                   color="primary"
                   id="alpha-sort"
-                  onChange={sortRoomsAlphabetically}
+                  onChange={() => {
+                    sortRoomsAlphabetically(rooms["conversations"]);
+                  }}
                 />
               </div>
             </div>
@@ -334,7 +444,7 @@ export default function SignedLeftSidebar(props) {
           organizations={organizations}
           setSnackbar={setSnackbar}
           addRoom={addRoom}
-          rooms={rooms}
+          rooms={rooms["conversations"]}
         />
       )}
       <Snackbar
@@ -351,28 +461,31 @@ export default function SignedLeftSidebar(props) {
       <div className="signed-left-sidebar-body">
         {!groupByCommunity && (
           <CommunityListItem
-            community={rooms}
+            community={rooms["conversations"]}
             key={"Conversations"}
             community_name={"Conversations"}
           ></CommunityListItem>
         )}
         {groupByCommunity &&
-          Object.keys(communities).map((community_name) => {
+          rooms["communities"] &&
+          Object.keys(rooms["communities"]).map((community_name) => {
             return (
               <CommunityListItem
-                community={communities[community_name]}
+                community={rooms["communities"][community_name]}
                 key={community_name}
                 community_name={community_name}
               ></CommunityListItem>
             );
           })}
-        {groupByCommunity && directMessages.length > 0 ? (
-          <CommunityListItem
-            community={directMessages}
-            key={"Direct Messages"}
-            community_name={"Direct Messages"}
-          ></CommunityListItem>
-        ) : null}
+        {groupByCommunity &&
+          rooms["directMessages"] &&
+          Object.keys(rooms["directMessages"]).length > 0 && (
+            <CommunityListItem
+              community={rooms["directMessages"]}
+              key={"Direct Messages"}
+              community_name={"Direct Messages"}
+            ></CommunityListItem>
+          )}
       </div>
       <div className="signed-left-sidebar-footer">
         <img

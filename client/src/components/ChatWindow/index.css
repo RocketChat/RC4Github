@@ -4,6 +4,10 @@
   position: relative;
 }
 
+.hide-chatWindow-container {
+  display: none !important;
+}
+
 .loading-chatWindow {
   background-color: #2f343d;
   position: absolute;

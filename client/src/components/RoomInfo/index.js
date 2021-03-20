@@ -181,25 +181,55 @@ export default function RoomInfo(props) {
         <div className="roominfo-wrapper">
           {!isNotAccessible ? (
             <>
-              <Grid container spacing={2} className="online-users-grid">
+              <Grid container spacing={2} className="users-grid">
                 {roomMembers
                   .filter(
-                    (user, index) => user.status === "online" && index <= 25
+                    (user, index) =>
+                      (user.status === "online" || user.status === "away") &&
+                      index <= 25
                   )
+                  .sort((a, b) => {
+                    // Sorts first by status and then alphabetically
+                    return (
+                      -a.status.localeCompare(b.status) ||
+                      a.name.localeCompare(b.name)
+                    );
+                  })
                   .map((user) => {
                     return (
                       <Grid
                         key={user.username}
                         item
                         xs={2}
-                        className="online-users-grid-item"
+                        className="users-grid-item"
                       >
-                        <img className="online-status" src="/online.png" alt="online"/>
-                        <img
-                          className="online-user-avatar"
-                          src={`${rcApiDomain}/avatar/${user.username}`}
-                          alt={user.username}
-                        />
+                        {user.status === "online" ? (
+                          <>
+                            <img
+                              className="user-status"
+                              src="/online.png"
+                              alt="online"
+                            />
+                            <img
+                              className="user-avatar"
+                              src={`${rcApiDomain}/avatar/${user.username}`}
+                              alt={user.username}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <img
+                              className="user-status"
+                              src="/away.png"
+                              alt="away"
+                            />
+                            <img
+                              className="user-avatar"
+                              src={`${rcApiDomain}/avatar/${user.username}`}
+                              alt={user.username}
+                            />
+                          </>
+                        )}
                       </Grid>
                     );
                   })}

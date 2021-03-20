@@ -38,9 +38,18 @@ export default function Login(props) {
       })
         .then((response) => response.json())
         .then((data) => {
-          Cookies.set("rc_token", data.data.rc_token);
-          Cookies.set("rc_uid", data.data.rc_uid);
-          Cookies.set("rc4git_token", data.data.rc4git_token);
+          Cookies.set("rc_token", data.data.rc_token, {
+            sameSite: "None",
+            secure: true,
+          });
+          Cookies.set("rc_uid", data.data.rc_uid, {
+            sameSite: "None",
+            secure: true,
+          });
+          Cookies.set("rc4git_token", data.data.rc4git_token, {
+            sameSite: "None",
+            secure: true,
+          });
           Cookies.set("gh_login_token", data.data.gh_login_token);
           setAuthState({
             user: jwt_decode(data.data.rc4git_token),

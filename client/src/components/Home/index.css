@@ -17,7 +17,6 @@
 }
 
 .unsigned-home-heading {
-  font-weight: 600;
   color: hsl(240, 6%, 17%);
   margin: 20px 0;
   font-weight: 200;
@@ -31,6 +30,9 @@
 
 .unsigned-home-header {
   margin: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
@@ -38,6 +40,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 
 .main-stats-container {
@@ -104,7 +107,7 @@
 }
 
 .signed-home-header p {
-  font-size: 0.90em;
+  font-size: 0.9em;
   line-height: 27px;
   color: #252525;
 }
@@ -114,14 +117,14 @@
 }
 
 .signed-home-shortcut-container h5 {
-  font-size: 0.90em;
+  font-size: 0.9em;
 }
 
 .signed-home-shortcut {
   background-color: #e3e9fe66;
   padding: 14px;
   border-radius: 5px;
-  font-size: 0.90em;
+  font-size: 0.9em;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -141,4 +144,20 @@
   width: 1.7em;
   height: 1.7em;
   margin-right: 5px;
+}
+
+.select-role-button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  border: 5px solid #ee4a5b;
+}
+
+.select-role-button:hover {
+  border: 5px solid #2f343d;
+  cursor: pointer;
 }

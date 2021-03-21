@@ -21,6 +21,7 @@ import Countup from "./../common/Countup";
 import { rcApiDomain } from "../../utils/constants";
 import VisibilitySensor from "react-visibility-sensor";
 import RCSwitch from "../RCSwitch";
+import { Trans, useTranslation } from 'react-i18next';
 
 import "./index.css";
 
@@ -30,6 +31,9 @@ export default function Home(props) {
   const [carouselValue, setCarouselValue] = useState(0);
   const [startCounter, setStartCounter] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
+
+  const { t, i18n } = useTranslation();
+
   const carouselItems = [
     {
       name: "Data protection solutions",
@@ -162,7 +166,7 @@ export default function Home(props) {
     return (
       <div className="home-wrapper">
         <div className="demo-mode-toggle">
-          <p>Demo Mode</p>
+          <p>{t('Demo_Mode')}</p>
           <RCSwitch
             checked={demoMode}
             onChange={() => setDemoMode(!demoMode)}
@@ -174,7 +178,7 @@ export default function Home(props) {
           <>
             <header className="unsigned-home-header">
               <h1 className="unsigned-home-heading">
-                Real-time Collaboration
+                {t('unsigned-home.heading')}
                 <br />
                 <a
                   href="http://github.com/RocketChat/RC4Community"
@@ -182,15 +186,17 @@ export default function Home(props) {
                   target="_blank"
                   className="powered-by-title"
                 >
-                  <strong>Powered by RCforCommunities</strong>
+                  <strong>{t('unsigned-home.subheading')}</strong>
                 </a>
               </h1>
 
               <p className="unsigned-home-text">
+                <Trans i18nKey="unsigned-home.description">
                 <strong>Monitor</strong> your <strong>workflows</strong>,
                 <strong>collaborate</strong> and <strong>access data</strong>{" "}
                 any time you need it, all in one{" "}
                 <strong>productivity-amplifying</strong> full-lifecycle platform
+                </Trans>
               </p>
             </header>
             <main>
@@ -205,7 +211,7 @@ export default function Home(props) {
                     className="stat-number"
                     startCounter={true}
                   />
-                  <div className="stat-label">Users</div>
+                  <div className="stat-label">{t('unsigned-home.users-stats-label')}</div>
                 </div>
                 <div className="stat-container">
                   <img
@@ -217,7 +223,7 @@ export default function Home(props) {
                     className="stat-number"
                     startCounter={true}
                   />
-                  <div className="stat-label">Messages Exchanged</div>
+                  <div className="stat-label">{t('unsigned-home.messages-exchanged-stats-label')}</div>
                 </div>
                 <div className="stat-container">
                   <img
@@ -229,12 +235,12 @@ export default function Home(props) {
                     className="stat-number"
                     startCounter={true}
                   />
-                  <div className="stat-label">Online Users</div>
+                  <div className="stat-label">{t('unsigned-home.online-users-stats-label')}</div>
                 </div>
               </div>
               <div className="button-container">
                 <Button variant="contained" color="primary" href="/login">
-                  JOIN NOW TO EXPLORE MORE
+                  {t('unsigned-home.join-button')}
                 </Button>
               </div>
             </main>
@@ -243,15 +249,17 @@ export default function Home(props) {
           <>
             <header className="unsigned-home-header">
               <h1 className="unsigned-home-heading">
-                Welcome to our Community
+                {t("unsigned-home-demo.heading")}
                 <br />
               </h1>
 
               <p className="unsigned-home-text">
+                <Trans i18nKey="unsigned-home-demo.description">
                 <strong>Monitor</strong> your <strong>workflows</strong>,
                 <strong>collaborate</strong> and <strong>access data</strong>{" "}
                 any time you need it, all in one{" "}
                 <strong>productivity-amplifying</strong> full-lifecycle platform
+                </Trans>
               </p>
               <br />
 
@@ -263,10 +271,10 @@ export default function Home(props) {
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                 >
-                  <MenuItem value="">All Communities</MenuItem>
-                  <MenuItem value={10}>Rooms</MenuItem>
-                  <MenuItem value={20}>Users</MenuItem>
-                  <MenuItem value={30}>Messages</MenuItem>
+                  <MenuItem value="">{t("unsigned-home-demo.menu-item-1")}</MenuItem>
+                  <MenuItem value={10}>{t("unsigned-home-demo.menu-item-2")}</MenuItem>
+                  <MenuItem value={20}>{t("unsigned-home-demo.menu-item-3")}</MenuItem>
+                  <MenuItem value={30}>{t("unsigned-home-demo.menu-item-4")}</MenuItem>
                 </Select>
 
                 <TextField
@@ -286,11 +294,11 @@ export default function Home(props) {
 
               <div className="button-container">
                 <Button variant="contained" color="primary" href="/login">
-                  JOIN TO EXPLORE
+                  {t('unsigned-home-demo.join-button')}
                 </Button>
               </div>
             </header>
-            <h1 className="stats-heading">Get More Done, Together!</h1>
+            <h1 className="stats-heading">{t('unsigned-home-demo.stats-heading')}</h1>
             <div className="main-stats-container">
               <div className="stat-container">
                 <img
@@ -304,7 +312,7 @@ export default function Home(props) {
                     startCounter={startCounter}
                   />
                 </VisibilitySensor>
-                <div className="stat-label">Users</div>
+                <div className="stat-label">{t('unsigned-home-demo.users-stats-label')}</div>
               </div>
               <div className="stat-container">
                 <img
@@ -319,7 +327,7 @@ export default function Home(props) {
                   />
                 </VisibilitySensor>
 
-                <div className="stat-label">Messages Exchanged</div>
+                <div className="stat-label">{t('unsigned-home-demo.messages-exchanged-stats-label')}</div>
               </div>
               <div className="stat-container">
                 <img
@@ -333,10 +341,10 @@ export default function Home(props) {
                     startCounter={startCounter}
                   />
                 </VisibilitySensor>
-                <div className="stat-label">Online Users</div>
+                <div className="stat-label">{t('unsigned-home-demo.online-users-stats-label')}</div>
               </div>
             </div>
-            <h1 className="featured-content-heading">Featured Content</h1>
+            <h1 className="featured-content-heading">{t('unsigned-home-demo.blogs-heading')}</h1>
             <Carousel
               onChange={onCarouselChange}
               value={carouselValue}
@@ -367,27 +375,27 @@ export default function Home(props) {
                 },
               ]}
             />
-            <h1 className="select-role-heading">Select Your Role</h1>
+            <h1 className="select-role-heading">{t('unsigned-home-demo.select-role-heading')}</h1>
             <div className="select-role-buttons-row">
               <div className="select-role-button">
                 <RiAdminLine className="select-role-button-icon" />
-                <span>Admin</span>
+                <span>{t('unsigned-home-demo.admin-role')}</span>
               </div>
               <div className="select-role-button">
                 <FaLaptopCode className="select-role-button-icon" />
-                <span>Developer</span>
+                <span>{t('unsigned-home-demo.developer-role')}</span>
               </div>
               <div className="select-role-button">
                 <BsChatDots className="select-role-button-icon" />
-                <span>Live Chat User</span>
+                <span>{t('unsigned-home-demo.live-chat-user-role')}</span>
               </div>
               <div className="select-role-button">
                 <FaRegSun className="select-role-button-icon" />
-                <span>GSoC Student</span>
+                <span>{t('unsigned-home-demo.gsoc-student-role')}</span>
               </div>
             </div>
             <div className="communities-wrapper">
-              <h1>Community Activity</h1>
+              <h1>{t('unsigned-home-demo.community-activity-heading')}</h1>
               {activityItems.map((item) => (
                 <div className="community-activity-wrapper">
                   <div className="community-activity-content">
@@ -430,12 +438,12 @@ export default function Home(props) {
         <h2>
           {getGreetings()}, {props.authState.user.name}
         </h2>
-        <p>We're ready to go.</p>
+        <p>{t('signed-home.heading')}</p>
       </header>
       <div class="signed-home-main">
         <div>
           <div class="signed-home-shortcut-container">
-            <h5>Start something new</h5>
+            <h5>{t('signed-home.start-heading')}</h5>
             <div
               className="signed-home-shortcut"
               onClick={() => {
@@ -447,11 +455,11 @@ export default function Home(props) {
                 className="shortcut-icon-medium"
                 alt="room"
               />
-              Create a room
+              {t('signed-home.create-room')}
             </div>
           </div>
           <div className="signed-home-shortcut-container">
-            <h5>Explore more</h5>
+            <h5>{t('signed-home.explore-heading')}</h5>
             <div
               className="signed-home-shortcut"
               onClick={() => {
@@ -463,7 +471,7 @@ export default function Home(props) {
                 className="shortcut-icon-small"
                 alt="search"
               />
-              Discover existing rooms
+              {t('signed-home.discover-rooms')}
             </div>
           </div>
         </div>

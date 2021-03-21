@@ -161,3 +161,129 @@
   border: 5px solid #2f343d;
   cursor: pointer;
 }
+
+.carousel-item-wrapper {
+  width: 100%;
+  margin: 20px;
+  text-align: center;
+}
+
+.carousel-item-link {
+  text-decoration: none;
+  color: #000000;
+}
+
+.carousel-item-image {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item-description {
+  color: hsl(240, 5%, 36%);
+}
+
+.demo-mode-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.unsigned-search-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.unsigned-search-input {
+  width: 50%;
+}
+
+.stats-heading {
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 40px;
+  color: hsl(240, 6%, 17%);
+  font-weight: 200;
+}
+
+.featured-content-heading {
+  text-align: center;
+  margin-bottom: 40px;
+  color: hsl(240, 6%, 17%);
+  font-weight: 200;
+}
+
+.select-role-heading {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  color: hsl(240, 6%, 17%);
+  font-weight: 200;
+}
+
+.select-role-buttons-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 100px;
+}
+
+.select-role-button-icon {
+  height: 50px;
+  width: 50px;
+  margin-bottom: 20px;
+}
+
+.communities-wrapper {
+  margin-bottom: 60px;
+  margin-top: 30px;
+}
+
+.community-activity-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.community-activity-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 80%;
+}
+
+.community-activity-author-image {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  margin-right: 20px;
+}
+
+.community-activity-heading {
+  margin-right: 40px;
+}
+
+.community-activity-info {
+  color: hsl(240, 5%, 36%);
+}
+
+.community-activity-actions-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+}
+
+.community-activity-action {
+  display: flex;
+  width: 50%;
+  align-items: center;
+}
+
+.community-activity-action-button {
+  height: 25px;
+  width: 25px;
+  margin-right: 15px;
+  margin-left: 30px;
+}

@@ -116,20 +116,17 @@ export default function Home(props) {
 
   const Item = (props) => {
     return (
-      <div style={{ width: "100%", margin: "20px", textAlign: "center" }}>
+      <div className="carousel-item-wrapper">
         <a
           href={props.item.url}
           target="_blank"
           rel="noreferrer"
-          style={{ textDecoration: "none", color: "#000000" }}
+          className="carousel-item-link"
         >
-          <img
-            style={{ width: "100%", height: "100%" }}
-            src={props.item.imageUrl}
-          ></img>
+          <img className="carousel-item-image" src={props.item.imageUrl}></img>
           <h2>{props.item.name}</h2>
         </a>
-        <p style={{ color: "hsl(240, 5%, 36%)" }}>{props.item.description}</p>
+        <p className="carousel-item-description">{props.item.description}</p>
       </div>
     );
   };
@@ -164,14 +161,7 @@ export default function Home(props) {
   if (!props.authState.isLoggedIn) {
     return (
       <div className="home-wrapper">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
+        <div className="demo-mode-toggle">
           <p>Demo Mode</p>
           <RCSwitch
             checked={demoMode}
@@ -203,7 +193,6 @@ export default function Home(props) {
                 <strong>productivity-amplifying</strong> full-lifecycle platform
               </p>
             </header>
-            <div className="rocket-logo"></div>
             <main>
               <div className="main-stats-container">
                 <div className="stat-container">
@@ -211,7 +200,11 @@ export default function Home(props) {
                     src="https://img.icons8.com/color/80/000000/circled-user-male-skin-type-7--v2.png"
                     alt="users"
                   />
-                  <Countup end={users} className="stat-number" startCounter={true}/>
+                  <Countup
+                    end={users}
+                    className="stat-number"
+                    startCounter={true}
+                  />
                   <div className="stat-label">Users</div>
                 </div>
                 <div className="stat-container">
@@ -219,7 +212,11 @@ export default function Home(props) {
                     src="https://img.icons8.com/color/80/000000/filled-chat.png"
                     alt="messages"
                   />
-                  <Countup end={totalMessages} className="stat-number" startCounter={true}/>
+                  <Countup
+                    end={totalMessages}
+                    className="stat-number"
+                    startCounter={true}
+                  />
                   <div className="stat-label">Messages Exchanged</div>
                 </div>
                 <div className="stat-container">
@@ -227,7 +224,11 @@ export default function Home(props) {
                     src="https://img.icons8.com/color/80/000000/online--v1.png"
                     alt="online-users"
                   />
-                  <Countup end={onlineUsers} className="stat-number" startCounter={true} />
+                  <Countup
+                    end={onlineUsers}
+                    className="stat-number"
+                    startCounter={true}
+                  />
                   <div className="stat-label">Online Users</div>
                 </div>
               </div>
@@ -254,15 +255,7 @@ export default function Home(props) {
               </p>
               <br />
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "100%",
-                  justifyContent: "center",
-                  marginBottom: "20px",
-                }}
-              >
+              <div className="unsigned-search-wrapper">
                 <Select
                   variant="outlined"
                   value={searchCategory}
@@ -278,8 +271,8 @@ export default function Home(props) {
 
                 <TextField
                   id="search-bar"
+                  className="unsigned-search-input"
                   placeholder="Search all content"
-                  style={{ width: "50%" }}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -297,17 +290,7 @@ export default function Home(props) {
                 </Button>
               </div>
             </header>
-            <h1
-              style={{
-                textAlign: "center",
-                marginTop: "100px",
-                marginBottom: "40px",
-                color: "hsl(240, 6%, 17%)",
-                fontWeight: "200",
-              }}
-            >
-              Get More Done, Together!
-            </h1>
+            <h1 className="stats-heading">Get More Done, Together!</h1>
             <div className="main-stats-container">
               <div className="stat-container">
                 <img
@@ -353,16 +336,7 @@ export default function Home(props) {
                 <div className="stat-label">Online Users</div>
               </div>
             </div>
-            <h1
-              style={{
-                textAlign: "center",
-                marginBottom: "40px",
-                color: "hsl(240, 6%, 17%)",
-                fontWeight: "200",
-              }}
-            >
-              Featured Content
-            </h1>
+            <h1 className="featured-content-heading">Featured Content</h1>
             <Carousel
               onChange={onCarouselChange}
               value={carouselValue}
@@ -393,90 +367,37 @@ export default function Home(props) {
                 },
               ]}
             />
-            <h1
-              style={{
-                textAlign: "center",
-                marginTop: "30px",
-                marginBottom: "60px",
-                color: "hsl(240, 6%, 17%)",
-                fontWeight: "200",
-              }}
-            >
-              Select Your Role
-            </h1>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                marginBottom: "100px",
-              }}
-            >
+            <h1 className="select-role-heading">Select Your Role</h1>
+            <div className="select-role-buttons-row">
               <div className="select-role-button">
-                <RiAdminLine
-                  style={{
-                    height: "50px",
-                    width: "50px",
-                    marginBottom: "20px",
-                  }}
-                />
+                <RiAdminLine className="select-role-button-icon" />
                 <span>Admin</span>
               </div>
               <div className="select-role-button">
-                <FaLaptopCode
-                  style={{
-                    height: "50px",
-                    width: "50px",
-                    marginBottom: "20px",
-                  }}
-                />
+                <FaLaptopCode className="select-role-button-icon" />
                 <span>Developer</span>
               </div>
               <div className="select-role-button">
-                <BsChatDots
-                  style={{
-                    height: "50px",
-                    width: "50px",
-                    marginBottom: "20px",
-                  }}
-                />
+                <BsChatDots className="select-role-button-icon" />
                 <span>Live Chat User</span>
               </div>
               <div className="select-role-button">
-                <FaRegSun
-                  style={{
-                    height: "50px",
-                    width: "50px",
-                    marginBottom: "20px",
-                  }}
-                />
+                <FaRegSun className="select-role-button-icon" />
                 <span>GSoC Student</span>
               </div>
             </div>
-            <div style={{ marginBottom: "60px", marginTop: "30px" }}>
+            <div className="communities-wrapper">
               <h1>Community Activity</h1>
               {activityItems.map((item) => (
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      width: "80%",
-                    }}
-                  >
+                <div className="community-activity-wrapper">
+                  <div className="community-activity-content">
                     <img
                       src={`${rcApiDomain}/avatar/rocket.cat`}
-                      style={{
-                        borderRadius: "50%",
-                        height: "40px",
-                        width: "40px",
-                        marginRight: "20px",
-                      }}
-                    ></img>
-                    <div style={{ marginRight: "40px" }}>
+                      className="community-activity-author-image"
+                    />
+                    <div className="community-activity-heading">
                       <h3>{item.title}</h3>
-                      <p style={{ color: "hsl(240, 5%, 36%)" }}>
+                      <p className="community-activity-info">
                         by{" "}
                         <strong>
                           {item.author}({item.role})
@@ -485,45 +406,13 @@ export default function Home(props) {
                       </p>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "20%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        width: "50%",
-                        alignItems: "center",
-                      }}
-                    >
-                      <FiThumbsUp
-                        style={{
-                          height: "25px",
-                          width: "25px",
-                          marginRight: "15px",
-                          marginLeft: "30px",
-                        }}
-                      />
+                  <div className="community-activity-actions-wrapper">
+                    <div className="community-activity-action">
+                      <FiThumbsUp className="community-activity-action-button" />
                       <span>{item.upvotes}</span>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        width: "50%",
-                        alignItems: "center",
-                      }}
-                    >
-                      <FaRegComment
-                        style={{
-                          height: "25px",
-                          width: "25px",
-                          marginRight: "15px",
-                          marginLeft: "30px",
-                        }}
-                      />
+                    <div className="community-activity-action">
+                      <FaRegComment className="community-activity-action-button" />
                       {item.comments}
                     </div>
                   </div>

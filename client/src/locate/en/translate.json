@@ -18,7 +18,6 @@
       "menu-item-3": "Users",
       "menu-item-4": "Messages",
       "join-button": "JOIN TO EXPLORE",
-      "stats-heading": "Get More Done, Together!",
       "users-stats-label": "Users",
       "messages-exchanged-stats-label": "Messages Exchanged",
       "online-users-stats-label": "Online Users",
@@ -28,7 +27,9 @@
       "developer-role": "Developer",
       "live-chat-user-role": "Live Chat User",
       "gsoc-student-role": "GSoC Student",
-      "community-activity-heading": "Community Activity"
+      "community-activity-heading": "Community Activity",
+      "user-guides": "Read the Guides",
+      "release-notes": "Read Release Notes"
     },
     "signed-home": {
         "heading": "We're ready to go.",

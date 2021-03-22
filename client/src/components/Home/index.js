@@ -19,9 +19,8 @@ import { RiAdminLine } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import Countup from "./../common/Countup";
 import { rcApiDomain } from "../../utils/constants";
-import VisibilitySensor from "react-visibility-sensor";
 import RCSwitch from "../RCSwitch";
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from "react-i18next";
 
 import "./index.css";
 
@@ -29,7 +28,6 @@ export default function Home(props) {
   const { users, onlineUsers, totalMessages } = props.stats;
   const [searchCategory, setSearchCategory] = useState("");
   const [carouselValue, setCarouselValue] = useState(0);
-  const [startCounter, setStartCounter] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
 
   const { t, i18n } = useTranslation();
@@ -156,17 +154,11 @@ export default function Home(props) {
     return "Good evening";
   };
 
-  function onVisibleChange(isVisible) {
-    if (isVisible) {
-      setStartCounter(isVisible);
-    }
-  }
-
   if (!props.authState.isLoggedIn) {
     return (
       <div className="home-wrapper">
         <div className="demo-mode-toggle">
-          <p>{t('Demo_Mode')}</p>
+          <p>{t("Demo_Mode")}</p>
           <RCSwitch
             checked={demoMode}
             onChange={() => setDemoMode(!demoMode)}
@@ -178,7 +170,7 @@ export default function Home(props) {
           <>
             <header className="unsigned-home-header">
               <h1 className="unsigned-home-heading">
-                {t('unsigned-home.heading')}
+                {t("unsigned-home.heading")}
                 <br />
                 <a
                   href="http://github.com/RocketChat/RC4Community"
@@ -186,16 +178,17 @@ export default function Home(props) {
                   target="_blank"
                   className="powered-by-title"
                 >
-                  <strong>{t('unsigned-home.subheading')}</strong>
+                  <strong>{t("unsigned-home.subheading")}</strong>
                 </a>
               </h1>
 
               <p className="unsigned-home-text">
                 <Trans i18nKey="unsigned-home.description">
-                <strong>Monitor</strong> your <strong>workflows</strong>,
-                <strong>collaborate</strong> and <strong>access data</strong>{" "}
-                any time you need it, all in one{" "}
-                <strong>productivity-amplifying</strong> full-lifecycle platform
+                  <strong>Monitor</strong> your <strong>workflows</strong>,
+                  <strong>collaborate</strong> and <strong>access data</strong>{" "}
+                  any time you need it, all in one{" "}
+                  <strong>productivity-amplifying</strong> full-lifecycle
+                  platform
                 </Trans>
               </p>
             </header>
@@ -205,42 +198,39 @@ export default function Home(props) {
                   <img
                     src="https://img.icons8.com/color/80/000000/circled-user-male-skin-type-7--v2.png"
                     alt="users"
+                    className="stat-icon"
                   />
-                  <Countup
-                    end={users}
-                    className="stat-number"
-                    startCounter={true}
-                  />
-                  <div className="stat-label">{t('unsigned-home.users-stats-label')}</div>
+                  <Countup end={users} className="stat-number" />
+                  <div className="stat-label">
+                    {t("unsigned-home.users-stats-label")}
+                  </div>
                 </div>
                 <div className="stat-container">
                   <img
                     src="https://img.icons8.com/color/80/000000/filled-chat.png"
                     alt="messages"
+                    className="stat-icon"
                   />
-                  <Countup
-                    end={totalMessages}
-                    className="stat-number"
-                    startCounter={true}
-                  />
-                  <div className="stat-label">{t('unsigned-home.messages-exchanged-stats-label')}</div>
+                  <Countup end={totalMessages} className="stat-number" />
+                  <div className="stat-label">
+                    {t("unsigned-home.messages-exchanged-stats-label")}
+                  </div>
                 </div>
                 <div className="stat-container">
                   <img
                     src="https://img.icons8.com/color/80/000000/online--v1.png"
                     alt="online-users"
+                    className="stat-icon"
                   />
-                  <Countup
-                    end={onlineUsers}
-                    className="stat-number"
-                    startCounter={true}
-                  />
-                  <div className="stat-label">{t('unsigned-home.online-users-stats-label')}</div>
+                  <Countup end={onlineUsers} className="stat-number" />
+                  <div className="stat-label">
+                    {t("unsigned-home.online-users-stats-label")}
+                  </div>
                 </div>
               </div>
               <div className="button-container">
                 <Button variant="contained" color="primary" href="/login">
-                  {t('unsigned-home.join-button')}
+                  {t("unsigned-home.join-button")}
                 </Button>
               </div>
             </main>
@@ -255,14 +245,24 @@ export default function Home(props) {
 
               <p className="unsigned-home-text">
                 <Trans i18nKey="unsigned-home-demo.description">
-                <strong>Monitor</strong> your <strong>workflows</strong>,
-                <strong>collaborate</strong> and <strong>access data</strong>{" "}
-                any time you need it, all in one{" "}
-                <strong>productivity-amplifying</strong> full-lifecycle platform
+                  <strong>Monitor</strong> your <strong>workflows</strong>,
+                  <strong>collaborate</strong> and <strong>access data</strong>{" "}
+                  any time you need it, all in one{" "}
+                  <strong>productivity-amplifying</strong> full-lifecycle
+                  platform
                 </Trans>
               </p>
               <br />
 
+              <p>
+                <a href="#" className="header-link">
+                  {t("unsigned-home-demo.user-guides")}
+                </a>{" "}
+                |{" "}
+                <a href="#" className="header-link">
+                  {t("unsigned-home-demo.release-notes")}
+                </a>
+              </p>
               <div className="unsigned-search-wrapper">
                 <Select
                   variant="outlined"
@@ -271,10 +271,18 @@ export default function Home(props) {
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                 >
-                  <MenuItem value="">{t("unsigned-home-demo.menu-item-1")}</MenuItem>
-                  <MenuItem value={10}>{t("unsigned-home-demo.menu-item-2")}</MenuItem>
-                  <MenuItem value={20}>{t("unsigned-home-demo.menu-item-3")}</MenuItem>
-                  <MenuItem value={30}>{t("unsigned-home-demo.menu-item-4")}</MenuItem>
+                  <MenuItem value="">
+                    {t("unsigned-home-demo.menu-item-1")}
+                  </MenuItem>
+                  <MenuItem value={10}>
+                    {t("unsigned-home-demo.menu-item-2")}
+                  </MenuItem>
+                  <MenuItem value={20}>
+                    {t("unsigned-home-demo.menu-item-3")}
+                  </MenuItem>
+                  <MenuItem value={30}>
+                    {t("unsigned-home-demo.menu-item-4")}
+                  </MenuItem>
                 </Select>
 
                 <TextField
@@ -292,59 +300,52 @@ export default function Home(props) {
                 />
               </div>
 
-              <div className="button-container">
+              <div className="main-stats-container-demo">
+                <div className="stat-container">
+                  <img
+                    src="https://img.icons8.com/color/80/000000/circled-user-male-skin-type-7--v2.png"
+                    alt="users"
+                    className="stat-icon"
+                  />
+                  <Countup end={users} className="stat-number" />
+                  <div className="stat-label">
+                    {t("unsigned-home-demo.users-stats-label")}
+                  </div>
+                </div>
+                <div className="stat-container">
+                  <img
+                    src="https://img.icons8.com/color/80/000000/filled-chat.png"
+                    alt="messages"
+                    className="stat-icon"
+                  />
+                  <Countup end={totalMessages} className="stat-number" />
+
+                  <div className="stat-label">
+                    {t("unsigned-home-demo.messages-exchanged-stats-label")}
+                  </div>
+                </div>
+                <div className="stat-container">
+                  <img
+                    src="https://img.icons8.com/color/80/000000/online--v1.png"
+                    alt="online-users"
+                    className="stat-icon"
+                  />
+                  <Countup end={onlineUsers} className="stat-number" />
+                  <div className="stat-label">
+                    {t("unsigned-home-demo.online-users-stats-label")}
+                  </div>
+                </div>
+              </div>
+
+              <div className="button-container-demo">
                 <Button variant="contained" color="primary" href="/login">
-                  {t('unsigned-home-demo.join-button')}
+                  {t("unsigned-home-demo.join-button")}
                 </Button>
               </div>
             </header>
-            <h1 className="stats-heading">{t('unsigned-home-demo.stats-heading')}</h1>
-            <div className="main-stats-container">
-              <div className="stat-container">
-                <img
-                  src="https://img.icons8.com/color/80/000000/circled-user-male-skin-type-7--v2.png"
-                  alt="users"
-                />
-                <VisibilitySensor onChange={onVisibleChange}>
-                  <Countup
-                    end={users}
-                    className="stat-number"
-                    startCounter={startCounter}
-                  />
-                </VisibilitySensor>
-                <div className="stat-label">{t('unsigned-home-demo.users-stats-label')}</div>
-              </div>
-              <div className="stat-container">
-                <img
-                  src="https://img.icons8.com/color/80/000000/filled-chat.png"
-                  alt="messages"
-                />
-                <VisibilitySensor onChange={onVisibleChange}>
-                  <Countup
-                    end={totalMessages}
-                    className="stat-number"
-                    startCounter={startCounter}
-                  />
-                </VisibilitySensor>
-
-                <div className="stat-label">{t('unsigned-home-demo.messages-exchanged-stats-label')}</div>
-              </div>
-              <div className="stat-container">
-                <img
-                  src="https://img.icons8.com/color/80/000000/online--v1.png"
-                  alt="online-users"
-                />
-                <VisibilitySensor onChange={onVisibleChange}>
-                  <Countup
-                    end={onlineUsers}
-                    className="stat-number"
-                    startCounter={startCounter}
-                  />
-                </VisibilitySensor>
-                <div className="stat-label">{t('unsigned-home-demo.online-users-stats-label')}</div>
-              </div>
-            </div>
-            <h1 className="featured-content-heading">{t('unsigned-home-demo.blogs-heading')}</h1>
+            <h1 className="featured-content-heading">
+              {t("unsigned-home-demo.blogs-heading")}
+            </h1>
             <Carousel
               onChange={onCarouselChange}
               value={carouselValue}
@@ -375,27 +376,29 @@ export default function Home(props) {
                 },
               ]}
             />
-            <h1 className="select-role-heading">{t('unsigned-home-demo.select-role-heading')}</h1>
+            <h1 className="select-role-heading">
+              {t("unsigned-home-demo.select-role-heading")}
+            </h1>
             <div className="select-role-buttons-row">
               <div className="select-role-button">
                 <RiAdminLine className="select-role-button-icon" />
-                <span>{t('unsigned-home-demo.admin-role')}</span>
+                <span>{t("unsigned-home-demo.admin-role")}</span>
               </div>
               <div className="select-role-button">
                 <FaLaptopCode className="select-role-button-icon" />
-                <span>{t('unsigned-home-demo.developer-role')}</span>
+                <span>{t("unsigned-home-demo.developer-role")}</span>
               </div>
               <div className="select-role-button">
                 <BsChatDots className="select-role-button-icon" />
-                <span>{t('unsigned-home-demo.live-chat-user-role')}</span>
+                <span>{t("unsigned-home-demo.live-chat-user-role")}</span>
               </div>
               <div className="select-role-button">
                 <FaRegSun className="select-role-button-icon" />
-                <span>{t('unsigned-home-demo.gsoc-student-role')}</span>
+                <span>{t("unsigned-home-demo.gsoc-student-role")}</span>
               </div>
             </div>
             <div className="communities-wrapper">
-              <h1>{t('unsigned-home-demo.community-activity-heading')}</h1>
+              <h1>{t("unsigned-home-demo.community-activity-heading")}</h1>
               {activityItems.map((item) => (
                 <div className="community-activity-wrapper">
                   <div className="community-activity-content">
@@ -438,12 +441,12 @@ export default function Home(props) {
         <h2>
           {getGreetings()}, {props.authState.user.name}
         </h2>
-        <p>{t('signed-home.heading')}</p>
+        <p>{t("signed-home.heading")}</p>
       </header>
       <div class="signed-home-main">
         <div>
           <div class="signed-home-shortcut-container">
-            <h5>{t('signed-home.start-heading')}</h5>
+            <h5>{t("signed-home.start-heading")}</h5>
             <div
               className="signed-home-shortcut"
               onClick={() => {
@@ -455,11 +458,11 @@ export default function Home(props) {
                 className="shortcut-icon-medium"
                 alt="room"
               />
-              {t('signed-home.create-room')}
+              {t("signed-home.create-room")}
             </div>
           </div>
           <div className="signed-home-shortcut-container">
-            <h5>{t('signed-home.explore-heading')}</h5>
+            <h5>{t("signed-home.explore-heading")}</h5>
             <div
               className="signed-home-shortcut"
               onClick={() => {
@@ -471,7 +474,7 @@ export default function Home(props) {
                 className="shortcut-icon-small"
                 alt="search"
               />
-              {t('signed-home.discover-rooms')}
+              {t("signed-home.discover-rooms")}
             </div>
           </div>
         </div>

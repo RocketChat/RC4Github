@@ -12,7 +12,6 @@ module.exports.fetchStats = async (req, res) => {
           },
         });
         const stats = {
-          rooms: RCStats.data.totalChannels + RCStats.data.totalPrivateGroups,
           users: RCStats.data.totalUsers,
           onlineUsers: RCStats.data.onlineUsers,
           totalMessages: RCStats.data.totalMessages,

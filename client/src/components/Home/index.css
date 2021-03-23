@@ -71,11 +71,11 @@
   width: 45%;
   height: 45%;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .stat-number {
-  font-size: 30px;
+  font-size: 25px;
   letter-spacing: 2px;
   margin-bottom: 5px;
   font-weight: 500;

@@ -307,7 +307,7 @@ export default function Home(props) {
                     alt="users"
                     className="stat-icon"
                   />
-                  <Countup end={users} className="stat-number" />
+                  <Countup end={412442} className="stat-number" />
                   <div className="stat-label">
                     {t("unsigned-home-demo.users-stats-label")}
                   </div>
@@ -318,7 +318,7 @@ export default function Home(props) {
                     alt="messages"
                     className="stat-icon"
                   />
-                  <Countup end={totalMessages} className="stat-number" />
+                  <Countup end={12940830} className="stat-number" />
 
                   <div className="stat-label">
                     {t("unsigned-home-demo.messages-exchanged-stats-label")}
@@ -330,7 +330,7 @@ export default function Home(props) {
                     alt="online-users"
                     className="stat-icon"
                   />
-                  <Countup end={onlineUsers} className="stat-number" />
+                  <Countup end={507} className="stat-number" />
                   <div className="stat-label">
                     {t("unsigned-home-demo.online-users-stats-label")}
                   </div>

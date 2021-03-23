@@ -11,7 +11,7 @@ export default function Countup(props) {
         setCount((prevCount) => prevCount + 1);
       }, speed);
     } else {
-      setValue(props.end >= 1000 ? `${props.end / 1000}k` : props.end);
+      setValue(props.end);
     }
   });
   return <div className={props.className}>{value || count}</div>;

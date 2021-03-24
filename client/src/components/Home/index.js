@@ -249,11 +249,11 @@ export default function Home(props) {
               <p>
                 <a href="#" className="header-link">
                   {t("unsigned-home-demo.user-guides")}
-                </a>{" "}
+                </a>{"https://docs.rocket.chat/guides/user-guides"}
                 |{" "}
                 <a href="#" className="header-link">
                   {t("unsigned-home-demo.release-notes")}
-                </a>
+                </a>{"https://github.com/RocketChat/Rocket.Chat/releases"}
               </p>
               <div className="unsigned-search-wrapper">
                 <Select

@@ -6,12 +6,7 @@ import {
   MenuItem,
   InputAdornment,
 } from "@material-ui/core";
-import Carousel, {
-  slidesToShowPlugin,
-  slidesToScrollPlugin,
-  autoplayPlugin,
-} from "@brainhubeu/react-carousel";
-import "@brainhubeu/react-carousel/lib/style.css";
+import Slider from "react-slick";
 import { BsSearch } from "react-icons/bs";
 import { FiThumbsUp } from "react-icons/fi";
 import { FaRegComment, FaLaptopCode, FaRegSun } from "react-icons/fa";
@@ -21,13 +16,14 @@ import Countup from "./../common/Countup";
 import { rcApiDomain } from "../../utils/constants";
 import RCSwitch from "../RCSwitch";
 import { Trans, useTranslation } from "react-i18next";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import "./index.css";
 
 export default function Home(props) {
   const { users, onlineUsers, totalMessages } = props.stats;
   const [searchCategory, setSearchCategory] = useState("");
-  const [carouselValue, setCarouselValue] = useState(0);
   const [demoMode, setDemoMode] = useState(false);
 
   const { t, i18n } = useTranslation();
@@ -135,10 +131,6 @@ export default function Home(props) {
 
   const handleChange = (event) => {
     setSearchCategory(event.target.value);
-  };
-
-  const onCarouselChange = (value) => {
-    setCarouselValue(value);
   };
 
   const getGreetings = () => {
@@ -346,36 +338,22 @@ export default function Home(props) {
             <h1 className="featured-content-heading">
               {t("unsigned-home-demo.blogs-heading")}
             </h1>
-            <Carousel
-              onChange={onCarouselChange}
-              value={carouselValue}
-              slides={carouselItems.map((item, i) => (
+            <Slider
+              className="carousel-slider"
+              dots={true}
+              arrows={true}
+              infinite={true}
+              speed={500}
+              slidesToShow={3}
+              slidesToScroll={3}
+              pauseOnHover={true}
+              prevArrow={<img src="/prev-button-slider.png" />}
+              nextArrow={<img src="/next-button-slider.png" />}
+            >
+              {carouselItems.map((item, i) => (
                 <Item key={i} item={item} />
               ))}
-              plugins={[
-                "centered",
-                "infinite",
-                "arrows",
-                {
-                  resolve: slidesToShowPlugin,
-                  options: {
-                    numberOfSlides: 3,
-                  },
-                },
-                {
-                  resolve: slidesToScrollPlugin,
-                  options: {
-                    numberOfSlides: 1,
-                  },
-                },
-                {
-                  resolve: autoplayPlugin,
-                  options: {
-                    interval: 2000,
-                  },
-                },
-              ]}
-            />
+            </Slider>
             <h1 className="select-role-heading">
               {t("unsigned-home-demo.select-role-heading")}
             </h1>

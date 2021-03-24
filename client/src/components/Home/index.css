@@ -163,9 +163,23 @@
 }
 
 .carousel-item-wrapper {
-  width: 100%;
   margin: 20px;
   text-align: center;
+}
+
+.slick-prev {
+  width: 30px;
+  height: 30px;
+  z-index: 1;
+}
+.slick-next {
+  width: 30px;
+  height: 30px;
+  z-index: 1;
+}
+
+.carousel-slider {
+  margin: 40px 20px 60px 20px;
 }
 
 .carousel-item-link {

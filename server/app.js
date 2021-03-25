@@ -38,6 +38,10 @@ app.use(cookieParser())
 
 app.use(handleGithubWebhookVerificationError);
 
+app.get("/events/gsoc2021.html", (req, res) => {
+  res.sendFile(path.join(__dirname + "/../gsoc2021alumnievent.html"));
+});
+
 app.use('/api', require('./routes'))
 
 if(process.env.NODE_ENV === 'production') {

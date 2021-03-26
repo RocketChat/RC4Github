@@ -42,6 +42,10 @@ app.get("/events/gsoc2021.html", (req, res) => {
   res.sendFile(path.join(__dirname + "/../gsoc2021alumnievent.html"));
 });
 
+app.get("/events/gsoc.svg", (req, res) => {
+  res.sendFile(path.join(__dirname + "/../gsoc.svg"));
+});
+
 app.use('/api', require('./routes'))
 
 if(process.env.NODE_ENV === 'production') {

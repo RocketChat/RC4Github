@@ -68,8 +68,6 @@
          text-align: center;
          font-style: italic;
          margin-bottom: 35px;
-         font-family: Times, serif;
-         padding-inline: 100px;
          }
       </style>
    </head>
@@ -139,17 +137,28 @@
                <div class="row justify-content-center align-items-center">
                   <div class="col-xl-6 col-sm-7">
                      <h2 class="title"><a>Schedule</a></h2>
-                     <p id="schedule" class="schedule-quote">"Alumni and Mentors graciously sharing experience and tips with Google Summer of Code 2021 students"</p>
-                     <p style="font-size:small;">Observation: All times are BST (London Time)</p>
+                     <p id="schedule" class="schedule-quote">"Alumni and Mentors graciously sharing experience and tips with future Google Summer of Code 2021 students"</p>
                      <ul>
+                        <li style="font-size: smaller;">Please select your time zone:
+                           <select style="width: 280px" id="timezone" name="timezone" onchange="changeTime()">
+                              <option>US Pacific</option>
+                              <option>US Eastern</option>
+                              <option>Brazil</option>
+                              <option selected>United Kingdom</option>
+                              <option>Europe Central</option>  
+                              <option>India</option>  
+                           </select>
+                        </li> 
                         <li class="date">March 29, 2021</li>
                         <li>
                            <button class="avatar-button">
-                              <div class="avatar"><img src="https://open.rocket.chat/avatar/sing.li" class="avatar-image"></div>
+                              <div class="avatar"><img src="https://open.rocket.chat/avatar/rodrigo.nascimento" class="avatar-image"></div>
                            </button>
                            <div class="message">
-                              <div class="title"><strong>Sing Li</strong> <span>@sing.li</span></div>
-                              <div class="body"><strong>11:45am - </strong>Welcome Students to Rocket.Chat's GSoC 2021!</div>
+                              <div class="title"><strong>Rodrigo Nascimento</strong> <span>@rodrigo.nascimento</span></div>
+                              <div class="body"><span class="time">11:45am</span> - Welcome Students to Rocket.Chat's GSoC 2021!
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -158,7 +167,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Mrinal Dhar</strong> <span>@mrinal.dhar</span></div>
-                              <div class="body"><strong>12pm - </strong>Improve implementation of End-to-End encryption with Signal protocol (GSoC 2017)</div>
+                              <div class="body"><span class="time">12pm</span> - Improve implementation of End-to-End encryption with Signal protocol (GSoC 2017)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -167,7 +178,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Adarsh Naidu</strong> <span>@adarsh.naidu</span></div>
-                              <div class="body"><strong>12:30pm -  </strong>Rocket.Chat Alexa Skill and Google Action Improvements (GSoC 2020)</div>
+                              <div class="body"><span class="time">12:30pm</span> - Rocket.Chat Alexa Skill and Google Action Improvements (GSoC 2020)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -176,7 +189,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Fongang Rodrique</strong> <span>@Fongang.Rodrique</span></div>
-                              <div class="body"><strong>1:00pm - </strong>Interactive APIs documentation (GSoC 2019)</div>
+                              <div class="body"><span class="time">1:00pm</span> - Interactive APIs documentation (GSoC 2019)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -185,7 +200,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Ashwani Yadav</strong> <span>@ashwani.yadav</span></div>
-                              <div class="body"><strong>1:30pm - </strong>Omnichannel: Add screen sharing feature in the Livechat widget (GSoC 2020)</div>
+                              <div class="body"><span class="time">1:30pm</span> - Omnichannel: Add screen sharing feature in the Livechat widget (GSoC 2020)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -194,7 +211,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Amish Mittal</strong> <span>@Amish.Mittal</span></div>
-                              <div class="body"><strong>2:00pm - </strong>Implementation of Newsfeed (a social feature) in Rocket.Chat Server (GSoC 2019)</div>
+                              <div class="body"><span class="time">2:00pm</span> - Implementation of Newsfeed (a social feature) in Rocket.Chat Server (GSoC 2019)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -203,7 +222,9 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>Taimur Azhar</strong> <span>@taimur.azhar</span></div>
-                              <div class="body"><strong>2:30pm - </strong>Download Manager on Desktop App (GSoC 2020)</div>
+                              <div class="body"><span class="time">2:30pm</span> - Download Manager on Desktop App (GSoC 2020)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
@@ -212,16 +233,20 @@
                            </button>
                            <div class="message">
                               <div class="title"><strong>José Renan</strong> <span>@joserenan</span></div>
-                              <div class="body"><strong>3:00pm - </strong>Rocket.Chat SDK for Javascript Clients (GSoC 2018)</div>
+                              <div class="body"><span class="time">3:00pm</span> - Rocket.Chat SDK for Javascript Clients (GSoC 2018)
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li>
                            <button class="avatar-button">
-                              <div class="avatar"><img src="https://open.rocket.chat/avatar/nick.vidal" class="avatar-image"></div>
+                              <div class="avatar"><img src="https://open.rocket.chat/avatar/sing.li" class="avatar-image"></div>
                            </button>
                            <div class="message">
-                              <div class="title"><strong>Nick Vidal</strong> <span>@nick.vidal</span></div>
-                              <div class="body"><strong>3:00pm - </strong>Closing Session</div>
+                              <div class="title"><strong>Sing Li</strong> <span>@sing.li</span></div>
+                              <div class="body"><span class="time">3:30pm</span> - Closing Session
+                              <p><button onclick="window.open('https://bbb.rocket.chat/b/sin-xcb-ko2-3av','_blank')">Join Video</button>&nbsp;<button onclick="window.open('https://open.rocket.chat/channel/bs9epghcro5wegfd2','_blank')">Join Chat</button></p>
+                              </div>
                            </div>
                         </li>
                         <li class="date">March 29 - April 13, 2021</li>
@@ -311,7 +336,7 @@
                </div>
             </div>
          </section>
-         <section class="schedule" style="padding: 100px 0; background: #bbb;
+         <section class="alumni" style="padding: 100px 0; background: #bbb;
             ">
             <div class="container">
                <div class="row justify-content-center align-items-center">
@@ -624,7 +649,7 @@
                </div>
             </div>
          </section>
-         <section id="create-engaging-virtual-conferences" style="padding: 100px 0; background: #ccc;
+         <section id="mentors" style="padding: 100px 0; background: #ccc;
             ">
             <div class="container">
                <div class="row justify-content-center">
@@ -741,10 +766,10 @@
                         </li>
                         <li>
                            <button class="avatar-button">
-                              <div class="avatar"><img src="https://open.rocket.chat/avatar/lolimay" class="avatar-image"></div>
+                              <div class="avatar"><img src="https://open.rocket.chat/avatar/shiqi.mei" class="avatar-image"></div>
                            </button>
                            <div class="message">
-                              <div class="title"><strong>Shiqi Mei</strong> <span>@lolimay</span></div>
+                              <div class="title"><strong>Shiqi Mei</strong> <span>@shiqi.mei</span></div>
                               <div class="body">This mentor has joined the conversation.</div>
                            </div>
                         </li>
@@ -866,4 +891,37 @@
          </div>
       </footer>
    </body>
+<script>
+function changeTime() {
+    timezone = document.getElementById("timezone").value;
+    
+    var t = [];
+    
+    switch(timezone) {
+        case "US Pacific":
+          t = ["3:45am" , "4:00am", "4:30am", "5:00am", "5:30am", "6:00am", "6:30am", "7:00am", "7:30am" ];
+          break;
+        case "US Eastern":
+          t = ["6:45am" , "7:00am", "7:30am", "8:00am", "8:30am", "9:00am", "9:30am", "10:00am", "10:30am" ];
+          break;
+        case "Brazil":
+          t = ["7:45am" , "8:00am", "8:30am", "9:00am", "9:30am", "10:00am", "10:30am", "11:00am", "11:30am" ];
+          break;
+        case "United Kingdom":
+          t = ["11:45am" , "12:00pm", "12:30pm", "1:00pm", "1:30pm", "2:00pm", "2:30pm", "3:00pm", "3:30pm" ];
+          break;
+        case "Europe Central":
+          t = ["12:45pm" , "1:00pm", "1:30pm", "2:00pm", "2:30pm", "3:00pm", "3:30pm", "4:00pm", "4:30pm" ];
+          break;
+        case "India":
+          t = ["4:15pm" , "4:30pm", "5:00pm", "5:30pm", "6:00pm", "6:30pm", "7:00pm", "7:30pm", "8:00pm"];
+          break;
+        
+    }
+    var times = document.getElementsByClassName("time");
+    for (var i=0; i < times.length; i++) {
+      times.item(i).innerHTML = t[i];
+    }
+}
+</script>
 </html>
